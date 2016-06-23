@@ -16,6 +16,7 @@ def make_chart(**kwargs):
     
     
     if kwargs['type'] == 'bar':
+        c._option_['xAxis']['data'] = df[x].unique().tolist()
         
         def return_elem_series(df,x,y=None):
             """Return data series based on dataframe"""
@@ -30,9 +31,10 @@ def make_chart(**kwargs):
             d_series['data'] = opt_data.values.tolist()
             
             return d_series
-            
+        
+        
         if category:
-            c._option_['xAxis']['data'] = df[x].unique().tolist()
+            #c._option_['xAxis']['data'] = df[x].unique().tolist()
             c._option_['legend']['data'] = df[category].unique().tolist()
             
             #Iterate and append Data for every category
