@@ -1,4 +1,6 @@
 
+import uuid
+
 RESET_OPTION = """
                 require(['echarts'],function(echarts){
                 var myChart = echarts.init(document.getElementById('%s'));
@@ -37,10 +39,6 @@ class Chart():
                 (self._get_resync_data_strings(option))
         
         #return RESET_OPTION % (self._chartId,json.dumps(option))
-    
-        
-    
-    
     
     
 def append(chartId):
