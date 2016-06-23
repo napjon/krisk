@@ -16,36 +16,41 @@ def make_chart(**kwargs):
     
     
     if kwargs['type'] == 'bar':
+        
+        def return_elem_series(df,x,y=None):
+            """Return data series based on dataframe"""
+            grouped = df.groupby(x)
+            
+            if y is None:
+                opt_data = grouped.aggregate('count').ix[:,-1]
+            else:
+                opt_data = grouped[y].aggregate(kwargs['how'])
+
+            d_series = deepcopy(elem_series)
+            d_series['data'] = opt_data.values.tolist()
+            
+            return d_series
+            
         if category:
             c._option_['xAxis']['data'] = df[x].unique().tolist()
             c._option_['legend']['data'] = df[category].unique().tolist()
             
             #Iterate and append Data for every category
             for cat, subset in df.groupby(category):
-                opt_data = subset.ix[subset[category] == cat,x].value_counts()
-                d_series = deepcopy(elem_series)
-                d_series['name'] = str(cat)
-                d_series['data'] = opt_data.values.tolist()
-                
+                series = return_elem_series(subset[subset[category] == cat],x,y)
+                series['name'] = str(cat)
                 if kwargs['stacked'] == True:
-                    d_series['stack'] = category
-                c._option_['series'].append(d_series)
+                    series['stack'] = category
+                c._option_['series'].append(series)
         else:
+            series = return_elem_series(df,x,y)
             
-            opt_data = df[x].value_counts()
-            c._option_['xAxis']['data'] = opt_data.index.tolist()
-            d_series = elem_series.copy()
-            d_series['data'] = opt_data.values.tolist()
-            d_series['name'] = x
-            
-            c._option_['series'].append(d_series)
+            series['name'] = x
+            c._option_['series'].append(series)
             c._option_['legend']['data'].append(x)
-        
     
     return c
-        
-        
-    
+
 
 def bar(df,x=None,y=None,category=None,how='count',stacked=False,**kwargs):
     
