@@ -1,10 +1,10 @@
 
 #from . import Chart
-def make_chart(**kwargs):
+def make_chart(df,**kwargs):
     
     c = Chart()
+    c._kwargs_chart_ = kwargs
     
-    df = kwargs['data']
     elem_series = {
             'name': '',
             'type': kwargs['type'],
@@ -58,11 +58,10 @@ def bar(df,x=None,y=None,category=None,how='count',stacked=False,**kwargs):
     
     kwargs['x'] = x
     kwargs['y'] = y
-    kwargs['data'] = df
     kwargs['category'] = category
     kwargs['how'] = how
     kwargs['type'] = 'bar'
     kwargs['stacked'] = stacked
     
-    return make_chart(**kwargs)
+    return make_chart(df,**kwargs)
     
