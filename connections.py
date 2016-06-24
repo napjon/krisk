@@ -11,3 +11,5 @@ def init_notebook():
     return Javascript("""require.config({
                   paths:%s
                    });"""%json.dumps(d_paths))
+def get_paths():
+    return d_paths.keys()
