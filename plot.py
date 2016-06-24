@@ -15,7 +15,7 @@ def make_chart(df,**kwargs):
     
     
     if kwargs['type'] == 'bar':
-        c._option_['xAxis']['data'] = df[x].unique().tolist()
+        c._option['xAxis']['data'] = df[x].unique().tolist()
         
         def return_bar_series(df,x,y=None):
             """Return data series based on dataframe"""
@@ -33,7 +33,7 @@ def make_chart(df,**kwargs):
         
         
         if category:
-            c._option_['legend']['data'] = df[category].unique().tolist()
+            c._option['legend']['data'] = df[category].unique().tolist()
             
             #Iterate and append Data for every category
             for cat, subset in df.groupby(category):
@@ -41,14 +41,14 @@ def make_chart(df,**kwargs):
                 series['name'] = str(cat)
                 if kwargs['stacked'] == True:
                     series['stack'] = category
-                c._option_['series'].append(series)
+                c._option['series'].append(series)
         else:
             series = return_bar_series(df,x,y)
             
             series['name'] = x
-            c._option_['series'].append(series)
+            c._option['series'].append(series)
             #One group doesn't need to have a legend
-            #c._option_['legend']['data'].append(x)
+            #c._option['legend']['data'].append(x)
     
     elif kwargs['type'] == 'hist':
         def get_hist_series(df,cat=None,bins=10,normed=False,**kwargs):
@@ -68,21 +68,21 @@ def make_chart(df,**kwargs):
             if kwargs['stacked'] == True:
                     series['stack'] = kwargs['category']
             
-            c._option_['series'].append(series)
+            c._option['series'].append(series)
             
             return x_val.astype(int).tolist()
         
         if category:
             
-            c._option_['legend']['data'] = df[category].unique().tolist()
+            c._option['legend']['data'] = df[category].unique().tolist()
             xAxisData = []
             
             for cat,subset in df.groupby(category):
                 xAxisData+= get_hist_series(subset,cat=cat,**kwargs)
                 
-            c._option_['xAxis']['data'] = xAxisData
+            c._option['xAxis']['data'] = xAxisData
         else:
-            c._option_['xAxis']['data'] =  get_hist_series(df,x,**kwargs)
+            c._option['xAxis']['data'] =  get_hist_series(df,x,**kwargs)
             
             
     return c

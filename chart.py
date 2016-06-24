@@ -2,8 +2,8 @@
 import uuid
 
 RESET_OPTION = """
-                require(['echarts'],function(echarts){
-                var myChart = echarts.init(document.getElementById('%s'));
+                require(%s,function(echarts){
+                var myChart = echarts.init(document.getElementById('%s'),'%s');
                 myChart.setOption(%s);
                 });
                 """
@@ -29,16 +29,22 @@ OPTION_TEMPLATE = {
 class Chart():
     def __init__(self,**kwargs):
         self._chartId = str(uuid.uuid4())
-        self._option_ = deepcopy(OPTION_TEMPLATE)    
+        self._option = deepcopy(OPTION_TEMPLATE)    
         self._kwargs_chart_ = kwargs
+        self._theme = ''
         
 
     def set_legend(self,):
         pass
     
     
-    def set_theme(self,):
-        pass
+    def set_theme(self,theme):
+        """Set the theme of the chart.
+        theme: {'dark','vintage','rima','shine','infographic','dark'}, default None
+        """
+        self._theme = theme
+        return self
+        
     
     
     def resync_data(self,data):
@@ -51,17 +57,20 @@ class Chart():
         data: pd.DataFrame
          
         """
-        option = make_chart(data,**self._kwargs_chart_)._option_
-        return Javascript(self._get_resync_data_strings(option))
+        option = make_chart(data,**self._kwargs_chart_)._option
+        return Javascript(self._get_resync_option_strings(option))
     
     def replot(self,chart):
         """Replot entire chart to its current cell"""
-        return Javascript(self._get_resync_data_strings(chart._option_))
+        return Javascript(self._get_resync_option_strings(chart._option))
     
-    def _get_resync_data_strings(self,option):
+    def _get_resync_option_strings(self,option):
         """Resync Chart option"""
         
-        return RESET_OPTION % (self._chartId,json.dumps(option))
+        return RESET_OPTION % (list(d_paths.keys()).__repr__(),
+                               self._chartId,
+                               self._theme,
+                               json.dumps(option))
     
     
     def set_tooltip(self,trigger='axis',axis_pointer='shadow'):
@@ -80,8 +89,8 @@ class Chart():
         
         """
         
-        self._option_['tooltip']['trigger'] = trigger
-        self._option_['tooltip']['axisPointer']['type'] = axis_pointer
+        self._option['tooltip']['trigger'] = trigger
+        self._option['tooltip']['axisPointer']['type'] = axis_pointer
         return self
     
     
@@ -92,21 +101,21 @@ class Chart():
     
     def set_title(self,title):
         """Set title for the plot"""
-        self._option_['title']['text'] = title
+        self._option['title']['text'] = title
         return self
     
     
     def flip_axes(self):
         """Flip the axes to make it horizontal"""
         self._axes_swapped = not self._axes_swapped
-        self._option_['xAxis'],self._option_['yAxis'] = self._option_['yAxis'],self._option_['xAxis']
+        self._option['xAxis'],self._option['yAxis'] = self._option['yAxis'],self._option['xAxis']
         return self
     
     
     def _repr_javascript_(self):
         """Embedding the result of the plot to Jupyter"""
         return (APPEND_ELEMENT.format(id=self._chartId))+\
-                (self._get_resync_data_strings(self._option_))
+                (self._get_resync_option_strings(self._option))
         
     _axes_swapped = True
     _kwargs_chart_ = {}
