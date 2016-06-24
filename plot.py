@@ -14,22 +14,25 @@ def make_chart(df,**kwargs):
     category = kwargs['category']
     
     
-    if kwargs['type'] == 'bar':
+    if kwargs['type'] in ['bar','line']:
         c._option['xAxis']['data'] = df[x].unique().tolist()
         
-        def return_bar_series(df,x,y=None):
+        def insert_series(df,cat=None,**kwargs):
             """Return data series based on dataframe"""
-            grouped = df.groupby(x)
             
-            if y is None:
-                opt_data = grouped.aggregate('count').ix[:,-1]
-            else:
-                opt_data = grouped[y].aggregate(kwargs['how'])
+            opt_data = (df[x].value_counts()
+                        if y is None else
+                        df.groupby(x)[y].aggregate(kwargs['how']))
 
-            d_series = deepcopy(elem_series)
-            d_series['data'] = opt_data.values.tolist()
+            series = deepcopy(elem_series)
+            series['data'] = opt_data.values.round(3).tolist()
+            series['type'] = kwargs['type']
             
-            return d_series
+            if kwargs['stacked'] == True:
+                series['stack'] = category
+                    
+            series['name'] = cat if cat else x
+            c._option['series'].append(series)
         
         
         if category:
@@ -37,19 +40,16 @@ def make_chart(df,**kwargs):
             
             #Iterate and append Data for every category
             for cat, subset in df.groupby(category):
-                series = return_bar_series(subset,x,y)
-                series['name'] = str(cat)
-                if kwargs['stacked'] == True:
-                    series['stack'] = category
-                c._option['series'].append(series)
+                insert_series(subset,cat=cat,**kwargs)
+            if (kwargs['type'] == 'line' and 
+                kwargs['area'] == True and 
+                kwargs['stacked']==True):
+                for e in c._option['series']:
+                    e['areaStyle']= {'normal': {}}
+
         else:
-            series = return_bar_series(df,x,y)
+            insert_series(df,**kwargs)
             
-            series['name'] = x
-            c._option['series'].append(series)
-            #One group doesn't need to have a legend
-            #c._option['legend']['data'].append(x)
-    
     elif kwargs['type'] == 'hist':
         def get_hist_series(df,cat=None,bins=10,normed=False,**kwargs):
             
@@ -58,15 +58,12 @@ def make_chart(df,**kwargs):
                                        normed=normed)
         
             series = deepcopy(elem_series)
-            series['data'] = y_val.tolist()
+            series['data'] = y_val.round(3).tolist()
             series['type'] = 'bar'
-            if cat:
-                series['name'] = str(cat)
-            else:
-                series['name'] = x
+            series['name'] = cat if cat else x
                 
             if kwargs['stacked'] == True:
-                    series['stack'] = kwargs['category']
+                series['stack'] = category
             
             c._option['series'].append(series)
             
@@ -75,12 +72,9 @@ def make_chart(df,**kwargs):
         if category:
             
             c._option['legend']['data'] = df[category].unique().tolist()
-            xAxisData = []
-            
             for cat,subset in df.groupby(category):
-                xAxisData+= get_hist_series(subset,cat=cat,**kwargs)
-                
-            c._option['xAxis']['data'] = xAxisData
+                x_val = get_hist_series(subset,cat=cat,**kwargs)
+                c._option['xAxis']['data'].append(x_val)
         else:
             c._option['xAxis']['data'] =  get_hist_series(df,x,**kwargs)
             
@@ -96,6 +90,18 @@ def bar(df,x=None,y=None,category=None,how='count',stacked=False,**kwargs):
     kwargs['how'] = how
     kwargs['type'] = 'bar'
     kwargs['stacked'] = stacked
+    
+    return make_chart(df,**kwargs)
+
+def line(df,x=None,y=None,category=None,how='count',stacked=False,area=False,**kwargs):
+    
+    kwargs['x'] = x
+    kwargs['y'] = y
+    kwargs['category'] = category
+    kwargs['how'] = how
+    kwargs['type'] = 'line'
+    kwargs['stacked'] = stacked
+    kwargs['area'] = area
     
     return make_chart(df,**kwargs)
 
