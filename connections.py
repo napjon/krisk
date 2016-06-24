@@ -1,11 +1,13 @@
-#Connection File
-from IPython.display import Javascript,HTML
+ECHARTS_URL = '//echarts.baidu.com/dist/'
+ECHARTS_FILE = 'echarts.min'
+d_paths = OrderedDict({'echarts':ECHARTS_URL+ECHARTS_FILE})
+
+THEMES = ['dark','vintage','roma','shine','infographic','macarons']
+THEMES_URL='//echarts.baidu.com/asset/theme/'
+for t in THEMES:
+    d_paths[t] =  THEMES_URL+t
 
 def init_notebook():
-    print(Loading JS Script....)
-    return Javascript("""
-            require.config({
-                  paths: {
-                      echarts: '//echarts.baidu.com/dist/echarts.min'
-                  }
-                });""")
+    return Javascript("""require.config({
+                  paths:%s
+                   });"""%json.dumps(d_paths))
