@@ -37,7 +37,7 @@ def make_chart(df,**kwargs):
             
             #Iterate and append Data for every category
             for cat, subset in df.groupby(category):
-                series = return_bar_series(subset[subset[category] == cat],x,y)
+                series = return_bar_series(subset,x,y)
                 series['name'] = str(cat)
                 if kwargs['stacked'] == True:
                     series['stack'] = category
@@ -78,8 +78,7 @@ def make_chart(df,**kwargs):
             xAxisData = []
             
             for cat,subset in df.groupby(category):
-                xAxisData+= get_hist_series(subset[subset[category] == cat],
-                                             cat=cat,**kwargs)
+                xAxisData+= get_hist_series(subset,cat=cat,**kwargs)
                 
             c._option_['xAxis']['data'] = xAxisData
         else:
