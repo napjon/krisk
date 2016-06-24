@@ -29,13 +29,10 @@ OPTION_TEMPLATE = {
 class Chart():
     def __init__(self,**kwargs):
         self._chartId = str(uuid.uuid4())
-        self._option_ = deepcopy(OPTION_TEMPLATE)
+        self._option_ = deepcopy(OPTION_TEMPLATE)    
+        self._kwargs_chart_ = kwargs
         
-        
-    def resync_data(data):
-        return self
-    
-    
+
     def set_legend(self,):
         pass
     
@@ -44,15 +41,45 @@ class Chart():
         pass
     
     
-    def resync_data(self,option):
+    def resync_data(self,data):
+        """Update data but still using the same chart option.
+        Currently just update the current cell it exist, but not the chart option
+        itself.
+        
+        Parameters
+        ----------
+        data: pd.DataFrame
+         
+        """
+        option = make_chart(data,**self._kwargs_chart_)._option_
         return Javascript(self._get_resync_data_strings(option))
     
+    def replot(self,chart):
+        """Replot entire chart to its current cell"""
+        return Javascript(self._get_resync_data_strings(chart._option_))
     
     def _get_resync_data_strings(self,option):
+        """Resync Chart option"""
+        
         return RESET_OPTION % (self._chartId,json.dumps(option))
     
     
     def set_tooltip(self,trigger='axis',axis_pointer='shadow'):
+        """Set Tooltip options.
+        
+        Parameters
+        ----------
+        trigger: {'axis',None}, default 'axis'
+            When tooltip should be triggered. Default to axis
+        axis_pointer: {'shadow',None}, default 'shadow'
+            Effect of pointing the axis.
+        
+        
+        Returns
+        -------
+        
+        """
+        
         self._option_['tooltip']['trigger'] = trigger
         self._option_['tooltip']['axisPointer']['type'] = axis_pointer
         return self
@@ -63,22 +90,26 @@ class Chart():
         return option
     
     
-    def set_title(self,s):
-        self._option_['title']['text'] = s
+    def set_title(self,title):
+        """Set title for the plot"""
+        self._option_['title']['text'] = title
         return self
     
     
     def flip_axes(self):
+        """Flip the axes to make it horizontal"""
         self._axes_swapped = not self._axes_swapped
         self._option_['xAxis'],self._option_['yAxis'] = self._option_['yAxis'],self._option_['xAxis']
         return self
     
     
     def _repr_javascript_(self):
+        """Embedding the result of the plot to Jupyter"""
         return (APPEND_ELEMENT.format(id=self._chartId))+\
                 (self._get_resync_data_strings(self._option_))
         
     _axes_swapped = True
+    _kwargs_chart_ = {}
         
         #return RESET_OPTION % (self._chartId,json.dumps(option))
     
