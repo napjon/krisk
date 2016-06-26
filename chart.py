@@ -2,15 +2,12 @@
 import uuid
 
 RESET_OPTION = """
-                require({requires},function(echarts){{
-                    var myChart = echarts.init(document.getElementById("{chartId}"),"{theme}");
-                    myChart.setOption({option});
-                    myChart.on('mouseover',function(params){{
-                        console.log(params)
-                        
-                    }});
-                }});
-                """
+require({requires},function(echarts){{
+    var myChart = echarts.init(document.getElementById("{chartId}"),"{theme}");
+    myChart.setOption({option});
+    {events}
+}});
+"""
 APPEND_ELEMENT = """
 $('#{id}').attr('id','{id}'+'_old');
 element.append('<div id="{id}" style="width: 600px;height:400px;"></div>');"""
@@ -30,6 +27,14 @@ OPTION_TEMPLATE = {
         'series': []
     }
 
+EVENTS_TEMPLATE = """
+myChart.on('{event}',function(params){{
+    console.log(params);
+    IPython.notebook.kernel.execute("params = params");
+    IPython.notebook.kernel.execute("{function}(params['componentType'])");                        
+}});
+"""
+
 class Chart():
     def __init__(self,**kwargs):
         self._chartId = str(uuid.uuid4())
@@ -37,45 +42,32 @@ class Chart():
         self._kwargs_chart_ = kwargs
         self._theme = ''
         
-
-    def set_legend(self,):
-        pass
-    
+        
+    # Color and Themes
     
     def set_theme(self,theme):
-        """Set the theme of the chart.
-        theme: {'dark','vintage','rima','shine','infographic','dark'}, default None
         """
+        Set the theme of the chart.
+        theme: string
+            {'dark','vintage','rima','shine','infographic','dark'}, default None
+        """
+        
+        
+        if theme not in ['dark','vintage','rima','shine','infographic','dark']:
+            raise AssertionError("Invalid theme name: {theme}".format(theme=theme))
+            
+        
         self._theme = theme
         return self
-        
     
-    
-    def resync_data(self,data):
-        """Update data but still using the same chart option.
-        Currently just update the current cell it exist, but not the chart option
-        itself.
-        
-        Parameters
-        ----------
-        data: pd.DataFrame
-         
+    def set_color(background=None,palletes=None):
         """
-        option = make_chart(data,**self._kwargs_chart_)._option
-        return Javascript(self._get_resync_option_strings(option))
-    
-    def replot(self,chart):
-        """Replot entire chart to its current cell"""
-        return Javascript(self._get_resync_option_strings(chart._option))
-    
-    def _get_resync_option_strings(self,option):
-        """Resync Chart option"""
+        Return
+        """
+        pass
         
-        return RESET_OPTION.format(requires=list(d_paths.keys()).__repr__(),
-                                   chartId=self._chartId,
-                                   theme=self._theme,
-                                   option=json.dumps(option))
-    
+        
+    # ---------------------------------------------------------------------------
     
     def set_tooltip(self,trigger='axis',axis_pointer='shadow'):
         """Set Tooltip options.
@@ -108,6 +100,9 @@ class Chart():
         self._option['title']['text'] = title
         return self
     
+    def set_legend(self,):
+        pass
+    
     
     def flip_axes(self):
         """Flip the axes to make it horizontal"""
@@ -115,13 +110,70 @@ class Chart():
         self._option['xAxis'],self._option['yAxis'] = self._option['yAxis'],self._option['xAxis']
         return self
     
+    # Events
+    def on_event(self,event,handler):
+        
+        events = ['click','dblclick','mousedown','mouseup','mouseover','mouseout','globalout']
+        if event not in events:
+            raise AssertionError('Invalid event name: %s'% event)
+            
+        self._events[event] = handler.__name__
+        return self
+    
+    
+    
+    # --------------------------------------------------------------------------
+    
+    # Replot Functions
+    def resync_data(self,data):
+        """Update data but still using the same chart option.
+        Currently just update the current cell it exist, but not the chart option
+        itself.
+        
+        Parameters
+        ----------
+        data: pd.DataFrame
+         
+        """
+        option = make_chart(data,**self._kwargs_chart_)._option
+        return Javascript(self._get_resync_option_strings(option))
+    
+    def replot(self,chart):
+        """Replot entire chart to its current cell"""
+        return Javascript(self._get_resync_option_strings(chart._option))
+    
+    def _get_resync_option_strings(self,option):
+        """Resync Chart option"""
+        
+        events = [EVENTS_TEMPLATE.format(event=e,function=self._events[e]) for e in self._events]
+        OPTION_KWS = dict(
+            requires=list(d_paths.keys()).__repr__(),
+            chartId=self._chartId,
+            theme=self._theme,
+            option=json.dumps(option),
+            events='\n'.join(events)
+        )
+        return RESET_OPTION.format(**OPTION_KWS)
+    
     
     def _repr_javascript_(self):
         """Embedding the result of the plot to Jupyter"""
         return (APPEND_ELEMENT.format(id=self._chartId))+\
                 (self._get_resync_option_strings(self._option))
-        
+    "# ----------------------------------------------------------------------"
+    
+    # Saving chart option
+    def to_json(self,path):
+        "Save Chart option"
+        pass
+    
+    def to_html(self,path):
+        "Save full html file"
+        pass
+    
+    
     _axes_swapped = True
     _kwargs_chart_ = {}
+    _events = {}
         
     
