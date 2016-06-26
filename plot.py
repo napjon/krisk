@@ -43,7 +43,7 @@ def make_chart(df,**kwargs):
                 insert_series(subset,cat=cat,**kwargs)
             if (kwargs['type'] == 'line' and 
                 kwargs['area'] == True and 
-                kwargs['stacked']==True):
+                kwargs['stacked']== True):
                 for e in c._option['series']:
                     e['areaStyle']= {'normal': {}}
 

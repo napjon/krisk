@@ -2,10 +2,10 @@
 import uuid
 
 RESET_OPTION = """
-                require(%s,function(echarts){
-                var myChart = echarts.init(document.getElementById('%s'),'%s');
-                myChart.setOption(%s);
-                });
+                require({requires},function(echarts){{
+                var myChart = echarts.init(document.getElementById("{chartId}"),"{theme}");
+                myChart.setOption({option});
+                }});
                 """
 APPEND_ELEMENT = """
 $('#{id}').attr('id','{id}'+'_old');
@@ -67,10 +67,10 @@ class Chart():
     def _get_resync_option_strings(self,option):
         """Resync Chart option"""
         
-        return RESET_OPTION % (list(d_paths.keys()).__repr__(),
-                               self._chartId,
-                               self._theme,
-                               json.dumps(option))
+        return RESET_OPTION.format(requires=list(d_paths.keys()).__repr__(),
+                                   chartId=self._chartId,
+                                   theme=self._theme,
+                                   option=json.dumps(option))
     
     
     def set_tooltip(self,trigger='axis',axis_pointer='shadow'):
@@ -120,6 +120,4 @@ class Chart():
     _axes_swapped = True
     _kwargs_chart_ = {}
         
-        #return RESET_OPTION % (self._chartId,json.dumps(option))
-    
     
