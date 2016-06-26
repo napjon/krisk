@@ -3,8 +3,12 @@ import uuid
 
 RESET_OPTION = """
                 require({requires},function(echarts){{
-                var myChart = echarts.init(document.getElementById("{chartId}"),"{theme}");
-                myChart.setOption({option});
+                    var myChart = echarts.init(document.getElementById("{chartId}"),"{theme}");
+                    myChart.setOption({option});
+                    myChart.on('mouseover',function(params){{
+                        console.log(params)
+                        
+                    }});
                 }});
                 """
 APPEND_ELEMENT = """
@@ -95,8 +99,8 @@ class Chart():
     
     
     def get_option(self):
-        global optionx
-        return option
+
+        return self._option
     
     
     def set_title(self,title):
