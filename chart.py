@@ -29,9 +29,31 @@ OPTION_TEMPLATE = {
 
 EVENTS_TEMPLATE = """
 myChart.on('{event}',function(params){{
-    console.log(params);
-    IPython.notebook.kernel.execute("params = params");
-    IPython.notebook.kernel.execute("{function}(params['componentType'])");                        
+
+    var d_params  = {{'series':{{'name':params.seriesName,'index':params.seriesIndex}},
+    'data':{{'value':params.value,'index':params.dataIndex,'name':params.name}}
+    }}
+    
+    console.log('data extracted: ');
+    console.log(d_params);
+    
+    // Create new Cell and execute function passed with parameters
+    var nb = Jupyter.notebook;
+    nb.insert_cell_below();
+    nb.select_next();
+    
+    var json_strings = JSON.stringify(d_params);
+
+    var cell = nb.get_selected_cell();
+    var code_input = "foo(json.loads('" + json_strings + "'))";
+    console.log("Executing code: " + code_input);
+    cell.set_text(code_input);
+    cell.execute();
+    
+    
+    // Immediately delete the cell after execute
+    nb.delete_cell();
+    
 }});
 """
 
@@ -112,6 +134,8 @@ class Chart():
     
     # Events
     def on_event(self,event,handler):
+        
+    
         
         events = ['click','dblclick','mousedown','mouseup','mouseover','mouseout','globalout']
         if event not in events:
