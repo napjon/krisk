@@ -30,14 +30,17 @@ OPTION_TEMPLATE = {
 EVENTS_TEMPLATE = """
 myChart.on('{event}',function(params){{
 
-    var d_params  = {{'series':{{'name':params.seriesName,'index':params.seriesIndex}},
-    'data':{{'value':params.value,'index':params.dataIndex,'name':params.name}}
+    var d_params  = {{'series':{{'name':params.seriesName,
+                                 'index':params.seriesIndex}},
+                      'data':{{'value':params.value,
+                               'index':params.dataIndex,
+                               'name':params.name}}
     }}
     
-    console.log('data extracted: ');
+    console.log('parameters extracted: ');
     console.log(d_params);
     
-    // Create new Cell and execute function passed with parameters
+    // Create new cell and execute function passed with parameters
     var nb = Jupyter.notebook;
     nb.insert_cell_below();
     nb.select_next();
@@ -45,7 +48,7 @@ myChart.on('{event}',function(params){{
     var json_strings = JSON.stringify(d_params);
 
     var cell = nb.get_selected_cell();
-    var code_input = "foo(json.loads('" + json_strings + "'))";
+    var code_input = "{function}(json.loads('" + json_strings + "'))";
     console.log("Executing code: " + code_input);
     cell.set_text(code_input);
     cell.execute();
@@ -184,7 +187,7 @@ class Chart():
         """Embedding the result of the plot to Jupyter"""
         return (APPEND_ELEMENT.format(id=self._chartId))+\
                 (self._get_resync_option_strings(self._option))
-    "# ----------------------------------------------------------------------"
+    # ----------------------------------------------------------------------
     
     # Saving chart option
     def to_json(self,path):

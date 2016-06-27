@@ -17,7 +17,7 @@ def make_chart(df,**kwargs):
     if kwargs['type'] in ['bar','line']:
         c._option['xAxis']['data'] = df[x].unique().tolist()
         
-        def insert_series(df,cat=None,**kwargs):
+        def insert_series(df,cat=None):
             """Return data series based on dataframe"""
             
             opt_data = (df[x].value_counts()
@@ -36,30 +36,36 @@ def make_chart(df,**kwargs):
         
         
         if category:
-            c._option['legend']['data'] = df[category].unique().tolist()
-            
             #Iterate and append Data for every category
             for cat, subset in df.groupby(category):
-                insert_series(subset,cat=cat,**kwargs)
-            if (kwargs['type'] == 'line' and 
-                kwargs['area'] == True and 
-                kwargs['stacked']== True):
-                for e in c._option['series']:
-                    e['areaStyle']= {'normal': {}}
-
+                insert_series(subset,cat=cat)
+                c._option['legend']['data'].append(cat)
         else:
-            insert_series(df,**kwargs)
+            insert_series(df)
+            
+        if (category and
+            kwargs['type'] == 'line' and 
+            kwargs['area'] == True and 
+            kwargs['stacked']== True):
+            for e in c._option['series']:
+                e['areaStyle']= {'normal': {}}
             
     elif kwargs['type'] == 'hist':
-        def get_hist_series(df,cat=None,bins=10,normed=False,**kwargs):
+        kwargs['type'] = 'bar'
+        
+        
+        def insert_series(df,cat=None):
             
             y_val,x_val = np.histogram(df[x],
-                                       bins=bins,
-                                       normed=normed)
-        
+                                       bins=kwargs['bins'],
+                                       normed=kwargs['normed'])
+            
+            bins = x_val.astype(int).tolist()
+            c._option['xAxis']['data'] = bins
+            
             series = deepcopy(elem_series)
             series['data'] = y_val.round(3).tolist()
-            series['type'] = 'bar'
+            series['type'] = kwargs['type']
             series['name'] = cat if cat else x
                 
             if kwargs['stacked'] == True:
@@ -67,22 +73,75 @@ def make_chart(df,**kwargs):
             
             c._option['series'].append(series)
             
-            return x_val.astype(int).tolist()
-        
+            
         if category:
-            
-            c._option['legend']['data'] = df[category].unique().tolist()
             for cat,subset in df.groupby(category):
-                x_val = get_hist_series(subset,cat=cat,**kwargs)
-                c._option['xAxis']['data'].append(x_val)
+                insert_series(subset,cat=cat)
+                c._option['legend']['data'].append(cat)
         else:
-            c._option['xAxis']['data'] =  get_hist_series(df,x,**kwargs)
+            insert_series(df)
+#             c._option['xAxis']['data'] =  get_hist_series(df,x,**kwargs)
             
+    elif kwargs['type'] == 'scatter':
+        
+        c._option['xAxis'] = {'type': 'value',
+                              'name': x,
+                              'max': int(df[x].max())}
+        
+        c._option['yAxis'] = {'type': 'value',
+                              'name': y,
+                              'max': int(df[y].max())}
+        
+        
+        cols = [x,y]
+     
+        c._option['visualMap'] = []
+        visual_map_template = {'show': False,
+                               'min': 0,
+                               'max': 999,
+                               'inRange': {}}
+        
+        size = kwargs['size']
+        if size is not None:
+            vmap_size = deepcopy(visual_map_template)
+            vmap_size['min'] = df[size].min()
+            vmap_size['max'] = df[size].max()
+            vmap_size['inRange']['symbolSize'] = [6,60]
+            c._option['visualMap'].append(vmap_size)
+            cols.append(size)
+            
+        #TODO: Fix Saturate
+#          saturate = kwargs['saturate']
+#         if saturate is not None:
+#             vmap_saturate = deepcopy(visual_map_template)
+#             vmap_saturate['min'] = float(df[saturate].min())
+#             vmap_saturate['max'] = float(df[saturate].max())
+#             vmap_saturate['inRange']['colorLightness'] = [1,0.5]
+#             c._option['visualMap'].append(vmap_saturate)
+#             cols.append(saturate)
+
+        def insert_series(df,cat=None):
+        
+            data = df[cols].values.round(3).tolist()        
+            series = deepcopy(elem_series)
+            series['data'] = data
+            series['type'] = kwargs['type']
+            series['name'] = cat if cat else x
+            c._option['series'].append(series)
+            
+            
+        if category:
+            for cat,subset in df.groupby(category):
+                insert_series(subset,cat=cat)
+                c._option['legend']['data'].append(cat)
+        else:
+            insert_series(df)
+    
             
     return c
 
 
-def bar(df,x=None,y=None,category=None,how='count',stacked=False,**kwargs):
+def bar(df,x,y=None,category=None,how='count',stacked=False,**kwargs):
     
     kwargs['x'] = x
     kwargs['y'] = y
@@ -93,7 +152,7 @@ def bar(df,x=None,y=None,category=None,how='count',stacked=False,**kwargs):
     
     return make_chart(df,**kwargs)
 
-def line(df,x=None,y=None,category=None,how='count',stacked=False,area=False,**kwargs):
+def line(df,x,y=None,category=None,how='count',stacked=False,area=False,**kwargs):
     
     kwargs['x'] = x
     kwargs['y'] = y
@@ -105,7 +164,7 @@ def line(df,x=None,y=None,category=None,how='count',stacked=False,area=False,**k
     
     return make_chart(df,**kwargs)
 
-def hist(df,x=None,category=None,bins=10,normed=False,stacked=False,**kwargs):
+def hist(df,x,category=None,bins=10,normed=False,stacked=False,**kwargs):
     
     kwargs['x'] = x
     kwargs['category'] = category
@@ -115,4 +174,14 @@ def hist(df,x=None,category=None,bins=10,normed=False,stacked=False,**kwargs):
     kwargs['stacked'] = stacked
     
     return make_chart(df,**kwargs)
+
+def scatter(df,x,y,size=None,category=None,**kwargs):
     
+    kwargs['x'] = x
+    kwargs['y'] = y
+    kwargs['category'] = category
+    kwargs['size'] = size
+    #kwargs['saturate'] = saturate #TODO: Fix saturate
+    kwargs['type'] = 'scatter'
+    
+    return make_chart(df,**kwargs)
