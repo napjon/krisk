@@ -13,19 +13,27 @@ def make_chart(df,**kwargs):
     y = kwargs.get('y')
     category = kwargs['category']
     
+    def round_list(arr):
+        try:
+            return arr.values.round(3).tolist()
+        except TypeError:
+            return arr.unique().tolist()
+    
     
     if kwargs['type'] in ['bar','line']:
-        c._option['xAxis']['data'] = df[x].unique().tolist()
+        
         
         def insert_series(df,cat=None):
             """Return data series based on dataframe"""
+            c._option['xAxis']['data'] = round_list(df[x].drop_duplicates())
             
-            opt_data = (df[x].value_counts()
+            data = (df[x].value_counts()
                         if y is None else
                         df.groupby(x)[y].aggregate(kwargs['how']))
-
+            
+            
             series = deepcopy(elem_series)
-            series['data'] = opt_data.values.round(3).tolist()
+            series['data'] = round_list(data)
             series['type'] = kwargs['type']
             
             if kwargs['stacked'] == True:
@@ -59,12 +67,12 @@ def make_chart(df,**kwargs):
             y_val,x_val = np.histogram(df[x],
                                        bins=kwargs['bins'],
                                        normed=kwargs['normed'])
-            
+            data = pd.Series(y_val)
             bins = x_val.astype(int).tolist()
             c._option['xAxis']['data'] = bins
             
             series = deepcopy(elem_series)
-            series['data'] = y_val.round(3).tolist()
+            series['data'] = round_list(data)
             series['type'] = kwargs['type']
             series['name'] = cat if cat else x
                 
@@ -122,9 +130,9 @@ def make_chart(df,**kwargs):
 
         def insert_series(df,cat=None):
         
-            data = df[cols].values.round(3).tolist()        
+            data = df[cols]
             series = deepcopy(elem_series)
-            series['data'] = data
+            series['data'] = round_list(data)
             series['type'] = kwargs['type']
             series['name'] = cat if cat else x
             c._option['series'].append(series)
