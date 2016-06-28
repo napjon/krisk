@@ -26,7 +26,8 @@ def round_list(arr):
     try:
         return arr.values.round(3).tolist()
     except TypeError:
-        return arr.unique().tolist()
+        return arr.values.tolist()
+#         return arr.unique().tolist()
     
                 
 def make_chart(df,**kwargs):
@@ -69,6 +70,7 @@ def make_chart(df,**kwargs):
         
         def get_bar_line_data(df):
             c._option['xAxis']['data'] = round_list(df[x].drop_duplicates())
+#             c._option['yAxis']['scale'] = True
             
             data = (df[x].value_counts()
                     if y is None else
@@ -136,8 +138,9 @@ def make_chart(df,**kwargs):
 
 
         def get_scatter_data(df):
-        
-            data = df[cols]
+            columns = cols+df.columns.difference(cols).tolist()
+            c._kwargs_chart_['columns'] = columns
+            data = df[columns]
             return data
         
         insert_series_on(get_scatter_data)
