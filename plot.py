@@ -16,7 +16,13 @@ def bar_line_hist_condition(c,category=None,**kwargs):
                 s['areaStyle'] = {'normal': {}}
 
             if kwargs['annotate'] == 'all':
-                s['label'] = d_annotate
+                
+                if kwargs['type'] == 'bar':
+                    d_ant = deepcopy(d_annotate)
+                    d_ant['normal']['position'] = 'inside'
+                    s['label'] = deepcopy(d_ant)
+                else:
+                    s['label'] = deepcopy(d_annotate)
 
     if kwargs['annotate'] == 'top':
         series[-1]['label'] = d_annotate
@@ -24,10 +30,15 @@ def bar_line_hist_condition(c,category=None,**kwargs):
         
 def round_list(arr):
     try:
-        return arr.values.round(3).tolist()
+        return arr.values.round(3).tolist() # Numeric Array
     except TypeError:
-        return arr.values.tolist()
-#         return arr.unique().tolist()
+        try:
+            return arr.unique().tolist() #String Array
+        except AttributeError:
+            return (arr.apply(lambda x: x.values.round(3) #Dataframe
+                            if x.dtype.name.startswith('float') 
+                            else x)
+                    .values.tolist())
     
                 
 def make_chart(df,**kwargs):
@@ -110,7 +121,10 @@ def make_chart(df,**kwargs):
                               'max': int(df[y].max())}
         c._option['visualMap'] = []
         
-        visual_map_template = {'show': False,
+        visual_map_template = {
+#                                'type' : 'piecewise',
+#                                'splitNumber': 5,
+                               'show': False,
                                'min': 0,
                                'max': 999,
                                'inRange': {}}
@@ -136,14 +150,22 @@ def make_chart(df,**kwargs):
 #             c._option['visualMap'].append(vmap_saturate)
 #             cols.append(saturate)
 
-
+        columns = cols+df.columns.difference(cols).tolist()
+        c._kwargs_chart_['columns'] = columns
+        
         def get_scatter_data(df):
-            columns = cols+df.columns.difference(cols).tolist()
-            c._kwargs_chart_['columns'] = columns
             data = df[columns]
+#             print(columns)
             return data
         
         insert_series_on(get_scatter_data)
+        
+#         series = c._option['series']
+#         if size is not None:
+#             for s in series:
+#                 s['symbolSize'] = """function(val){{return val[2];}}"""
+        
+        
             
     return c
 
