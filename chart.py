@@ -3,9 +3,23 @@ import uuid
 
 RESET_OPTION = """
 require({requires},function(echarts){{
+    
+    function parseFunction(str){{
+        return eval('(' + str + ')');
+    }}
+    
     var myChart = echarts.init(document.getElementById("{chartId}"),"{theme}");
-    myChart.setOption({option});
+    
+    var option = {option};
+    option['tooltip']['formatter'] = parseFunction(option['tooltip']['formatter']);
+    
+    //option['series'][0]['symbolSize'] = function (val){{return val[2]*10;}}
+    
+    
+    myChart.setOption(option);
+    //console.log(option);
     {events}
+    
 }});
 """
 APPEND_ELEMENT = """
@@ -74,47 +88,122 @@ class Chart():
         """
         Set the theme of the chart.
         theme: string
-            {'dark','vintage','rima','shine','infographic','dark'}, default None
+            {'dark','vintage','roma','shine','infographic','macarons'}, default None
         """
         
         
-        if theme not in ['dark','vintage','rima','shine','infographic','dark']:
+        if theme not in THEMES:
             raise AssertionError("Invalid theme name: {theme}".format(theme=theme))
             
         
         self._theme = theme
         return self
     
-    def set_color(background=None,palletes=None):
+    
+    def set_color(self,background='',palettes=''):
         """
-        Return
+        Set background and pallete color
+        
+        Parameters:
+        background: string
+            hex color
+        palettes: list of strings
+            list hex colors
+            
+    
         """
-        pass
+        
+#         TODO:
+#         (p
+#         .set_color(background='something')
+#         .set_color(palettes=[something])) override background to None
+        
+#         Is this intended? Or should just these parameters made as separate methods?
+        
+        self._option.pop('color',None)
+        self._option.pop('graph',None) #Need further analyze graph color
+        self._option.pop('backgroundColor',None)
+        
+        if background:
+            self._option['backgroundColor'] = background
+        if palettes:
+            self._option['color'] = palettes
+            self._option['graph'] = {'color':palettes}
+        
+        
+        return self
+        
         
         
     # ---------------------------------------------------------------------------
     
-    def set_tooltip(self,trigger='axis',axis_pointer='shadow'):
+    # Tooltip
+    def set_tooltip_style(self,trigger='item',axis_pointer='line',triggerOn='mousemove',
+                          font_style='normal',font_family='sans-serif',font_size=14):
+        
         """Set Tooltip options.
+        
+        
         
         Parameters
         ----------
-        trigger: {'axis',None}, default 'axis'
-            When tooltip should be triggered. Default to axis
-        axis_pointer: {'shadow',None}, default 'shadow'
+        trigger: {'item',axis}, default 'item'
+            When tooltip should be triggered. Default to item
+        axis_pointer: {'shadow','cross','line'}, default 'line'
             Effect of pointing the axis.
-        
-        
-        Returns
-        -------
+        trigger_on: {'mousemove','click'}, default 'mousemove'
+            Tooltip trigger
+        font_style: string hex, default 'normal'
+            Font Style
+        font_family: sting, default to 'sans-serif'.
+            Tooltip font familty
+        font_size: int, default 14.
+            Tooltip font size
         
         """
         
+        
+        
         self._option['tooltip']['trigger'] = trigger
         self._option['tooltip']['axisPointer']['type'] = axis_pointer
+        self._option['tooltip']['triggerOn'] = trigger_on
+        
+        self._option['tooltip']['fontStyle'] = font_style
+        self._option['tooltip']['fontFamily'] = font_family
+        self._option['tooltip']['fontSize'] = font_size
+        
         return self
     
     
+    def set_tooltip_format(columns,override=False,sep=None,
+                           formatter = "'{key}' + '：' + {value} + '{unit}' +'<br>'"):
+                    
+        
+        if self._kwargs_chart_['type'] == 'scatter':
+            
+            f_columns = []
+            for c in columns:
+                idx = self._kwargs_chart_['columns'].index(c)
+                key,unit = c.split() if sep is not None else c, ' '
+
+
+                f_columns.append(formatter
+                                 .format(key=key,
+                                         value='value[{idx}]'.format(idx=idx),
+                                         unit=unit))
+
+            formatter_strings =  """function (obj) {{
+                                    var value = obj.value;
+                                    return {f_columns};
+                                }}""".format(f_columns='+'.join(f_columns))
+
+            self._option['tooltip']['formatter'] = formatter_strings
+        else:
+            raise TypeError('Chart Type not supported')
+
+        return self
+    
+    # ----------------------------------------------------------------------
     def get_option(self):
 
         return self._option
@@ -124,6 +213,7 @@ class Chart():
         """Set title for the plot"""
         self._option['title']['text'] = title
         return self
+    
     
     def set_legend(self,):
         pass
