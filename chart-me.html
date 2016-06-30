@@ -1,0 +1,95 @@
+
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8">
+    <title>ECharts</title>
+    <!-- 引入 echarts.js -->
+    <script src= "js/echarts.min.js"></script>
+    <script src= "js/vintage.js"> </script> 
+    <script src= "js/macarons.js"> </script> 
+    <script src= "js/roma.js"> </script> 
+    <script src= "js/shine.js"> </script> 
+    <script src= "js/infographic.js"> </script> 
+    <script src= "js/dark.js"> </script> 
+    <script src= "http://requirejs.org/docs/release/2.2.0/minified/require.js"> </script>
+    <script src= "https://code.jquery.com/jquery-3.0.0.min.js"> </script>
+
+</head>
+<body>
+    <script type="text/javascript">
+
+    require.config({
+                  paths:{
+                        "echarts": "echarts.min",
+                        "dark": "js/dark",
+                        "vintage": "js/vintage",
+                        "roma": "js/roma",
+                        "shine": "js/shine",
+                        "infographic": "js/infographic",
+                        "macarons": "js/macarons"
+                        }
+                   });
+
+
+    
+$('#9d867bb8-d507-4711-b929-cddb57f942b2').attr('id','9d867bb8-d507-4711-b929-cddb57f942b2'+'_old');
+$("body").append('<div id="9d867bb8-d507-4711-b929-cddb57f942b2" style="width: 600px;height:400px;"></div>');
+require(['echarts', 'dark', 'vintage', 'roma', 'shine', 'infographic', 'macarons'],function(echarts){
+    
+    function parseFunction(str){
+        return eval('(' + str + ')');
+    }
+    
+    var myChart = echarts.init(document.getElementById("9d867bb8-d507-4711-b929-cddb57f942b2"),"");
+    
+    var option = {
+    "yAxis": {},
+    "title": {
+        "text": ""
+    },
+    "legend": {
+        "data": []
+    },
+    "xAxis": {
+        "data": [
+            "Asia",
+            "Europe",
+            "Africa",
+            "Americas",
+            "Oceania"
+        ]
+    },
+    "tooltip": {
+        "axisPointer": {
+            "type": ""
+        }
+    },
+    "series": [
+        {
+            "data": [
+                624,
+                396,
+                360,
+                300,
+                24
+            ],
+            "type": "bar",
+            "name": "continent"
+        }
+    ]
+};
+    option['tooltip']['formatter'] = parseFunction(option['tooltip']['formatter']);
+    
+    //option['series'][0]['symbolSize'] = function (val){return val[2]*10;}
+    
+    
+    myChart.setOption(option);
+    //console.log(option);
+    
+    
+});
+
+    </script>
+</body>
+</html>
