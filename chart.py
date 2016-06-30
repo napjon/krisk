@@ -1,5 +1,6 @@
 
 import uuid
+import json
 
 RESET_OPTION = """
 require({requires},function(echarts){{
@@ -170,7 +171,6 @@ class Chart():
         """
         
         
-        
         self._option['tooltip']['trigger'] = trigger
         self._option['tooltip']['axisPointer']['type'] = axis_pointer
         self._option['tooltip']['triggerOn'] = trigger_on
@@ -182,19 +182,45 @@ class Chart():
         return self
     
     
-    def set_tooltip_format(columns,override=False,sep=None,
+    def set_tooltip_format(self,columns,override=False,
                            formatter = "'{key}' + '：' + {value} + '{unit}' +'<br>'"):
-                    
+        """
+        Set tooltip format. Currently only Scatter plot supported because it's the only that keep the
+        data as is.
+        
+        Parameters
+        ----------
+        
+        columns: list of string or list of tuples
+            if list of strings, retrieve the columns value for the tooltip
+            if list of tuples, will be represented as key,unit for the format
+        override: Boolean, default to False
+            provide custom Javascript function
+        formatter: string,
+            Format key,value,unit that will be rendered in the tooltip
+        
+        Returns
+        -------
+        Chart Object
+        
+        Examples
+        --------
+        
+        """
         
         if self._kwargs_chart_['type'] != 'scatter':
             raise TypeError('Chart Type not supported')
         else:
             f_columns = []
             for c in columns:
-                idx = self._kwargs_chart_['columns'].index(c)
-                key,unit = c.split() if sep is not None else c, ' '
+                if isinstance(c,str):
+                    key,unit =c, ' '
+                elif isinstance(c,tuple):
+                    key,unit = c
+                else:
+                    raise TypeError('Columns type not supported')
 
-
+                idx = self._kwargs_chart_['columns'].index(key)
                 f_columns.append(formatter
                                  .format(key=key,
                                          value='value[{idx}]'.format(idx=idx),
@@ -345,7 +371,7 @@ class Chart():
             requires=list(d_paths.keys()).__repr__(),
             chartId=self._chartId,
             theme=self._theme,
-            option=json.dumps(option),
+            option=json.dumps(option,indent=4),
             events='\n'.join(events)
         )
         return RESET_OPTION.format(**OPTION_KWS)
@@ -360,7 +386,9 @@ class Chart():
     # Saving chart option
     def to_json(self,path):
         "Save Chart option"
-        pass
+        
+        json.dump(self._option,open(path,'w'))
+        
     
     def to_html(self,path):
         "Save full html file"

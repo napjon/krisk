@@ -1,32 +1,5 @@
 
 #from . import Chart
-
-def bar_line_hist_condition(c,category=None,**kwargs):
-    """Provide stacked,annotate, area for bar line hist"""
-    series = c._option['series']
-
-    d_annotate = {'normal':{'show':True,
-                            'position':'top'}}
-
-    if category and kwargs['stacked'] == True:
-        for s in series:
-            s['stack'] = category
-
-            if kwargs['type'] == 'line' and kwargs['area'] == True:
-                s['areaStyle'] = {'normal': {}}
-
-            if kwargs['annotate'] == 'all':
-                
-                if kwargs['type'] == 'bar':
-                    d_ant = deepcopy(d_annotate)
-                    d_ant['normal']['position'] = 'inside'
-                    s['label'] = deepcopy(d_ant)
-                else:
-                    s['label'] = deepcopy(d_annotate)
-
-    if kwargs['annotate'] == 'top':
-        series[-1]['label'] = d_annotate
-        
         
 def round_list(arr):
     try:
@@ -76,7 +49,37 @@ def make_chart(df,**kwargs):
     y = kwargs.get('y')
     category = kwargs['category']
     
+    
+    def bar_line_hist_condition():
+        """Provide stacked,annotate, area for bar line hist"""
+        series = c._option['series']
+
+        d_annotate = {'normal':{'show':True,
+                                'position':'top'}}
+
+        if category and kwargs['stacked'] == True:
+            for s in series:
+                s['stack'] = category
+
+                if kwargs['type'] == 'line' and kwargs['area'] == True:
+                    s['areaStyle'] = {'normal': {}}
+
+                if kwargs['annotate'] == 'all':
+
+                    if kwargs['type'] == 'bar':
+                        d_ant = deepcopy(d_annotate)
+                        d_ant['normal']['position'] = 'inside'
+                        s['label'] = deepcopy(d_ant)
+                    else:
+                        s['label'] = deepcopy(d_annotate)
+    
+    
     if kwargs['type'] in ['bar','line']:
+        
+        
+
+        if kwargs['annotate'] == 'top':
+            series[-1]['label'] = d_annotate
         
         
         def get_bar_line_data(df):
@@ -91,7 +94,7 @@ def make_chart(df,**kwargs):
             
         
         insert_series_on(get_bar_line_data)
-        bar_line_hist_condition(c,**kwargs)
+        bar_line_hist_condition()
             
     elif kwargs['type'] == 'hist':
         kwargs['type'] = 'bar'
@@ -109,7 +112,7 @@ def make_chart(df,**kwargs):
             return data
         
         insert_series_on(get_hist_data)
-        bar_line_hist_condition(c,**kwargs)
+        bar_line_hist_condition()
             
     elif kwargs['type'] == 'scatter':
         
@@ -121,21 +124,25 @@ def make_chart(df,**kwargs):
                               'max': int(df[y].max())}
         c._option['visualMap'] = []
         
-        visual_map_template = {
-#                                'type' : 'piecewise',
-#                                'splitNumber': 5,
-                               'show': False,
-                               'min': 0,
-                               'max': 999,
-                               'inRange': {}}
+        
         
         cols = [x,y]
         size = kwargs['size']
         if size is not None:
-            vmap_size = deepcopy(visual_map_template)
+            vmap_template_size = {
+                                    'show': False,
+                                    'dimension': 2,
+                                    'min': 0,
+                                    'max': 250,
+                                    'precision': 0.1,
+                                    'inRange': {
+                                        'symbolSize': [10, 70]
+                                    }
+                                }
+            vmap_size = deepcopy(vmap_template_size)
             vmap_size['min'] = df[size].min()
             vmap_size['max'] = df[size].max()
-            vmap_size['inRange']['symbolSize'] = [6,60]
+#             vmap_size['inRange']['symbolSize'] = [30,100]
             c._option['visualMap'].append(vmap_size)
             cols.append(size)
         
