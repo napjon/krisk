@@ -159,12 +159,7 @@ def make_chart(df,**kwargs):
             return data
         
         insert_series_on(get_scatter_data)
-        
-#         series = c._option['series']
-#         if size is not None:
-#             for s in series:
-#                 s['symbolSize'] = """function(val){{return val[2];}}"""
-        
+    
         
             
     return c

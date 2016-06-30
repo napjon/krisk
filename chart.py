@@ -87,7 +87,11 @@ class Chart():
     def set_theme(self,theme):
         """
         Set the theme of the chart.
-        theme: string
+        
+        Parameters
+        ----------
+
+        theme: str
             {'dark','vintage','roma','shine','infographic','macarons'}, default None
         """
         
@@ -100,17 +104,21 @@ class Chart():
         return self
     
     
-    def set_color(self,background='',palettes=''):
+    def set_color(self,background='',palette=''):
         """
         Set background and pallete color
         
-        Parameters:
+        Parameters
+        ----------
+        
         background: string
             hex color
         palettes: list of strings
             list hex colors
             
-    
+        Returns
+        -------
+        Chart Object
         """
         
 #         TODO:
@@ -138,12 +146,11 @@ class Chart():
     # ---------------------------------------------------------------------------
     
     # Tooltip
-    def set_tooltip_style(self,trigger='item',axis_pointer='line',triggerOn='mousemove',
+    
+    def set_tooltip_style(self,trigger='item',axis_pointer='line',trigger_on='mousemove',
                           font_style='normal',font_family='sans-serif',font_size=14):
         
         """Set Tooltip options.
-        
-        
         
         Parameters
         ----------
@@ -179,8 +186,9 @@ class Chart():
                            formatter = "'{key}' + '：' + {value} + '{unit}' +'<br>'"):
                     
         
-        if self._kwargs_chart_['type'] == 'scatter':
-            
+        if self._kwargs_chart_['type'] != 'scatter':
+            raise TypeError('Chart Type not supported')
+        else:
             f_columns = []
             for c in columns:
                 idx = self._kwargs_chart_['columns'].index(c)
@@ -198,37 +206,106 @@ class Chart():
                                 }}""".format(f_columns='+'.join(f_columns))
 
             self._option['tooltip']['formatter'] = formatter_strings
-        else:
-            raise TypeError('Chart Type not supported')
+            
 
-        return self
+            return self
     
     # ----------------------------------------------------------------------
+    
     def get_option(self):
+        """Return Chart option that will be injected to Option Javascript object"""
 
         return self._option
     
     
-    def set_title(self,title):
-        """Set title for the plot"""
+    def set_title(self,title,x_pos='auto',y_pos='auto'):
+        """Set title for the plot.
+        
+        The coordinate is started at bottom left corner. If x_pos and y_pos started
+        at negative values, then the coordinate started at upper right corner.
+        
+        Parameters
+        ----------
+        title: str
+            Title of the chart.
+        x_pos: str, {'auto', left', 'center', 'right', 'i%'}, default to 'auto'
+        y_pos: str, {'auto', top', 'center', 'bottom', 'i%'}, default to 'auto'
+        
+        """
+        
         self._option['title']['text'] = title
+        
+        if x_pos.startswith('-'):
+            self._option['title']['right'] = x_pos[1:]
+        else:
+            self._option['title']['left'] = x_pos
+            
+        if y_pos.startswith('-'):
+            self._option['title']['top'] = y_pos[1:]
+        else:
+            self._option['title']['bottom'] = y_pos
+        
+        
         return self
     
     
-    def set_legend(self,):
-        pass
+    def set_legend(self,align='auto',orient='horizontal',
+                   x_pos='auto',y_pos='auto'):
+        """
+        Set legend style.
+        
+        The coordinate is started at bottom left corner. If x_pos and y_pos started
+        at negative values, then the coordinate started at upper right corner.
+        
+        Parameters
+        ----------
+        
+        align: str, {'auto','left','right'}, default to 'auto'
+        orient: str, {'horizontal','vertical'} default to 'horizontal'
+        x_pos: str, {'auto', left', 'center', 'right', 'i%'}, default to 'auto'
+        y_pos: str, {'auto', top', 'center', 'bottom', 'i%'}, default to 'auto'
+        
+        
+        Returns
+        -------
+        Chart Object
+        
+        
+        """
+        
+        self._option['legend']['align'] = align
+        self._option['legend']['orient'] = orient
+        
+        if x_pos.startswith('-'):
+            self._option['legend']['right'] = x_pos[1:]
+        else:
+            self._option['legend']['left'] = x_pos
+            
+        if y_pos.startswith('-'):
+            self._option['legend']['top'] = y_pos[1:]
+        else:
+            self._option['legend']['bottom'] = y_pos
+            
+            
+        return self
     
     
     def flip_axes(self):
         """Flip the axes to make it horizontal"""
+        
         self._axes_swapped = not self._axes_swapped
         self._option['xAxis'],self._option['yAxis'] = self._option['yAxis'],self._option['xAxis']
         return self
     
     # Events
     def on_event(self,event,handler):
-        
-    
+        """
+        Parameter:
+        event: {'click','dblclick','mousedown','mouseup','mouseover','mouseout','globalout'}, default None
+            In which event the function should be triggered
+        handler: function
+            The trigger function
+        """
         
         events = ['click','dblclick','mousedown','mouseup','mouseover','mouseout','globalout']
         if event not in events:
@@ -243,7 +320,8 @@ class Chart():
     
     # Replot Functions
     def resync_data(self,data):
-        """Update data but still using the same chart option.
+        """
+        Update data but still using the same chart option.
         Currently just update the current cell it exist, but not the chart option
         itself.
         
