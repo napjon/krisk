@@ -8,8 +8,6 @@ from krisk.connections import get_paths
 paths = list(get_paths())
 
 
-
-
 class Chart():
     def __init__(self,**kwargs):
         self._chartId = str(uuid.uuid4())
@@ -178,8 +176,24 @@ class Chart():
 
         return self._option
     
+    # ----------------------------------------------------------------------
     
-    def set_title(self,title,x_pos='auto',y_pos='auto'):
+    # Set Title, Legend and Toolbox
+    
+    def __set_object_pos(self,obj,x,y):
+        """Set x,y coordinate of an object in chart layout"""
+        
+        if x.startswith('-'):
+            self._option[obj]['right'] = x[1:]
+        else:
+            self._option[obj]['left'] = x
+            
+        if y.startswith('-'):
+            self._option[obj]['top'] = y[1:]
+        else:
+            self._option[obj]['bottom'] = y
+    
+    def set_title(self, title, x_pos='auto', y_pos='auto'):
         """Set title for the plot.
         
         The coordinate is started at bottom left corner. If x_pos and y_pos started
@@ -195,23 +209,12 @@ class Chart():
         """
         
         self._option['title']['text'] = title
-        
-        if x_pos.startswith('-'):
-            self._option['title']['right'] = x_pos[1:]
-        else:
-            self._option['title']['left'] = x_pos
-            
-        if y_pos.startswith('-'):
-            self._option['title']['top'] = y_pos[1:]
-        else:
-            self._option['title']['bottom'] = y_pos
-        
+        self.__set_object_pos('title',x_pos,y_pos)
         
         return self
     
     
-    def set_legend(self,align='auto',orient='horizontal',
-                   x_pos='auto',y_pos='auto'):
+    def set_legend(self, align='auto', orient='horizontal', x_pos='auto', y_pos='auto'):
         """
         Set legend style.
         
@@ -226,28 +229,67 @@ class Chart():
         x_pos: str, {'auto', left', 'center', 'right', 'i%'}, default to 'auto'
         y_pos: str, {'auto', top', 'center', 'bottom', 'i%'}, default to 'auto'
         
+        Returns
+        -------
+        Chart Object
+        """
+        
+        self._option['legend']['align'] = align
+        self._option['legend']['orient'] = orient
+        self.__set_object_pos('legend',x_pos,y_pos)
+    
+        return self
+    
+    def set_toolbox(self, save_format=None, restore=None, data_view=None, data_zoom=None,
+                    magic_type=None, brush=None,
+                    align='auto', orient='horizontal', x_pos='auto', y_pos='auto'):
+        """ Set Toolbox for the Chart
+        
+        Parameters
+        ----------
+        
+        save_format: {None, 'png','jpeg'} default to None
+        magic_type: ['line', 'bar', 'stack', 'tiled'], default to None
+        data_zoom
+        
+        align: str, {'auto','left','right'}, default to 'auto'
+        orient: str, {'horizontal','vertical'} default to 'horizontal'
+        x_pos: str, {'auto', left', 'center', 'right', 'i%'}, default to 'auto'
+        y_pos: str, {'auto', top', 'center', 'bottom', 'i%'}, default to 'auto'
         
         Returns
         -------
         Chart Object
         
-        
         """
+    
+        self._option['toolbox'] = {'feature': {}}
+        d_title = {
+            'dataView': 'Table View',
+            'magicType': 'Chart Options',
+            'restore' : 'Reset',
+            'saveAsImage' : 'Download as Image',
+            'dataZoom' : 'Zoom',
+            'brush' : 'Brush'}
         
-        self._option['legend']['align'] = align
-        self._option['legend']['orient'] = orient
+        def set_tool(tool,setter,val):
+            if val is not None:
+                self._option['toolbox']['feature'][tool] = {}
+                self._option['toolbox']['feature'][tool]['title'] = d_title[tool]
+                self._option['toolbox']['feature'][tool]['show'] = True
+                self._option['toolbox']['feature'][tool][setter] = val
         
-        if x_pos.startswith('-'):
-            self._option['legend']['right'] = x_pos[1:]
-        else:
-            self._option['legend']['left'] = x_pos
-            
-        if y_pos.startswith('-'):
-            self._option['legend']['top'] = y_pos[1:]
-        else:
-            self._option['legend']['bottom'] = y_pos
-            
-            
+        set_tool('saveAsImage','type',save_format)
+        set_tool('dataView','readOnly',data_view)
+        set_tool('magicType','type',magic_type)
+        set_tool('brush','type',brush)
+        set_tool('restore','show',restore)
+        set_tool('dataZoom','show',data_zoom)
+        
+        self._option['toolbox']['align'] = align
+        self._option['toolbox']['orient'] = orient
+        self.__set_object_pos('toolbox',x_pos,y_pos)
+    
         return self
     
     
@@ -319,9 +361,9 @@ class Chart():
     # ----------------------------------------------------------------------
     
     # Saving chart option
+    
     def to_json(self,path):
         "Save Chart option"
-        
         json.dump(self._option,open(path,'w'))
         
     

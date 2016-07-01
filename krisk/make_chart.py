@@ -31,7 +31,6 @@ def make_chart(df,**kwargs):
     
     def insert_data_to_series(f,df,cat=None):
         data = f(df)
-        
         series = deepcopy(elem_series)
         series['data'] = round_list(data)
         series['type'] = kwargs['type']
@@ -73,23 +72,30 @@ def make_chart(df,**kwargs):
                         s['label'] = deepcopy(d_ant)
                     else:
                         s['label'] = deepcopy(d_annotate)
+                        
+        if kwargs['annotate'] == 'top':
+            series[-1]['label'] = d_annotate
     
     
     if kwargs['type'] in ['bar','line']:
-        
-        
-
-        if kwargs['annotate'] == 'top':
-            series[-1]['label'] = d_annotate
+       
         
         
         def get_bar_line_data(df):
             c._option['xAxis']['data'] = round_list(df[x].drop_duplicates())
 #             c._option['yAxis']['scale'] = True
             
-            data = (df[x].value_counts()
-                    if y is None else
-                    df.groupby(x)[y].aggregate(kwargs['how']))
+            if y is None:
+                data = df[x].value_counts()
+            else:
+                data = (df[y]
+                        if kwargs['how'] is None else
+                        df.groupby(x)[y].aggregate(kwargs['how']))
+                    
+                
+#             data = (df[x].value_counts()
+#                     if y is None else
+#                     df.groupby(x)[y].aggregate(kwargs['how']))
             
             return data
             
