@@ -1,79 +1,14 @@
 
 import uuid
 import json
+from copy import deepcopy
+from krisk.template import *
+from krisk.connections import get_paths
 
-RESET_OPTION = """
-require({requires},function(echarts){{
-    
-    function parseFunction(str){{
-        return eval('(' + str + ')');
-    }}
-    
-    var myChart = echarts.init(document.getElementById("{chartId}"),"{theme}");
-    
-    var option = {option};
-    option['tooltip']['formatter'] = parseFunction(option['tooltip']['formatter']);
-    
-    //option['series'][0]['symbolSize'] = function (val){{return val[2]*10;}}
-    
-    
-    myChart.setOption(option);
-    //console.log(option);
-    {events}
-    
-}});
-"""
-APPEND_ELEMENT = """
-$('#{id}').attr('id','{id}'+'_old');
-element.append('<div id="{id}" style="width: 600px;height:400px;"></div>');"""
+paths = list(get_paths())
 
-OPTION_TEMPLATE = {
-        'title': {
-            'text': ''
-        },
-        'tooltip': {'axisPointer':{'type':''}},
-        'legend': {
-            'data':[]
-        },
-        'xAxis': {
-            'data': []
-        },
-        'yAxis': {},
-        'series': []
-    }
 
-EVENTS_TEMPLATE = """
-myChart.on('{event}',function(params){{
 
-    var d_params  = {{'series':{{'name':params.seriesName,
-                                 'index':params.seriesIndex}},
-                      'data':{{'value':params.value,
-                               'index':params.dataIndex,
-                               'name':params.name}}
-    }}
-    
-    console.log('parameters extracted: ');
-    console.log(d_params);
-    
-    // Create new cell and execute function passed with parameters
-    var nb = Jupyter.notebook;
-    nb.insert_cell_below();
-    nb.select_next();
-    
-    var json_strings = JSON.stringify(d_params);
-
-    var cell = nb.get_selected_cell();
-    var code_input = "{function}(json.loads('" + json_strings + "'))";
-    console.log("Executing code: " + code_input);
-    cell.set_text(code_input);
-    cell.execute();
-    
-    
-    // Immediately delete the cell after execute
-    nb.delete_cell();
-    
-}});
-"""
 
 class Chart():
     def __init__(self,**kwargs):
@@ -368,7 +303,7 @@ class Chart():
         
         events = [EVENTS_TEMPLATE.format(event=e,function=self._events[e]) for e in self._events]
         OPTION_KWS = dict(
-            requires=list(d_paths.keys()).__repr__(),
+            requires=paths.__repr__(),
             chartId=self._chartId,
             theme=self._theme,
             option=json.dumps(option,indent=4),
@@ -392,7 +327,7 @@ class Chart():
     
     def to_html(self,path):
         "Save full html file"
-        pass
+        save_html(self._repr_javascript_(),path)
     
     
     _axes_swapped = True
