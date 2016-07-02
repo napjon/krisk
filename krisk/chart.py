@@ -5,7 +5,7 @@ from copy import deepcopy
 from krisk.template import *
 from krisk.connections import get_paths
 
-paths = list(get_paths())
+paths = get_paths()
 
 
 class Chart():
@@ -29,9 +29,10 @@ class Chart():
             {'dark','vintage','roma','shine','infographic','macarons'}, default None
         """
         
+#         themes = get_paths()[1:]
         
-        if theme not in THEMES:
-            raise AssertionError("Invalid theme name: {theme}".format(theme=theme))
+#         if theme not in themes:
+#             raise AssertionError("Invalid theme name: {theme}".format(theme=theme))
             
         
         self._theme = theme
@@ -264,6 +265,7 @@ class Chart():
         """
     
         self._option['toolbox'] = {'feature': {}}
+        
         d_title = {
             'dataView': 'Table View',
             'magicType': 'Chart Options',

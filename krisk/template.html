@@ -4,14 +4,6 @@
 <head>
     <meta charset="utf-8">
     <title>ECharts</title>
-    <!-- 引入 echarts.js -->
-    <script src="http://echarts.baidu.com/dist/echarts.min.js"></script>
-    <script src= "http://echarts.baidu.com/asset/theme/vintage.js"> </script> 
-    <script src= "http://echarts.baidu.com/asset/theme/macarons.js"> </script> 
-    <script src= "http://echarts.baidu.com/asset/theme/roma.js"> </script> 
-    <script src= "http://echarts.baidu.com/asset/theme/shine.js"> </script> 
-    <script src= "http://echarts.baidu.com/asset/theme/infographic.js"> </script> 
-    <script src= "http://echarts.baidu.com/asset/theme/dark.js"> </script> 
     <script src= "http://requirejs.org/docs/release/2.2.0/minified/require.js"> </script>
     <script src= "https://code.jquery.com/jquery-3.0.0.min.js"> </script>
 
@@ -19,15 +11,11 @@
 <body>
     <script type="text/javascript">
 
+    
     require.config({
+                  baseUrl: '//echarts.baidu.com/asset/theme',
                   paths:{
-                        "echarts": "//echarts.baidu.com/dist/echarts.min",
-                        "dark": "//echarts.baidu.com/asset/theme/dark",
-                        "vintage": "//echarts.baidu.com/asset/theme/vintage",
-                        "roma": "//echarts.baidu.com/asset/theme/roma",
-                        "shine": "//echarts.baidu.com/asset/theme/shine",
-                        "infographic": "//echarts.baidu.com/asset/theme/infographic",
-                        "macarons": "//echarts.baidu.com/asset/theme/macarons"
+                        echarts: "//cdnjs.cloudflare.com/ajax/libs/echarts/3.2.0/echarts.min"
                         }
                    });
 
