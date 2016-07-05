@@ -5,8 +5,6 @@ from copy import deepcopy
 from krisk.template import *
 from krisk.connections import get_paths
 
-# paths = get_paths()
-
 
 class Chart():
     def __init__(self,**kwargs):
@@ -295,6 +293,14 @@ class Chart():
     
         return self
     
+    def set_size(self,width=600,height=400):
+        """
+        Set height and width of the chart in pixel
+        """
+        self._size['width'] = width
+        self._size['height'] = height
+        
+        return self
     
     def flip_axes(self):
         """Flip the axes to make it horizontal"""
@@ -303,6 +309,7 @@ class Chart():
         self._option['xAxis'],self._option['yAxis'] = self._option['yAxis'],self._option['xAxis']
         return self
     
+    # ------------------------------------------------------------------------------------------------
     # Events
     def on_event(self,event,handler):
         """
@@ -359,7 +366,9 @@ class Chart():
     
     def _repr_javascript_(self):
         """Embedding the result of the plot to Jupyter"""
-        return (APPEND_ELEMENT.format(id=self._chartId))+\
+        return (APPEND_ELEMENT.format(id=self._chartId,
+                                      width=self._size['width'],
+                                      height=self._size['height']))+\
                 (self._get_resync_option_strings(self._option))
     # ----------------------------------------------------------------------
     
@@ -378,5 +387,6 @@ class Chart():
     _axes_swapped = True
     _kwargs_chart_ = {}
     _events = {}
+    _size = {'width':600,'height':400}
         
     

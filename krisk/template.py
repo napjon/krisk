@@ -13,7 +13,8 @@ def save_html(script,path):
 
 
 RESET_OPTION = """
-require({requires},function(echarts){{
+require(['echarts', 'dark', 'vintage', 'roma', 'shine', 'infographic', 'macarons'],
+function(echarts){{
     
     function parseFunction(str){{
         return eval('(' + str + ')');
@@ -37,7 +38,7 @@ require({requires},function(echarts){{
 
 APPEND_ELEMENT = """
 $('#{id}').attr('id','{id}'+'_old');
-element.append('<div id="{id}" style="width: 600px;height:400px;"></div>');"""
+element.append('<div id="{id}" style="width: {width}px;height:{height}px;"></div>');"""
 
 
 OPTION_TEMPLATE = {
