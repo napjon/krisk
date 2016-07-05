@@ -139,6 +139,7 @@ def scatter(df,x,y,size=None,category=None,size_px=(10,70),**kwargs):
     kwargs['category'] = category
     kwargs['size'] = size
     #kwargs['saturate'] = saturate #TODO: Fix saturate
+    kwargs['size_px'] = size_px
     kwargs['type'] = 'scatter'
     
     return make_chart(df,**kwargs)

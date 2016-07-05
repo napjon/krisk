@@ -4,20 +4,24 @@ import json
 from copy import deepcopy
 from krisk.template import *
 from krisk.connections import get_paths
+from IPython.display import Javascript
 
 
 class Chart(object):
      
     def __init__(self,**kwargs):
-        
+        # Currently, there are three type of data structure.
+        # 1. Option dictionary to be passed to Echarts option
+        # 2. kwargs_chart: To be passed for make_chart function
+        # 3. Other than previous two
         self._chartId = str(uuid.uuid4())
         self._option = deepcopy(OPTION_TEMPLATE)    
         self._kwargs_chart_ = kwargs
         self._theme = ''
         self._axes_swapped = True
-        self._kwargs_chart_ = {}
         self._events = {}
         self._size = {'width':600,'height':400}
+        
         
         
     # Color and Themes
@@ -368,19 +372,39 @@ class Chart(object):
     # --------------------------------------------------------------------------
     
     # Replot Functions
-    def resync_data(self,data):
+    
+    def read_df(self,df):
         """
-        Update data but still using the same chart option.
-        Currently just update the current cell it exist, but not the chart option
-        itself.
+        Similar to resync_data, but the difference is creating new Chart object instead of replot
+        on same cell
         
         Parameters
         ----------
-        data: pd.DataFrame
+        df: pd.DataFrame
+        """
+        # TODO: make data_columns only just required, except scatter.
+        if (self._kwargs_chart_['data_columns'] != df.columns).all():
+            raise AssertionError('New data columns is not identical with existing one')
+        elif df.values.shape[0] == 0:
+            raise AssertionError('Empty DataFrame')
+        
+        from krisk.make_chart import make_chart
+        chart = make_chart(df,**self._kwargs_chart_)
+        return chart
+    
+    def resync_data(self,df):
+        """
+        Update data in current cell but still using the same chart option.
+        
+        Parameters
+        ----------
+        df: pd.DataFrame
          
         """
-        option = make_chart(data,**self._kwargs_chart_)._option
+        option = self.read_df(df)._option
         return Javascript(self._get_resync_option_strings(option))
+        
+
     
     def replot(self,chart):
         """Replot entire chart to its current cell"""
