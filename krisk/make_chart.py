@@ -48,6 +48,7 @@ def make_chart(df,**kwargs):
     x = kwargs['x']
     y = kwargs.get('y')
     category = kwargs['category']
+    c._kwargs_chart_['data_columns'] = df.columns
     
     
     def bar_line_hist_condition():
