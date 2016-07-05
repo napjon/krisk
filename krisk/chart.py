@@ -6,12 +6,18 @@ from krisk.template import *
 from krisk.connections import get_paths
 
 
-class Chart():
+class Chart(object):
+     
     def __init__(self,**kwargs):
+        
         self._chartId = str(uuid.uuid4())
         self._option = deepcopy(OPTION_TEMPLATE)    
         self._kwargs_chart_ = kwargs
         self._theme = ''
+        self._axes_swapped = True
+        self._kwargs_chart_ = {}
+        self._events = {}
+        self._size = {'width':600,'height':400}
         
         
     # Color and Themes
@@ -114,10 +120,9 @@ class Chart():
         return self
     
     
-    def set_tooltip_format(self,columns,override=False,
-                           formatter = "'{key}' + '：' + {value} + '{unit}' +'<br>'"):
+    def set_tooltip_format(self, columns, formatter = "'{key}' + '：' + {value} + '{unit}' +'<br>'"):
         """
-        Set tooltip format. Currently only Scatter plot supported because it's the only that keep the
+        Set tooltip format. Currently only Scatter plot supported because it's the only chart that keep the
         data as is.
         
         Parameters
@@ -125,7 +130,7 @@ class Chart():
         
         columns: list of string or list of tuples
             if list of strings, retrieve the columns value for the tooltip
-            if list of tuples, will be represented as key,unit for the format
+            if list of tuples, will be represented as (key,unit) for the format
         override: Boolean, default to False
             provide custom Javascript function
         formatter: string,
@@ -139,6 +144,8 @@ class Chart():
         --------
         
         """
+        
+        # TODO: Make tooltip_format available to all charts.
         
         if self._kwargs_chart_['type'] != 'scatter':
             raise TypeError('Chart Type not supported')
@@ -193,10 +200,11 @@ class Chart():
             self._option[obj]['bottom'] = y
     
     def set_title(self, title, x_pos='auto', y_pos='auto'):
-        """Set title for the plot.
+        """
+        Set title for the plot.
         
         The coordinate is started at bottom left corner. If x_pos and y_pos started
-        at negative values, then the coordinate started at upper right corner.
+        at negative values, then it's converted to the upper right corner (left->right, bottom->top)
         
         Parameters
         ----------
@@ -218,7 +226,7 @@ class Chart():
         Set legend style.
         
         The coordinate is started at bottom left corner. If x_pos and y_pos started
-        at negative values, then the coordinate started at upper right corner.
+        at negative values, then it's converted to the upper right corner (left->right, bottom->top)
         
         Parameters
         ----------
@@ -239,18 +247,28 @@ class Chart():
     
         return self
     
-    def set_toolbox(self, save_format=None, restore=None, data_view=None, data_zoom=None,
+    def set_toolbox(self, save_format=None, restore=False, data_view=None, data_zoom=False,
                     magic_type=None, brush=None,
                     align='auto', orient='horizontal', x_pos='auto', y_pos='auto'):
         """ Set Toolbox for the Chart
+        
+        The coordinate is started at bottom left corner. If x_pos and y_pos started
+        at negative values, then it's converted to the upper right corner (left->right, bottom->top)
         
         Parameters
         ----------
         
         save_format: {None, 'png','jpeg'} default to None
-        magic_type: ['line', 'bar', 'stack', 'tiled'], default to None
-        data_zoom
-        
+        restore: Boolean, default to False
+            Whether to add Restore tool to the chart
+        data_view: {None, False, True}, default to None
+            If not None, show the raw data, whether not to treat as editable table
+        data_zoom: Boolean, default to False
+            Whether to add Zoom tool to the chart
+        magic_type: one or more ['line', 'bar', 'stack', 'tiled'], default to None
+            Add options to convert the chart to other type
+        brush: one or more ['rect','polygon','lineX','lineY','keep','clear'], default to None
+            Brush TOol
         align: str, {'auto','left','right'}, default to 'auto'
         orient: str, {'horizontal','vertical'} default to 'horizontal'
         x_pos: str, {'auto', left', 'center', 'right', 'i%'}, default to 'auto'
@@ -261,7 +279,8 @@ class Chart():
         Chart Object
         
         """
-    
+        # TODO : Still exactly unclear what Brush does in option example.
+        
         self._option['toolbox'] = {'feature': {}}
         
         d_title = {
@@ -296,6 +315,16 @@ class Chart():
     def set_size(self,width=600,height=400):
         """
         Set height and width of the chart in pixel
+        
+        Parameters
+        ----------
+        width: int
+            Number of pixels
+        height: int
+            Number of pixelx
+        Returns
+        -------
+        Chart Object
         """
         self._size['width'] = width
         self._size['height'] = height
@@ -313,11 +342,18 @@ class Chart():
     # Events
     def on_event(self,event,handler):
         """
-        Parameter:
+        Calling Python handler with callback object at its arguments
+        
+        Parameters
+        ----------
         event: {'click','dblclick','mousedown','mouseup','mouseover','mouseout','globalout'}, default None
             In which event the function should be triggered
         handler: function
             The trigger function
+            
+        Returns
+        -------
+        Chart object
         """
         
         events = ['click','dblclick','mousedown','mouseup','mouseover','mouseout','globalout']
@@ -375,18 +411,16 @@ class Chart():
     # Saving chart option
     
     def to_json(self,path):
-        "Save Chart option"
+        "Save Chart option to json file"
         json.dump(self._option,open(path,'w'))
         
     
     def to_html(self,path):
         "Save full html file"
+        # TODO: Optional add open new tab as soon as it save the html file
         save_html(self._repr_javascript_(),path)
     
     
-    _axes_swapped = True
-    _kwargs_chart_ = {}
-    _events = {}
-    _size = {'width':600,'height':400}
+
         
     
