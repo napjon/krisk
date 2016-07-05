@@ -280,7 +280,7 @@ class Chart(object):
         
         """
         # TODO : Still exactly unclear what Brush does in option example.
-        
+        # TODO : Add Brush title english translation
         self._option['toolbox'] = {'feature': {}}
         
         d_title = {

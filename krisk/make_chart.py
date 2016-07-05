@@ -75,7 +75,7 @@ def make_chart(df,**kwargs):
                         
         if kwargs['annotate'] == 'top':
             series[-1]['label'] = d_annotate
-    
+        # TODO: make annotate receive all kinds supported in echarts.
     
     if kwargs['type'] in ['bar','line']:
        
@@ -83,7 +83,7 @@ def make_chart(df,**kwargs):
         
         def get_bar_line_data(df):
             c._option['xAxis']['data'] = round_list(df[x].drop_duplicates())
-#             c._option['yAxis']['scale'] = True
+#             c._option['yAxis']['scale'] = True #TODO: Still need to be evaluated
             
             if y is None:
                 data = df[x].value_counts()
@@ -92,7 +92,7 @@ def make_chart(df,**kwargs):
                         if kwargs['how'] is None else
                         df.groupby(x)[y].aggregate(kwargs['how']))
                     
-                
+            # TODO: Still need to be evaluated
 #             data = (df[x].value_counts()
 #                     if y is None else
 #                     df.groupby(x)[y].aggregate(kwargs['how']))
@@ -148,8 +148,8 @@ def make_chart(df,**kwargs):
                                 }
             vmap_size = deepcopy(vmap_template_size)
             vmap_size['min'] = df[size].min()
-            vmap_size['max'] = df[size].max()
-#             vmap_size['inRange']['symbolSize'] = [30,100]
+            vmap_size['max'] = df[size].max()  
+            vmap_size['inRange']['symbolSize'] = list(kwargs['size_px'][:2])
             c._option['visualMap'].append(vmap_size)
             cols.append(size)
         
