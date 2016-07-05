@@ -25,5 +25,4 @@ def init_notebook(online=True):
     """)
     
 def get_paths():
-    return ['echarts']
-#     return d_paths.keys()
+    return ['echarts'] + THEMES

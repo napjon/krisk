@@ -13,8 +13,7 @@ def save_html(script,path):
 
 
 RESET_OPTION = """
-require(['echarts', 'dark', 'vintage', 'roma', 'shine', 'infographic', 'macarons'],
-function(echarts){{
+require({requires},function(echarts){{
     
     function parseFunction(str){{
         return eval('(' + str + ')');

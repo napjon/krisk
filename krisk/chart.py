@@ -5,7 +5,7 @@ from copy import deepcopy
 from krisk.template import *
 from krisk.connections import get_paths
 
-paths = get_paths()
+# paths = get_paths()
 
 
 class Chart():
@@ -29,10 +29,10 @@ class Chart():
             {'dark','vintage','roma','shine','infographic','macarons'}, default None
         """
         
-#         themes = get_paths()[1:]
+        themes = get_paths()[1:]
         
-#         if theme not in themes:
-#             raise AssertionError("Invalid theme name: {theme}".format(theme=theme))
+        if theme not in themes:
+            raise AssertionError("Invalid theme name: {theme}".format(theme=theme))
             
         
         self._theme = theme
@@ -276,10 +276,11 @@ class Chart():
         
         def set_tool(tool,setter,val):
             if val is not None:
-                self._option['toolbox']['feature'][tool] = {}
-                self._option['toolbox']['feature'][tool]['title'] = d_title[tool]
-                self._option['toolbox']['feature'][tool]['show'] = True
-                self._option['toolbox']['feature'][tool][setter] = val
+                d_tool = {'title': d_title[tool],
+                          'show': True,
+                          }
+                d_tool[setter] = val
+                self._option['toolbox']['feature'][tool] = d_tool
         
         set_tool('saveAsImage','type',save_format)
         set_tool('dataView','readOnly',data_view)
@@ -347,7 +348,7 @@ class Chart():
         
         events = [EVENTS_TEMPLATE.format(event=e,function=self._events[e]) for e in self._events]
         OPTION_KWS = dict(
-            requires=paths.__repr__(),
+            requires=get_paths().__repr__(),
             chartId=self._chartId,
             theme=self._theme,
             option=json.dumps(option,indent=4),
