@@ -4,7 +4,7 @@ def save_html(script,path):
     
     from jinja2 import Template
     
-    html_template = open(join_current_dir('template.html'),'r')
+    html_template = open(join_current_dir('static/template.html'),'r')
     script = script.replace('element','$("body")')
     f = open(path,'w')
     f.write(Template(html_template.read()).render(SCRIPT=script))
