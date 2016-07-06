@@ -9,7 +9,8 @@ ECHARTS_FILE = 'echarts.min'
 d_paths = OrderedDict({})
 THEMES = ['dark','vintage','roma','shine','infographic','macarons']
 THEMES_URL='//echarts.baidu.com/asset/theme/'
-PATH_LOCAL = 'pandas-echarts/krisk/static'
+PATH_LOCAL = join_current_dir('static')
+# PATH_LOCAL = 'pandas-echarts/krisk/static'
 #TODO FIX LOCAL PATH!
 
 def init_notebook(online=True):
