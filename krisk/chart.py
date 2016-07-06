@@ -388,9 +388,14 @@ class Chart(object):
         elif df.values.shape[0] == 0:
             raise AssertionError('Empty DataFrame')
         
+        copy_chart = deepcopy(self)
+        
         from krisk.make_chart import make_chart
-        chart = make_chart(df,**self._kwargs_chart_)
-        return chart
+        
+        sub_chart = make_chart(df,**copy_chart._kwargs_chart_)
+        copy_chart._option = sub_chart._option
+        copy_chart._chartId = sub_chart._chartId
+        return copy_chart
     
     def resync_data(self,df):
         """
