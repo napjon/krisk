@@ -21,3 +21,11 @@ setup(name='krisk',
         'Programming Language :: Python :: 2.7',
         'Programming Language :: Python :: 3.5']
      )
+
+def _jupyter_nbextension_paths():
+    return [dict(
+            section="notebook",
+            src="static", #relative to 'krisk' directory
+            dest="krisk", # directory in "nbextension"
+            require="krisk"
+        )]
