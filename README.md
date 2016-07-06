@@ -1,3 +1,4 @@
 # Overview
 
-Pandas Visualization Library implementation of E-Charts
+Krisk is created for building statistical interactive visualization with
+pandas+Jupyter integration on top of Echarts.
