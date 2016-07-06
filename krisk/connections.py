@@ -11,20 +11,33 @@ THEMES = ['dark','vintage','roma','shine','infographic','macarons']
 THEMES_URL='//echarts.baidu.com/asset/theme/'
 PATH_LOCAL = join_current_dir('static')
 # PATH_LOCAL = 'pandas-echarts/krisk/static'
-#TODO FIX LOCAL PATH!
+#TODO FIX LOCAL PATH! NEED TO DO nbextension install
 
-def init_notebook(online=True):
+# def init_notebook():
+#     """Inject Javascript to notebook, default using local js.
+    
+#     """
+#     return Javascript("""
+#     require.config({
+#                  baseUrl : '%s',
+#                  paths: {
+#                      echarts: 'echarts.min'
+#                  }
+#     });
+#     """ % PATH_LOCAL)
+
+def init_notebook():
     """Inject Javascript to notebook, default using local js.
     
     """
     return Javascript("""
     require.config({
-                 baseUrl : '%s',
+                 baseUrl : "//echarts.baidu.com/asset/theme",
                  paths: {
-                     echarts: 'echarts.min'
+                     echarts: "//cdnjs.cloudflare.com/ajax/libs/echarts/3.2.1/echarts.min"
                  }
     });
-    """ % PATH_LOCAL)
+    """)
     
 def get_paths():
     return ['echarts'] + THEMES
