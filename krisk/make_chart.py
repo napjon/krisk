@@ -1,6 +1,8 @@
 
 from krisk.chart import Chart
 from copy import deepcopy
+import numpy as np
+import pandas as pd
 
 def round_list(arr):
     try:
@@ -109,7 +111,6 @@ def make_chart(df,**kwargs):
         
         
         def get_hist_data(df):
-            
             y_val,x_val = np.histogram(df[x],
                                        bins=kwargs['bins'],
                                        normed=kwargs['normed'])
