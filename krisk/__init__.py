@@ -4,4 +4,4 @@ from krisk.connections import init_notebook
 
 __all__ = ['krisk']
 
-__version__ == '0.1.0'
+__version__ = '0.1.0'
