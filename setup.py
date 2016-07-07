@@ -1,5 +1,5 @@
 
-from setuptools import setup
+from setuptools import setup,find_packages
 
 setup(name='krisk',
       version='0.1.0',
@@ -9,7 +9,7 @@ setup(name='krisk',
       download_url='https://github.com/napjon/krisk/',
       url='https://github.com/napjon/krisk/',
       license='BSD (3-clause)',
-      packages=['krisk'],
+      packages=find_packages(),
       package_data={'krisk':['static/*.js',
                              'static/*.html']},
       classifiers=[
