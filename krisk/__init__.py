@@ -1,4 +1,7 @@
+# Krisk is a module to bridge E-Charts to python data science ecosystem
 
 from krisk.connections import init_notebook
 
-# Krisk is a module to bridge E-Charts to python data science ecosystem
+__all__ = ['krisk']
+
+__version__ == '0.1.0'

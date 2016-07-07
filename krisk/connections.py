@@ -32,7 +32,7 @@ def init_notebook():
     """
     return Javascript("""
     require.config({
-                 baseUrl : "//echarts.baidu.com/asset/theme",
+                 baseUrl : "//rawgit.com/napjon/krisk/master/krisk/static" 
                  paths: {
                      echarts: "//cdnjs.cloudflare.com/ajax/libs/echarts/3.2.1/echarts.min"
                  }
