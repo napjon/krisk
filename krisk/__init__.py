@@ -3,4 +3,4 @@
 from krisk.connections import init_notebook
 from krisk import plot
 
-__version__ = '0.1.1'
+__version__ = '0.1.2'

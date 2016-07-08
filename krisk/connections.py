@@ -4,12 +4,12 @@ from IPython.display import Javascript
 import json
 from krisk.util import join_current_dir
 
-ECHARTS_URL = 'https://cdnjs.cloudflare.com/ajax/libs/echarts/3.2.0/'
-ECHARTS_FILE = 'echarts.min'
-d_paths = OrderedDict({})
+# ECHARTS_URL = 'https://cdnjs.cloudflare.com/ajax/libs/echarts/3.2.0/'
+# ECHARTS_FILE = 'echarts.min'
+# d_paths = OrderedDict({})
 THEMES = ['dark','vintage','roma','shine','infographic','macarons']
-THEMES_URL='//echarts.baidu.com/asset/theme/'
-PATH_LOCAL = join_current_dir('static')
+# THEMES_URL='//echarts.baidu.com/asset/theme/'
+# PATH_LOCAL = join_current_dir('static')
 # PATH_LOCAL = 'pandas-echarts/krisk/static'
 #TODO FIX LOCAL PATH! NEED TO DO nbextension install
 
@@ -33,7 +33,9 @@ def init_notebook():
     return Javascript("""
     require.config({
                  baseUrl : "//cdn.rawgit.com/napjon/krisk/master/krisk/static",
-                 waitSeconds: 15
+                 paths: {
+                      echarts: "//cdnjs.cloudflare.com/ajax/libs/echarts/3.2.1/echarts.min"
+                  }
     });
     """)
     
