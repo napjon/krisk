@@ -32,7 +32,7 @@ def init_notebook():
     """
     return Javascript("""
     require.config({
-                 baseUrl : "//rawgit.com/napjon/krisk/master/krisk/static",
+                 baseUrl : "//cdn.rawgit.com/napjon/krisk/master/krisk/static",
                  waitSeconds: 15
     });
     """)
