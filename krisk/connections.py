@@ -35,7 +35,8 @@ def init_notebook():
                  baseUrl : "//rawgit.com/napjon/krisk/master/krisk/static",
                  paths: {
                      echarts: "//cdnjs.cloudflare.com/ajax/libs/echarts/3.2.1/echarts.min"
-                 }
+                 },
+                 waitSeconds: 15
     });
     """)
     
