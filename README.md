@@ -1,8 +1,17 @@
 # Overview
 
+Krisk bring Echarts to Python Data Science Ecosystem, and helpful tools for high level statistical interactive visualization.
+
 ![jpg] (https://raw.githubusercontent.com/napjon/krisk/master/img/readme.jpg)
 
 See  [Introduction](https://github.com/napjon/krisk/blob/master/notebooks/Intro.ipynb) for overview of this project.
+
+# Dependencies
+
+* Python 3.5 (Python 2.7 should be supported, haven't test it yet)
+* Jupyter Notebook 4.2.x
+* Pandas 0.18.x
+* Echarts 3.2.1 (built-in)
 
 # Install
 
@@ -16,14 +25,27 @@ pip install git+https://github.com/napjon/krisk.git
 
 # What It Does
 
-# What it doesn't do
+* Chart Integration with Jupyter Notebook, widgets, and Dashboard.
+* Statistical interactive visualization
+* Ability backed by Echarts (Toolbox, Transition, Tooltip, etc.)
 
-Krisk won't implement all features of Echarts. Only basic charts for explanation visualization. 
-Specifically, the plan will support:
+# What It Doesn't Do
+
+Krisk won't implement all features of Echarts. For more advanced usage, Krisk users can use JSON `option` (or HTML) output produced by Krisk to optimize in Javascript. 
+
+Only basic charts are supported for explanation visualization.  The plan will support:
 
 * More complex line, bar, scatter, and histogram.
 * Geoscatter plot
 * Time Series
+
+Of course, contributions are welcome to support all chart types and advanced features.
+
+# Motivation for Another Visualization Library
+
+Krisk is targeted for building interactive dashboard application on top of two key components of Jupyter framework, [ipywidgets](https://ipywidgets.readthedocs.io/en/latest/) and [Jupyter Dashboard](https://github.com/jupyter-incubator/dashboards).
+
+Krisk is also act as tool to support reproducible chart by utilizing pandas DataFrame as data input.
 
 # License
 
