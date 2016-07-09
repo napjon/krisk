@@ -27,8 +27,9 @@ THEMES = ['dark','vintage','roma','shine','infographic','macarons']
 #     """ % PATH_LOCAL)
 
 def init_notebook():
-    """Inject Javascript to notebook, default using local js.
-    
+    """
+    Inject Javascript to notebook, default using local js.
+    This function must be last executed in a cell to produce the Javascript in the output cell    
     """
     return Javascript("""
     require.config({
