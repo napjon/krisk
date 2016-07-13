@@ -2,7 +2,7 @@
 from setuptools import setup,find_packages
 
 setup(name='krisk',
-      version='0.1.2',
+      version='0.1.3',
       description='Echarts Statistical Visualization for Python Data Science',
       author='Jonathan Napitupulu',
       author_email='napitupulu.jon@gmail.com',
@@ -10,13 +10,14 @@ setup(name='krisk',
       url='https://github.com/napjon/krisk/',
       license='BSD (3-clause)',
       packages=find_packages(),
+      install_requires=open('requirements.txt','r').read().splitlines(),
       package_data={'krisk':['static/*.js',
                              'static/*.html']},
       classifiers=[
         'Development Status :: 4 - Beta',
         'Operating System :: OS Independent',
         'Intended Audience :: Science/Research',
-        'License :: OSI Approved :: BSD 3-clause License',
+        'License :: OSI Approved :: BSD License',
         'Programming Language :: Python :: 2.7',
         'Programming Language :: Python :: 3.5']
      )
