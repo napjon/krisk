@@ -1,8 +1,9 @@
 
 from setuptools import setup,find_packages
+from krisk import __version__
 
 setup(name='krisk',
-      version='0.1.3',
+      version=__version__,
       description='Echarts Statistical Visualization for Python Data Science',
       author='Jonathan Napitupulu',
       author_email='napitupulu.jon@gmail.com',
@@ -10,7 +11,6 @@ setup(name='krisk',
       url='https://github.com/napjon/krisk/',
       license='BSD (3-clause)',
       packages=find_packages(),
-      install_requires=open('requirements.txt','r').read().splitlines(),
       package_data={'krisk':['static/*.js',
                              'static/*.html']},
       classifiers=[
