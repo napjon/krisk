@@ -16,7 +16,7 @@ See  [Introduction](https://github.com/napjon/krisk/blob/master/notebooks/Intro.
 # Install
 
 ```Python
-pip install git+https://github.com/napjon/krisk.git 
+pip install jupyter pandas krisk
 ```
 
 # Tutorial

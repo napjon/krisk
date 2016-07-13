@@ -11,8 +11,8 @@ setup(name='krisk',
       url='https://github.com/napjon/krisk/',
       license='BSD (3-clause)',
       packages=find_packages(),
-      package_data={'krisk':['static/*.js',
-                             'static/*.html']},
+      #package_data={'krisk':['static/*.js', Disable first until nbextionsion is available
+      #                       'static/*.html']},
       classifiers=[
         'Development Status :: 4 - Beta',
         'Operating System :: OS Independent',
