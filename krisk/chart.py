@@ -47,16 +47,16 @@ class Chart(object):
         return self
     
     
-    def set_color(self,background='',palette=''):
+    def set_color(self,background=None,pallete=None):
         """
         Set background and pallete color
         
         Parameters
         ----------
         
-        background: string
+        background: string, default to None
             hex color
-        palettes: list of strings
+        pallete: list of strings, default to None
             list hex colors
             
         Returns
@@ -71,15 +71,16 @@ class Chart(object):
         
 #         Is this intended? Or should just these parameters made as separate methods?
         
+        convertNone = lambda x: str(x or '')
         self._option.pop('color',None)
         self._option.pop('graph',None) #Need further analyze graph color
         self._option.pop('backgroundColor',None)
         
         if background:
-            self._option['backgroundColor'] = background
+            self._option['backgroundColor'] = convertNone(background)
         if palettes:
-            self._option['color'] = palettes
-            self._option['graph'] = {'color':palettes}
+            self._option['color'] = convertNone(pallete)
+            self._option['graph'] = {'color':convertNone(pallete)}
         
         
         return self
