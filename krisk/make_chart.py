@@ -85,7 +85,7 @@ def make_chart(df,**kwargs):
         
         
         def get_bar_line_data(df):
-            c._option['xAxis']['data'] = round_list(df[x].drop_duplicates())
+            
 #             c._option['yAxis']['scale'] = True #TODO: Still need to be evaluated
             
             if y is None:
@@ -94,7 +94,9 @@ def make_chart(df,**kwargs):
                 data = (df[y]
                         if kwargs['how'] is None else
                         df.groupby(x)[y].aggregate(kwargs['how']))
-                    
+                
+            c._option['xAxis']['data'] = data.index.tolist()
+            
             # TODO: Still need to be evaluated
 #             data = (df[x].value_counts()
 #                     if y is None else
