@@ -266,7 +266,7 @@ class Chart(object):
         restore: Boolean, default to False
             Whether to add Restore tool to the chart
         data_view: {None, False, True}, default to None
-            If not None, show the raw data, whether not to treat as editable table
+            If not None, show the raw data, whether to treat as show only table
         data_zoom: Boolean, default to False
             Whether to add Zoom tool to the chart
         magic_type: one or more ['line', 'bar', 'stack', 'tiled'], default to None
@@ -285,7 +285,7 @@ class Chart(object):
         """
         # TODO : Still exactly unclear what Brush does in option example.
         # TODO : Add Brush title english translation
-        self._option['toolbox'] = {'feature': {}}
+        toolbox = {'feature': {}}
         
         d_title = {
             'dataView': 'Table View',
@@ -301,7 +301,7 @@ class Chart(object):
                           'show': True,
                           }
                 d_tool[setter] = val
-                self._option['toolbox']['feature'][tool] = d_tool
+                toolbox['feature'][tool] = d_tool
         
         set_tool('saveAsImage','type',save_format)
         set_tool('dataView','readOnly',data_view)
@@ -310,8 +310,14 @@ class Chart(object):
         set_tool('restore','show',restore)
         set_tool('dataZoom','show',data_zoom)
         
-        self._option['toolbox']['align'] = align
-        self._option['toolbox']['orient'] = orient
+        if data_view is not None:
+            data_view_lang = ['Table View', 'Back', 'Modify']
+            toolbox['feature']['dataView']['lang'] = data_view_lang
+        
+        toolbox['align'] = align
+        toolbox['orient'] = orient
+        
+        self._option['toolbox'] = toolbox
         self.__set_object_pos('toolbox',x_pos,y_pos)
     
         return self
