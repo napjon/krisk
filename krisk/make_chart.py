@@ -95,7 +95,7 @@ def make_chart(df,**kwargs):
                         if kwargs['how'] is None else
                         df.groupby(x)[y].aggregate(kwargs['how']))
                 
-            c._option['xAxis']['data'] = data.index.tolist()
+            c._option['xAxis']['data'] = data.index.values.tolist()
             
             # TODO: Still need to be evaluated
 #             data = (df[x].value_counts()
