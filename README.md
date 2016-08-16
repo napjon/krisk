@@ -2,9 +2,7 @@
 
 Krisk bring Echarts to Python Data Science Ecosystem, and helpful tools for high level statistical interactive visualization.
 
-![jpg] (https://raw.githubusercontent.com/napjon/krisk/master/img/readme.jpg)
-
-See  [Introduction](https://github.com/napjon/krisk/blob/master/notebooks/Intro.ipynb) for overview of this project.
+![jpg] (https://raw.githubusercontent.com/napjon/krisk/master/notebooks/img/readme.jpg)
 
 # Dependencies
 
@@ -14,14 +12,18 @@ See  [Introduction](https://github.com/napjon/krisk/blob/master/notebooks/Intro.
 * Echarts 3.2.1 (built-in)
 
 # Install
-
 ```Python
 pip install jupyter pandas krisk
 ```
 
-# Tutorial
 
-* [Intro](https://github.com/napjon/krisk/blob/master/notebooks/Intro.ipynb)
+# Tutorials
+
+* [Introduction](https://github.com/napjon/krisk/blob/master/notebooks/Intro.ipynb)
+* [Themes and Colors](https://github.com/napjon/krisk/blob/master/notebooks/themes-colors.ipynb)
+* [Legend, Title, and Toolbox](https://github.com/napjon/krisk/blob/master/notebooks/legend-title-toolbox.ipynb)
+* [Resync Data and Reproducible Charts](https://github.com/napjon/krisk/blob/master/notebooks/resync-reproducible.ipynb)
+
 
 # What It Does
 
