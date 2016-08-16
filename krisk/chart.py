@@ -77,9 +77,9 @@ class Chart(object):
         
         if background:
             self._option['backgroundColor'] = background
-        if palettes:
-            self._option['color'] = palettes
-            self._option['graph'] = {'color':palettes}
+        if palette:
+            self._option['color'] = palette
+            self._option['graph'] = {'color':palette}
         
         
         return self
