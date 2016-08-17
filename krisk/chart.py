@@ -44,7 +44,7 @@ class Chart(object):
             
         
         self._theme = theme
-        return self
+        return self._get_duplicated()
     
     
     def set_color(self,background='',palette=''):
@@ -82,7 +82,7 @@ class Chart(object):
             self._option['graph'] = {'color':palette}
         
         
-        return self
+        return self._get_duplicated()
         
         
         
@@ -121,7 +121,7 @@ class Chart(object):
         self._option['tooltip']['fontFamily'] = font_family
         self._option['tooltip']['fontSize'] = font_size
         
-        return self
+        return self._get_duplicated()
     
     
     def set_tooltip_format(self, columns, formatter = "'{key}' + '：' + {value} + '{unit}' +'<br>'"):
@@ -177,7 +177,7 @@ class Chart(object):
             self._option['tooltip']['formatter'] = formatter_strings
             
 
-            return self
+            return self._get_duplicated()
     
     # ----------------------------------------------------------------------
     
@@ -222,7 +222,7 @@ class Chart(object):
         self._option['title']['text'] = title
         self.__set_object_pos('title',x_pos,y_pos)
         
-        return self
+        return self._get_duplicated()
     
     
     def set_legend(self, align='auto', orient='horizontal', x_pos='auto', y_pos='auto'):
@@ -249,7 +249,7 @@ class Chart(object):
         self._option['legend']['orient'] = orient
         self.__set_object_pos('legend',x_pos,y_pos)
     
-        return self
+        return self._get_duplicated()
     
     def set_toolbox(self, save_format=None, restore=False, data_view=None, data_zoom=False,
                     magic_type=None, brush=None,
@@ -320,7 +320,7 @@ class Chart(object):
         self._option['toolbox'] = toolbox
         self.__set_object_pos('toolbox',x_pos,y_pos)
     
-        return self
+        return self._get_duplicated()
     
     def set_size(self,width=600,height=400):
         """
@@ -441,6 +441,11 @@ class Chart(object):
                                       width=self._size['width'],
                                       height=self._size['height']))+\
                 (self._get_resync_option_strings(self._option))
+        
+    def _get_duplicated(self):
+        c = deepcopy(self)
+        c._chartId = str(uuid.uuid4())
+        return c
     # ----------------------------------------------------------------------
     
     # Saving chart option
