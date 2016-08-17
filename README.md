@@ -19,10 +19,10 @@ pip install jupyter pandas krisk
 
 # Tutorials
 
-* [Introduction](https://github.com/napjon/krisk/blob/master/notebooks/Intro.ipynb)
-* [Themes and Colors](https://github.com/napjon/krisk/blob/master/notebooks/themes-colors.ipynb)
-* [Legend, Title, and Toolbox](https://github.com/napjon/krisk/blob/master/notebooks/legend-title-toolbox.ipynb)
-* [Resync Data and Reproducible Charts](https://github.com/napjon/krisk/blob/master/notebooks/resync-reproducible.ipynb)
+* [Introduction](http://nbviewer.jupyter.org/github/napjon/krisk/blob/master/notebooks/Intro.ipynb)
+* [Themes and Colors](http://nbviewer.jupyter.org/github/napjon/krisk/blob/master/notebooks/themes-colors.ipynb)
+* [Legend, Title, and Toolbox](http://nbviewer.jupyter.org/github/napjon/krisk/blob/master/notebooks/legend-title-toolbox.ipynb)
+* [Resync Data and Reproducible Charts](http://nbviewer.jupyter.org/github/napjon/krisk/blob/master/notebooks/resync-reproducible.ipynb)
 
 
 # What It Does
