@@ -1,36 +1,38 @@
 
+import json
+import pytest
+import krisk.plot as kk
 
-df = pd.read_csv('gapminderDataFiveYear.txt',sep='\t')
+@pytest.fixture
+def df():
+    import pandas as pd
+    return (pd.read_csv('data/gapminderDataFiveYear.txt',sep='\t')
+          .groupby(['year','continent'],as_index=False).first())
 
-def test_bar():
+def test_bar(df):
     
-    true_option = json.load(open('pandas-echarts/tests/data/bar_option.json','r'))
-    p = bar(df,'lifeExp',y='pop',category='continent',how='mean',stacked=True)
-    
-    assert p._option == true_option
-    
-def test_line():
-    
-    true_option = json.load(open('pandas-echarts/tests/data/line_option.json','r'))
-    p = line(df,'year',y='lifeExp',category='continent',how='mean',stacked=True,area=True)
+    true_option = json.load(open('data/bar.json','r'))
+    p = kk.bar(df,'lifeExp',y='pop',category='continent',how='mean',stacked=True)
     
     assert p._option == true_option
     
-def test_hist():
+def test_line(df):
     
-    true_option = json.load(open('pandas-echarts/tests/data/hist_option.json','r'))
-    p = hist(df,'lifeExp',category='continent',bins=100,normed=True,stacked=True)
+    true_option = json.load(open('data/line.json','r'))
+    p = kk.line(df,'year',y='lifeExp',category='continent',how='mean',stacked=True,area=True)
+    
+    assert p._option == true_option
+    
+def test_hist(df):
+    
+    true_option = json.load(open('data/hist.json','r'))
+    p = kk.hist(df,'lifeExp',category='continent',bins=100,normed=True,stacked=True)
     
     assert p._option == true_option
     
-def test_scatter():
+def test_scatter(df):
     
-    true_option = json.load(open('pandas-echarts/tests/data/scatter_option.json','r'))
-    p = scatter(df[df.year == 1952],'lifeExp','gdpPercap',size='pop',category='continent')
+    true_option = json.load(open('data/scatter.json','r'))
+    p = kk.scatter(df[df.year == 1952],'lifeExp','gdpPercap',size='pop',category='continent')
     
     assert p._option == true_option
-
-test_bar()
-test_line()
-test_hist()
-test_scatter()
