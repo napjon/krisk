@@ -1,0 +1,6 @@
+{
+    "axisPointer": {
+        "type": ""
+    },
+    "formatter": "function (obj) {\n                                    var value = obj.value;\n                                    return 'country' + '\uff1a' + value[4] + ' ' +'<br>'+'lifeExp' + '\uff1a' + value[0] + ' ' +'<br>'+'gdpPercap' + '\uff1a' + value[1] + ' ' +'<br>'+'pop' + '\uff1a' + value[2] + ' ' +'<br>'+'continent' + '\uff1a' + value[3] + ' ' +'<br>';\n                                }"
+}
