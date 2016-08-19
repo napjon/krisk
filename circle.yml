@@ -1,0 +1,8 @@
+machine:
+  python:
+    version: 3.5.1
+
+test:
+  override:
+    - cd krisk/tests
+    - py.test .
