@@ -1,12 +1,15 @@
 import pytest
 import json
+from krisk.util import join_current_dir
+
+DATA_DIR = 'krisk/tests/data'
 
 @pytest.fixture
 def chart():
     import pandas as pd    
     import krisk.plot as kk
-    
-    df = (pd.read_csv('data/gapminderDataFiveYear.txt',sep='\t')
+
+    df = (pd.read_csv(DATA_DIR+'/gapminderDataFiveYear.txt',sep='\t')
           .groupby(['year','continent'],as_index=False).first())
 
     p = kk.scatter(df[df.year == 2007],'lifeExp','gdpPercap',size='pop',category='continent')
@@ -20,18 +23,18 @@ def chart():
 
 def test_tooltip(chart):
     tooltip = chart._option['tooltip']
-    true_tooltip = json.load(open('data/tooltip.json','r'))
+    true_tooltip = json.load(open(DATA_DIR+'/tooltip.json','r'))
     assert tooltip == true_tooltip
     
 def test_option(chart):
-    true_option = json.load(open('data/scatter_tooltip.json','r'))
+    true_option = json.load(open(DATA_DIR+'/scatter_tooltip.json','r'))
     assert chart._option == true_option
 
 def test_repr(chart):
     
     l_repr = chart._repr_javascript_().split('\n')
     f_repr = [l_repr[i] for i in range(len(l_repr)) if i not in [1,2,10]]
-    true_repr = open('data/scatter_repr.txt','r').read().split('\n')
+    true_repr = open(DATA_DIR+'/scatter_repr.txt','r').read().split('\n')
     
     # Full list array comparison yield AssertionError in py.test eventhough it's correct.
     # Just partially test this
