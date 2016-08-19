@@ -452,7 +452,7 @@ class Chart(object):
     
     def to_json(self,path):
         "Save Chart option to json file"
-        json.dump(self._option,open(path,'w'))
+        json.dump(self._option, open(path,'w'), indent=4)
         
     
     def to_html(self,path):
