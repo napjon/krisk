@@ -24,12 +24,8 @@ function(echarts){{
     
     var option = {option};
     option['tooltip']['formatter'] = parseFunction(option['tooltip']['formatter']);
-    
-    //option['series'][0]['symbolSize'] = function (val){{return val[2]*10;}}
-    
-    
     myChart.setOption(option);
-    //console.log(option);
+    
     {events}
     
 }});
@@ -82,7 +78,6 @@ myChart.on('{event}',function(params){{
     console.log("Executing code: " + code_input);
     cell.set_text(code_input);
     cell.execute();
-    
     
     // Immediately delete the cell after execute
     nb.delete_cell();
