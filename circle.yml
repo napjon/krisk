@@ -4,5 +4,4 @@ machine:
 
 test:
   override:
-    - cd krisk/tests
-    - py.test .
+    - py.test krisk
