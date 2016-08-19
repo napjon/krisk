@@ -1,0 +1,144 @@
+{
+    "title": {
+        "text": "GapMinder of 2007",
+        "left": "center",
+        "top": "5%"
+    },
+    "xAxis": {
+        "max": 81,
+        "name": "lifeExp",
+        "type": "value"
+    },
+    "tooltip": {
+        "axisPointer": {
+            "type": ""
+        },
+        "formatter": "function (obj) {\n                                    var value = obj.value;\n                                    return 'country' + '\uff1a' + value[4] + ' ' +'<br>'+'lifeExp' + '\uff1a' + value[0] + ' ' +'<br>'+'gdpPercap' + '\uff1a' + value[1] + ' ' +'<br>'+'pop' + '\uff1a' + value[2] + ' ' +'<br>'+'continent' + '\uff1a' + value[3] + ' ' +'<br>';\n                                }"
+    },
+    "visualMap": [
+        {
+            "max": 40301927.0,
+            "inRange": {
+                "symbolSize": [
+                    10,
+                    70
+                ]
+            },
+            "dimension": 2,
+            "show": false,
+            "precision": 0.1,
+            "min": 3600523.0
+        }
+    ],
+    "series": [
+        {
+            "data": [
+                [
+                    72.301,
+                    6223.367,
+                    33333216.0,
+                    "Africa",
+                    "Algeria",
+                    2007
+                ]
+            ],
+            "name": "Africa",
+            "type": "scatter"
+        },
+        {
+            "data": [
+                [
+                    75.32,
+                    12779.38,
+                    40301927.0,
+                    "Americas",
+                    "Argentina",
+                    2007
+                ]
+            ],
+            "name": "Americas",
+            "type": "scatter"
+        },
+        {
+            "data": [
+                [
+                    43.828,
+                    974.58,
+                    31889923.0,
+                    "Asia",
+                    "Afghanistan",
+                    2007
+                ]
+            ],
+            "name": "Asia",
+            "type": "scatter"
+        },
+        {
+            "data": [
+                [
+                    76.423,
+                    5937.03,
+                    3600523.0,
+                    "Europe",
+                    "Albania",
+                    2007
+                ]
+            ],
+            "name": "Europe",
+            "type": "scatter"
+        },
+        {
+            "data": [
+                [
+                    81.235,
+                    34435.367,
+                    20434176.0,
+                    "Oceania",
+                    "Australia",
+                    2007
+                ]
+            ],
+            "name": "Oceania",
+            "type": "scatter"
+        }
+    ],
+    "yAxis": {
+        "max": 34435,
+        "name": "gdpPercap",
+        "type": "value"
+    },
+    "legend": {
+        "data": [
+            "Africa",
+            "Americas",
+            "Asia",
+            "Europe",
+            "Oceania"
+        ],
+        "right": "1%",
+        "align": "auto",
+        "top": "3%",
+        "orient": "vertical"
+    },
+    "toolbox": {
+        "bottom": "auto",
+        "align": "auto",
+        "left": "auto",
+        "feature": {
+            "dataZoom": {
+                "show": true,
+                "title": "Zoom"
+            },
+            "saveAsImage": {
+                "show": true,
+                "title": "Download as Image",
+                "type": "png"
+            },
+            "restore": {
+                "show": true,
+                "title": "Reset"
+            }
+        },
+        "orient": "horizontal"
+    }
+}
