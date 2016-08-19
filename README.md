@@ -1,3 +1,5 @@
+[![CircleCI](https://circleci.com/gh/napjon/krisk.svg?style=shield)](https://circleci.com/gh/napjon/krisk)
+
 # Overview
 
 Krisk bring Echarts to Python Data Science Ecosystem, and helpful tools for high level statistical interactive visualization.
