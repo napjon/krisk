@@ -1,0 +1,159 @@
+
+require(['echarts', 'dark', 'vintage', 'roma', 'shine', 'infographic', 'macarons'],
+function(echarts){
+    
+    function parseFunction(str){
+        return eval('(' + str + ')');
+    }
+    
+    
+    var option = {
+    "xAxis": {
+        "name": "lifeExp",
+        "type": "value",
+        "max": 81
+    },
+    "legend": {
+        "orient": "vertical",
+        "top": "3%",
+        "data": [
+            "Africa",
+            "Americas",
+            "Asia",
+            "Europe",
+            "Oceania"
+        ],
+        "align": "auto",
+        "right": "1%"
+    },
+    "title": {
+        "top": "5%",
+        "left": "center",
+        "text": "GapMinder of 2007"
+    },
+    "series": [
+        {
+            "data": [
+                [
+                    72.301,
+                    6223.367,
+                    33333216.0,
+                    "Africa",
+                    "Algeria",
+                    2007
+                ]
+            ],
+            "name": "Africa",
+            "type": "scatter"
+        },
+        {
+            "data": [
+                [
+                    75.32,
+                    12779.38,
+                    40301927.0,
+                    "Americas",
+                    "Argentina",
+                    2007
+                ]
+            ],
+            "name": "Americas",
+            "type": "scatter"
+        },
+        {
+            "data": [
+                [
+                    43.828,
+                    974.58,
+                    31889923.0,
+                    "Asia",
+                    "Afghanistan",
+                    2007
+                ]
+            ],
+            "name": "Asia",
+            "type": "scatter"
+        },
+        {
+            "data": [
+                [
+                    76.423,
+                    5937.03,
+                    3600523.0,
+                    "Europe",
+                    "Albania",
+                    2007
+                ]
+            ],
+            "name": "Europe",
+            "type": "scatter"
+        },
+        {
+            "data": [
+                [
+                    81.235,
+                    34435.367,
+                    20434176.0,
+                    "Oceania",
+                    "Australia",
+                    2007
+                ]
+            ],
+            "name": "Oceania",
+            "type": "scatter"
+        }
+    ],
+    "visualMap": [
+        {
+            "precision": 0.1,
+            "dimension": 2,
+            "min": 3600523.0,
+            "inRange": {
+                "symbolSize": [
+                    10,
+                    70
+                ]
+            },
+            "max": 40301927.0,
+            "show": false
+        }
+    ],
+    "tooltip": {
+        "axisPointer": {
+            "type": ""
+        },
+        "formatter": "function (obj) {\n                                    var value = obj.value;\n                                    return 'country' + '\uff1a' + value[4] + ' ' +'<br>'+'lifeExp' + '\uff1a' + value[0] + ' ' +'<br>'+'gdpPercap' + '\uff1a' + value[1] + ' ' +'<br>'+'pop' + '\uff1a' + value[2] + ' ' +'<br>'+'continent' + '\uff1a' + value[3] + ' ' +'<br>';\n                                }"
+    },
+    "yAxis": {
+        "name": "gdpPercap",
+        "type": "value",
+        "max": 34435
+    },
+    "toolbox": {
+        "orient": "horizontal",
+        "align": "auto",
+        "left": "auto",
+        "bottom": "auto",
+        "feature": {
+            "dataZoom": {
+                "title": "Zoom",
+                "show": true
+            },
+            "saveAsImage": {
+                "title": "Download as Image",
+                "type": "png",
+                "show": true
+            },
+            "restore": {
+                "title": "Reset",
+                "show": true
+            }
+        }
+    }
+};
+    option['tooltip']['formatter'] = parseFunction(option['tooltip']['formatter']);
+    myChart.setOption(option);
+    
+    
+    
+});
