@@ -1,4 +1,5 @@
-[![CircleCI](https://circleci.com/gh/napjon/krisk.svg?style=shield)](https://circleci.com/gh/napjon/krisk)
+[![CircleCI](https://circleci.com/gh/napjon/krisk.svg?style=shield)](https://circleci.com/gh/napjon/krisk) 
+[![PyPI version](https://badge.fury.io/py/krisk.svg)](https://pypi.python.org/pypi/krisk/)
 
 # Overview
 
