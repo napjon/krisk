@@ -5,3 +5,5 @@ machine:
 test:
   override:
     - py.test krisk
+  post:
+    - bash <(curl -s https://codecov.io/bash)
