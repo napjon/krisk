@@ -2,17 +2,16 @@
 import pytest
 import pandas as pd
 import krisk.plot as kk
-DATA_DIR = 'krisk/tests/data'
+
+DATA_DIR="krisk/tests/data"
 
 @pytest.fixture(scope="module")
 def df_simple():
-    import pandas as pd
     return pd.DataFrame({'x': ['a','b','c']})
 
 @pytest.fixture(scope="module")
-def bar_simple():
-    import krisk.plot as kk
-    return kk.bar(df_simple(),'x')
+def bar_simple(df_simple):
+    return kk.bar(df_simple,'x')
 
 @pytest.fixture(scope="module")
 def gapminder():

@@ -365,12 +365,12 @@ class Chart(object):
         -------
         Chart object
         """
-        
         events = ['click','dblclick','mousedown','mouseup','mouseover','mouseout','globalout']
         if event not in events:
             raise AssertionError('Invalid event name: %s'% event)
             
         self._events[event] = handler.__name__
+        
         return self
     
     
