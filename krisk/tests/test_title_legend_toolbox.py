@@ -1,37 +1,29 @@
-import pytest
 
-@pytest.fixture
-def chart():
-    import pandas as pd
-    import krisk.plot as kk
-    df = pd.DataFrame({'x': ['a','b','c']})
-    return kk.bar(df,'x')
-
-def test_title(chart):
+def test_title(bar_simple):
     # Blank Title
-    assert chart._option['title'] == {'text': ''}
+    assert bar_simple._option['title'] == {'text': ''}
     # Title with set position
-    c_t = chart.set_title('Hellow',x_pos='auto',y_pos='-5%')
-    assert chart._option['title'] == {'left': 'auto', 'text': 'Hellow', 'top': '5%'}
+    c_t = bar_simple.set_title('Hellow',x_pos='auto',y_pos='-5%')
+    assert bar_simple._option['title'] == {'left': 'auto', 'text': 'Hellow', 'top': '5%'}
     
-def test_legend(chart):
+def test_legend(bar_simple):
     # Blank Legend
-    assert chart._option['legend'] == {'data': []}
+    assert bar_simple._option['legend'] == {'data': []}
     
     # Legend with orientation and position
-    c_l = chart.set_legend(orient='vertical',x_pos='-5%',y_pos='auto')
-    assert chart._option['legend'] =={'align': 'auto',
+    c_l = bar_simple.set_legend(orient='vertical',x_pos='-5%',y_pos='auto')
+    assert bar_simple._option['legend'] =={'align': 'auto',
                                       'bottom': 'auto',
                                       'data': [],
                                       'orient': 'vertical',
                                       'right': '5%'}
     
-def test_tolbox(chart):
+def test_tolbox(bar_simple):
     # No Toolbox
-    assert chart._option.get('toolbox', None) == None
+    assert bar_simple._option.get('toolbox', None) == None
     
     # Default Toolbox
-    c_d = chart.set_toolbox()._option['toolbox']
+    c_d = bar_simple.set_toolbox()._option['toolbox']
     assert  c_d ==  {'align': 'auto',
                      'bottom': 'auto',
                      'feature': {'dataZoom': {'show': False, 'title': 'Zoom'},
@@ -40,7 +32,7 @@ def test_tolbox(chart):
                      'orient': 'horizontal'}
     
     # Default Toolbox with Non-Orientation and Position
-    c_dop = (chart
+    c_dop = (bar_simple
              .set_toolbox(align='right',orient='vertical',x_pos='-5%',y_pos='-5%')
              ._option['toolbox'])
     assert c_dop == {'align': 'right',
@@ -51,7 +43,7 @@ def test_tolbox(chart):
                      'top': '5%'}
     
     # Restore, Save, and Zoom
-    c_rsz = (chart
+    c_rsz = (bar_simple
              .set_toolbox(restore=True,
                           save_format='png',
                           data_zoom=True)
@@ -67,7 +59,7 @@ def test_tolbox(chart):
                       'orient': 'horizontal'}
     
     # Data View and Magic Type
-    c_vzm = (chart
+    c_vzm = (bar_simple
              .set_toolbox(data_view=False,
                           data_zoom=True,
                           magic_type=['line','bar'])
