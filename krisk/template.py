@@ -74,7 +74,7 @@ myChart.on('{event}',function(params){{
     var json_strings = JSON.stringify(d_params);
 
     var cell = nb.get_selected_cell();
-    var code_input = "{function}(json.loads('" + json_strings + "'))";
+    var code_input = "import json; {function}(json.loads('" + json_strings + "'))";
     console.log("Executing code: " + code_input);
     cell.set_text(code_input);
     cell.execute();
