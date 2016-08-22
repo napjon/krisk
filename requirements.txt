@@ -1,4 +1,3 @@
-coverage
 pytest
 jupyter
 pandas
