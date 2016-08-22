@@ -74,6 +74,7 @@ myChart.on('{event}',function(params){{
     var json_strings = JSON.stringify(d_params);
 
     var cell = nb.get_selected_cell();
+    // TODO: Import json everytime cell executed is wasteful. json lib needs to be in user session. 
     var code_input = "import json; {function}(json.loads('" + json_strings + "'))";
     console.log("Executing code: " + code_input);
     cell.set_text(code_input);

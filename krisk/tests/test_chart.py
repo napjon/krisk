@@ -23,3 +23,14 @@ def test_read_df(gapminder):
     
     assert africa_opt == asia_opt
     
+    
+def test_on_event(df_simple):
+    p = kk.bar(df_simple,'x')
+    def handler_foo(params):
+        return m.resync_data(df_simple)
+    on_event = p.on_event('click',handler_foo)
+    
+    assert on_event._events == {'click': 'handler_foo'}
+    code_handler = on_event._repr_javascript_().split('\n')[-13]
+    input_code = '    var code_input = "import json; handler_foo(json.loads(\'" + json_strings + "\'))";'
+    assert  code_handler == input_code
