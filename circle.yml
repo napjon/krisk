@@ -4,6 +4,7 @@ machine:
 
 test:
   override:
-    - py.test krisk
+    - coverage run --source krisk -m py.test
   post:
+    - coverage report
     - bash <(curl -s https://codecov.io/bash)
