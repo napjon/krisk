@@ -1,0 +1,36 @@
+
+import krisk.plot as kk
+
+def test_flip(bar_simple):
+    
+    assert bar_simple.get_option()['xAxis'] == bar_simple.flip_axes().get_option()['yAxis']
+    
+def test_color(bar_simple):
+    
+    colored = bar_simple.set_color(background='green',palette=['purple']).get_option()
+    assert colored['backgroundColor'] == 'green'
+    assert colored['color'] == ['purple']
+    
+def test_read_df(gapminder):
+    
+    africa = kk.bar(gapminder[gapminder.continent == 'Africa'],'year')
+    asia = africa.read_df(gapminder[gapminder.continent == 'Asia'])
+    africa_opt = africa.get_option()
+    asia_opt = asia.get_option()
+    
+    africa_opt.pop('series')
+    asia_opt.pop('series')
+    
+    assert africa_opt == asia_opt
+    
+    
+def test_on_event(df_simple):
+    p = kk.bar(df_simple,'x')
+    def handler_foo(params):
+        return m.resync_data(df_simple)
+    on_event = p.on_event('click',handler_foo)
+    
+    assert on_event._events == {'click': 'handler_foo'}
+    code_handler = on_event._repr_javascript_().split('\n')[-13]
+    input_code = '    var code_input = "import json; handler_foo(json.loads(\'" + json_strings + "\'))";'
+    assert  code_handler == input_code
