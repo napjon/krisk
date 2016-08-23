@@ -1,8 +1,7 @@
 
 from krisk.make_chart import make_chart
 
-def bar(df,x,y=None,category=None,how='count',stacked=False,
-        annotate=None,**kwargs):
+def bar(df,x,y=None,category=None,how='count',stacked=False,annotate=None):
     """
     Parameters
     ----------
@@ -29,7 +28,7 @@ def bar(df,x,y=None,category=None,how='count',stacked=False,
     """
     
     # TODO: add optional argument trendline
-    
+    kwargs = {}
     kwargs['x'] = x
     kwargs['y'] = y
     kwargs['category'] = category
@@ -40,8 +39,7 @@ def bar(df,x,y=None,category=None,how='count',stacked=False,
     
     return make_chart(df,**kwargs)
 
-def line(df,x,y=None,category=None,how=None,stacked=False,area=False,
-         annotate=None,**kwargs):
+def line(df,x,y=None,category=None,how=None,stacked=False,area=False,annotate=None):
     """
     Parameters
     ----------
@@ -66,7 +64,7 @@ def line(df,x,y=None,category=None,how=None,stacked=False,area=False,
     -------
     Chart Object
     """
-    
+    kwargs = {}
     kwargs['x'] = x
     kwargs['y'] = y
     kwargs['category'] = category
@@ -78,8 +76,7 @@ def line(df,x,y=None,category=None,how=None,stacked=False,area=False,
     
     return make_chart(df,**kwargs)
 
-def hist(df,x,category=None,bins=10,normed=False,stacked=False,
-         annotate=None,**kwargs):
+def hist(df,x,category=None,bins=10,normed=False,stacked=False,annotate=None):
     """
     Parameters
     ----------
@@ -103,7 +100,7 @@ def hist(df,x,category=None,bins=10,normed=False,stacked=False,
     -------
     Chart Object
     """
-    
+    kwargs = {}
     kwargs['x'] = x
     kwargs['category'] = category
     kwargs['bins'] = bins
@@ -114,7 +111,7 @@ def hist(df,x,category=None,bins=10,normed=False,stacked=False,
     
     return make_chart(df,**kwargs)
 
-def scatter(df,x,y,size=None,category=None,size_px=(10,70),**kwargs):
+def scatter(df,x,y,size=None,category=None,size_px=(10,70)):
     """
     Parameters
     ----------
@@ -134,6 +131,7 @@ def scatter(df,x,y,size=None,category=None,size_px=(10,70),**kwargs):
     Chart Object
     """
     
+    kwargs = {}
     kwargs['x'] = x
     kwargs['y'] = y
     kwargs['category'] = category
