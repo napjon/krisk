@@ -41,12 +41,7 @@ def make_chart(df,**kwargs):
         
     
     c = Chart(**kwargs)
-    
-    elem_series = {
-            'name': '',
-            'type': kwargs['type'],
-            'data': []}
-    
+    elem_series = {'name': '', 'type': kwargs['type'], 'data': []}
     x = kwargs['x']
     y = kwargs.get('y')
     category = kwargs['category']
@@ -57,8 +52,7 @@ def make_chart(df,**kwargs):
         """Provide stacked,annotate, area for bar line hist"""
         series = c._option['series']
 
-        d_annotate = {'normal':{'show':True,
-                                'position':'top'}}
+        d_annotate = {'normal':{'show': True, 'position': 'top'}}
 
         if category and kwargs['stacked'] == True:
             for s in series:
@@ -124,29 +118,20 @@ def make_chart(df,**kwargs):
             
     elif kwargs['type'] == 'scatter':
         
-        c._option['xAxis'] = {'type': 'value',
-                              'name': x,
-                              'max': int(df[x].max())}
-        c._option['yAxis'] = {'type': 'value',
-                              'name': y,
-                              'max': int(df[y].max())}
+        c._option['xAxis'] = {'type': 'value', 'name': x, 'max': int(df[x].max())}
+        c._option['yAxis'] = {'type': 'value', 'name': y, 'max': int(df[y].max())}
         c._option['visualMap'] = []
-        
-        
         
         cols = [x,y]
         size = kwargs['size']
         if size is not None:
-            vmap_template_size = {
-                                    'show': False,
+            vmap_template_size = {'show': False,
                                     'dimension': 2,
                                     'min': 0,
                                     'max': 250,
                                     'precision': 0.1,
-                                    'inRange': {
-                                        'symbolSize': [10, 70]
-                                    }
-                                }
+                                    'inRange': {'symbolSize': [10, 70]}
+                                 }
             vmap_size = deepcopy(vmap_template_size)
             vmap_size['min'] = df[size].min()
             vmap_size['max'] = df[size].max()  
@@ -165,7 +150,7 @@ def make_chart(df,**kwargs):
 #             c._option['visualMap'].append(vmap_saturate)
 #             cols.append(saturate)
 
-        columns = cols+df.columns.difference(cols).tolist()
+        columns = cols + df.columns.difference(cols).tolist()
         c._kwargs_chart_['columns'] = columns
         
         @insert_series_on
