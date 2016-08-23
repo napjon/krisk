@@ -1,12 +1,6 @@
 {
     "legend": {
-        "data": [
-            "Africa",
-            "Americas",
-            "Asia",
-            "Europe",
-            "Oceania"
-        ]
+        "data": []
     },
     "visualMap": [
         {
@@ -30,7 +24,7 @@
     },
     "series": [
         {
-            "name": "Africa",
+            "name": "lifeExp",
             "type": "scatter",
             "data": [
                 [
@@ -40,13 +34,7 @@
                     "Africa",
                     "Algeria",
                     1952
-                ]
-            ]
-        },
-        {
-            "name": "Americas",
-            "type": "scatter",
-            "data": [
+                ],
                 [
                     62.485,
                     5911.315,
@@ -54,13 +42,7 @@
                     "Americas",
                     "Argentina",
                     1952
-                ]
-            ]
-        },
-        {
-            "name": "Asia",
-            "type": "scatter",
-            "data": [
+                ],
                 [
                     28.801,
                     779.445,
@@ -68,13 +50,7 @@
                     "Asia",
                     "Afghanistan",
                     1952
-                ]
-            ]
-        },
-        {
-            "name": "Europe",
-            "type": "scatter",
-            "data": [
+                ],
                 [
                     55.23,
                     1601.056,
@@ -82,13 +58,7 @@
                     "Europe",
                     "Albania",
                     1952
-                ]
-            ]
-        },
-        {
-            "name": "Oceania",
-            "type": "scatter",
-            "data": [
+                ],
                 [
                     69.12,
                     10039.596,
