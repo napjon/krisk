@@ -19,7 +19,7 @@ def round_list(arr):
                 
 def make_chart(df,**kwargs):
     
-    def insert_series_on(f):
+    def insert_series_on(f,df=df):
 
         if category:
             #Iterate and append Data for every category
@@ -83,7 +83,7 @@ def make_chart(df,**kwargs):
     if kwargs['type'] in ['bar','line']:
        
         
-        
+        @insert_series_on
         def get_bar_line_data(df):
             
 #             c._option['yAxis']['scale'] = True #TODO: Still need to be evaluated
@@ -104,14 +104,12 @@ def make_chart(df,**kwargs):
             
             return data
             
-        
-        insert_series_on(get_bar_line_data)
         bar_line_hist_condition()
             
     elif kwargs['type'] == 'hist':
         kwargs['type'] = 'bar'
         
-        
+        @insert_series_on
         def get_hist_data(df):
             y_val,x_val = np.histogram(df[x],
                                        bins=kwargs['bins'],
@@ -122,7 +120,6 @@ def make_chart(df,**kwargs):
             
             return data
         
-        insert_series_on(get_hist_data)
         bar_line_hist_condition()
             
     elif kwargs['type'] == 'scatter':
@@ -171,13 +168,9 @@ def make_chart(df,**kwargs):
         columns = cols+df.columns.difference(cols).tolist()
         c._kwargs_chart_['columns'] = columns
         
+        @insert_series_on
         def get_scatter_data(df):
             data = df[columns]
-#             print(columns)
             return data
-        
-        insert_series_on(get_scatter_data)
-    
-        
             
     return c
