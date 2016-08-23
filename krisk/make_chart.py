@@ -19,34 +19,27 @@ def round_list(arr):
                 
 def make_chart(df,**kwargs):
     
-    def insert_series_on(f):
-
+    def insert_series_on(f,df=df):
+        data = f(df)
         if category:
             #Iterate and append Data for every category
-            for cat, subset in df.groupby(category):
+            for cat in data.columns:
                 cat = str(cat)
-                insert_data_to_series(f,subset,cat)
+                insert_data_to_series(data[cat], cat)
                 c._option['legend']['data'].append(cat)
         else:
-            insert_data_to_series(f,df)
+            insert_data_to_series(data)
     
     
-    def insert_data_to_series(f,df,cat=None):
-        data = f(df)
+    def insert_data_to_series(data, cat=None):
         series = deepcopy(elem_series)
         series['data'] = round_list(data)
         series['type'] = kwargs['type']
         series['name'] = cat if cat else x
         c._option['series'].append(series)
         
-    
     c = Chart(**kwargs)
-    
-    elem_series = {
-            'name': '',
-            'type': kwargs['type'],
-            'data': []}
-    
+    elem_series = {'name': '', 'type': kwargs['type'], 'data': []}
     x = kwargs['x']
     y = kwargs.get('y')
     category = kwargs['category']
@@ -57,8 +50,7 @@ def make_chart(df,**kwargs):
         """Provide stacked,annotate, area for bar line hist"""
         series = c._option['series']
 
-        d_annotate = {'normal':{'show':True,
-                                'position':'top'}}
+        d_annotate = {'normal':{'show': True, 'position': 'top'}}
 
         if category and kwargs['stacked'] == True:
             for s in series:
@@ -81,75 +73,68 @@ def make_chart(df,**kwargs):
         # TODO: make annotate receive all kinds supported in echarts.
     
     if kwargs['type'] in ['bar','line']:
-       
-        
-        
+
+        @insert_series_on
         def get_bar_line_data(df):
             
-#             c._option['yAxis']['scale'] = True #TODO: Still need to be evaluated
-            
-            if y is None:
-                data = df[x].value_counts()
+            if category:
+                if y is None:
+                    data = pd.crosstab(df[x], df[category])
+                else:
+                    data = df.pivot_table(index=x,values=y,columns=category,
+                                          aggfunc=kwargs['how'],fill_value=0)
             else:
-                data = (df[y]
-                        if kwargs['how'] is None else
-                        df.groupby(x)[y].aggregate(kwargs['how']))
-                
-            c._option['xAxis']['data'] = data.index.values.tolist()
+                if y is None:
+                    data = df[x].value_counts()
+                else:
+                    raise AssertionError('Use y in category instead')
             
-            # TODO: Still need to be evaluated
-#             data = (df[x].value_counts()
-#                     if y is None else
-#                     df.groupby(x)[y].aggregate(kwargs['how']))
+            c._option['xAxis']['data'] = data.index.values.tolist()
             
             return data
             
-        
-        insert_series_on(get_bar_line_data)
         bar_line_hist_condition()
-            
+        
+        
     elif kwargs['type'] == 'hist':
         kwargs['type'] = 'bar'
         
-        
+        @insert_series_on
         def get_hist_data(df):
-            y_val,x_val = np.histogram(df[x],
-                                       bins=kwargs['bins'],
+            
+            y_val,x_val = np.histogram(df[x],bins=kwargs['bins'],
                                        normed=kwargs['normed'])
-            data = pd.Series(y_val)
+            if category:
+                data = pd.DataFrame()
+                for cat, sub in df.groupby(category):
+                    data[cat] =  (pd.cut(sub[x], x_val)
+                                  .value_counts(sort=False, normalize=kwargs['normed']))
+            else:
+                data = pd.Series(y_val)
+                
             bins = x_val.astype(int).tolist()
             c._option['xAxis']['data'] = bins
             
             return data
         
-        insert_series_on(get_hist_data)
         bar_line_hist_condition()
-            
+        
     elif kwargs['type'] == 'scatter':
         
-        c._option['xAxis'] = {'type': 'value',
-                              'name': x,
-                              'max': int(df[x].max())}
-        c._option['yAxis'] = {'type': 'value',
-                              'name': y,
-                              'max': int(df[y].max())}
+        c._option['xAxis'] = {'type': 'value', 'name': x, 'max': int(df[x].max())}
+        c._option['yAxis'] = {'type': 'value', 'name': y, 'max': int(df[y].max())}
         c._option['visualMap'] = []
-        
-        
         
         cols = [x,y]
         size = kwargs['size']
         if size is not None:
-            vmap_template_size = {
-                                    'show': False,
+            vmap_template_size = {'show': False,
                                     'dimension': 2,
                                     'min': 0,
                                     'max': 250,
                                     'precision': 0.1,
-                                    'inRange': {
-                                        'symbolSize': [10, 70]
-                                    }
-                                }
+                                    'inRange': {'symbolSize': [10, 70]}
+                                 }
             vmap_size = deepcopy(vmap_template_size)
             vmap_size['min'] = df[size].min()
             vmap_size['max'] = df[size].max()  
@@ -168,16 +153,20 @@ def make_chart(df,**kwargs):
 #             c._option['visualMap'].append(vmap_saturate)
 #             cols.append(saturate)
 
-        columns = cols+df.columns.difference(cols).tolist()
+        columns = cols + df.columns.difference(cols).tolist()
         c._kwargs_chart_['columns'] = columns
         
-        def get_scatter_data(df):
+        def insert_scatter_data(df):
             data = df[columns]
-#             print(columns)
-            return data
-        
-        insert_series_on(get_scatter_data)
-    
-        
-            
+            if category:
+                #Iterate and append Data for every category
+                for cat, subset in data.groupby(category):
+                    cat = str(cat)
+                    insert_data_to_series(subset,cat)
+                    c._option['legend']['data'].append(cat)
+            else:
+                insert_data_to_series(data)
+                
+        insert_scatter_data(df)
+
     return c

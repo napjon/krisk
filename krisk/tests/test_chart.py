@@ -1,15 +1,18 @@
 
 import krisk.plot as kk
 
+def test_replot_and_resync(bar_simple,df_simple):
+    
+    c = bar_simple
+    stripped = lambda x: x.data.replace('\n', '').replace(' ','')
+    assert stripped(c.replot(c)) == stripped(c.resync_data(df_simple))
+    
+    
 def test_flip(bar_simple):
     
     assert bar_simple.get_option()['xAxis'] == bar_simple.flip_axes().get_option()['yAxis']
+ 
     
-def test_color(bar_simple):
-    
-    colored = bar_simple.set_color(background='green',palette=['purple']).get_option()
-    assert colored['backgroundColor'] == 'green'
-    assert colored['color'] == ['purple']
     
 def test_read_df(gapminder):
     
@@ -34,3 +37,11 @@ def test_on_event(df_simple):
     code_handler = on_event._repr_javascript_().split('\n')[-13]
     input_code = '    var code_input = "import json; handler_foo(json.loads(\'" + json_strings + "\'))";'
     assert  code_handler == input_code
+    
+       
+def test_color(bar_simple):
+    
+    # Set color modify the bar_simple itself! Potentially bug
+    colored = bar_simple.set_color(background='green',palette=['purple']).get_option()
+    assert colored['backgroundColor'] == 'green'
+    assert colored['color'] == ['purple']

@@ -28,6 +28,12 @@
         {
             "name": "Africa",
             "type": "bar",
+            "label": {
+                "normal": {
+                    "show": true,
+                    "position": "inside"
+                }
+            },
             "stack": "continent",
             "data": [
                 9279525,
@@ -47,6 +53,12 @@
         {
             "name": "Americas",
             "type": "bar",
+            "label": {
+                "normal": {
+                    "show": true,
+                    "position": "inside"
+                }
+            },
             "stack": "continent",
             "data": [
                 17876956,
@@ -66,6 +78,12 @@
         {
             "name": "Asia",
             "type": "bar",
+            "label": {
+                "normal": {
+                    "show": true,
+                    "position": "inside"
+                }
+            },
             "stack": "continent",
             "data": [
                 8425333,
@@ -85,6 +103,12 @@
         {
             "name": "Europe",
             "type": "bar",
+            "label": {
+                "normal": {
+                    "show": true,
+                    "position": "inside"
+                }
+            },
             "stack": "continent",
             "data": [
                 1282697,
@@ -107,7 +131,7 @@
             "label": {
                 "normal": {
                     "show": true,
-                    "position": "top"
+                    "position": "inside"
                 }
             },
             "stack": "continent",
