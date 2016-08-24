@@ -4,6 +4,7 @@ machine:
 
 test:
   override:
+    - pip install coverage pytest
     - coverage run --source krisk -m py.test
   post:
     - coverage report
