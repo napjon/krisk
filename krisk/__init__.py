@@ -2,4 +2,4 @@
 
 from krisk.connections import init_notebook
 
-__version__ = '0.1.10'
+__version__ = '0.1.11'
