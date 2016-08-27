@@ -11,6 +11,14 @@ The version of 0.2 will
   * Add offline js as nbextension (optional)
   * Add Diverging, Sequential, and Qualitative mode for bar chart
 
+The `plot.py` will also evolve into package. Scatter and bar-line chart must be separated, because it's clear that both must be treated differently.
+```
+plot/
+ __init__.py (API, previously plot.py)
+ make_chart.py
+ scatter.py
+ bar_line.py
+```
 
 
 [![CircleCI](https://circleci.com/gh/napjon/krisk.svg?style=shield)](https://circleci.com/gh/napjon/krisk) 
