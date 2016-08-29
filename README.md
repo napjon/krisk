@@ -1,3 +1,26 @@
+WARNING:
+This is a development branch of 0.2. For more stable version, please use master branch.
+
+The version of 0.2 will 
+
+* Provide more complex chart type from cheatsheet originally created by A. Abela http://extremepresentation.typepad.com/files/choosing-a-good-chart-09.pdf
+  * Support Waterfall for [type 1](http://echarts.baidu.com/demo.html#bar-waterfall) and [type 2](http://echarts.baidu.com/demo.html#bar-waterfall2)
+  * 100%  for stacked bar and stacked line chart
+  * Provide smooth line for histogram and all type of line chart as well
+  * Add Python 2.7 Compatibility
+  * Add offline js as nbextension (optional)
+  * Add Diverging, Sequential, and Qualitative mode for bar chart
+
+The `plot.py` will also evolve into package. Scatter and bar-line chart must be separated, because it's clear that both must be treated differently.
+```
+plot/
+ __init__.py (API, previously plot.py)
+ make_chart.py
+ scatter.py
+ bar_line.py
+```
+
+
 [![CircleCI](https://circleci.com/gh/napjon/krisk.svg?style=shield)](https://circleci.com/gh/napjon/krisk) 
 [![PyPI version](https://badge.fury.io/py/krisk.svg)](https://pypi.python.org/pypi/krisk/)
 [![Coverage Status](https://img.shields.io/codecov/c/github/napjon/krisk/master.svg)](https://codecov.io/gh/napjon/krisk)
