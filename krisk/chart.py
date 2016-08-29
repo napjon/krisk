@@ -404,7 +404,7 @@ class Chart(object):
 
         copy_chart = deepcopy(self)
 
-        from krisk.make_chart import make_chart
+        from krisk.plot.make_chart import make_chart
 
         sub_chart = make_chart(df, **copy_chart._kwargs_chart_)
         copy_chart._option = sub_chart._option

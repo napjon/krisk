@@ -1,4 +1,4 @@
-from krisk.make_chart import make_chart
+from krisk.plot.make_chart import make_chart
 
 
 def bar(df,
