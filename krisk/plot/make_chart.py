@@ -25,7 +25,7 @@ def insert_data_to_series(data,x, chart_type, cat=None):
 def make_chart(df, **kwargs):
     
     from krisk.plot.bar_line import set_bar_line_chart
-    from krisk.plot.scatter import set_scatter_chart
+    from krisk.plot.points import set_scatter_chart
 
     c = Chart(**kwargs)
     c._kwargs_chart_['data_columns'] = df.columns

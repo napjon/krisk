@@ -31,7 +31,7 @@ def set_bar_line_chart(c,df,x,category,**kwargs):
         c._option['xAxis']['data'] = bins
           
     if category:
-#         Iterate and append Data for every category
+        # append data for every category
         for cat in data.columns:
             cat = str(cat)
             series_data = get_series_data(data[cat],x, chart_type, cat)
@@ -75,9 +75,7 @@ def get_bar_line_data(df,x,category,y,**kwargs):
         if y is None:
             data = pd.crosstab(df[x], df[category])
         else:
-            data = df.pivot_table(
-                                index=x,
-                                values=y,
+            data = df.pivot_table(index=x, values=y,
                                 columns=category,
                                 aggfunc=kwargs['how'],
                                 fill_value=0)
@@ -95,16 +93,14 @@ def get_hist_data(df,x,category,**kwargs):
     y_val, x_val = np.histogram(df[x], 
                                 bins=kwargs['bins'], 
                                 normed=kwargs['normed'])
+    bins = x_val.astype(int).tolist()
+    
     if category:
         data = pd.DataFrame()
         for cat, sub in df.groupby(category):
             data[cat] = (pd.cut(sub[x], x_val)
-                         .value_counts(sort=False, 
-                                       normalize=kwargs['normed']))
+                         .value_counts(sort=False, normalize=kwargs['normed']))
     else:
         data = pd.Series(y_val)
-
-    bins = x_val.astype(int).tolist()
-    
 
     return data,bins
