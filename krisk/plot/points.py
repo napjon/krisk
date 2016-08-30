@@ -1,5 +1,5 @@
-from krisk.util import get_series_data
 from copy import deepcopy
+from krisk.plot.make_chart import insert_series_data
 
 
 def set_scatter_chart(c, df, x, y, category, **kwargs):
@@ -42,10 +42,6 @@ def set_scatter_chart(c, df, x, y, category, **kwargs):
     if category:
         #Iterate and append Data for every category
         for cat, subset in data.groupby(category):
-            cat = str(cat)
-            scatter_data = get_series_data(subset, x, kwargs['type'], cat)
-            c._option['legend']['data'].append(cat)
-            c._option['series'].append(scatter_data)
+            insert_series_data(subset, x, kwargs['type'], c, cat)
     else:
-        scatter_data = get_series_data(data, x, kwargs['type'])
-        c._option['series'].append(scatter_data)
+        insert_series_data(data, x, kwargs['type'], c)

@@ -1,5 +1,5 @@
-from krisk.chart import Chart
 from copy import deepcopy
+from krisk.chart import Chart
 
 
 def round_list(arr):
@@ -14,14 +14,21 @@ def round_list(arr):
                     .values.tolist())
 
 
-def insert_data_to_series(data, x, chart_type, cat=None):
-
+def insert_series_data(data, x, chart_type, c, cat=None):
     elem_series = {'name': '', 'type': chart_type, 'data': []}
     series = deepcopy(elem_series)
     series['data'] = round_list(data)
     series['type'] = chart_type
-    series['name'] = cat if cat else x
+
+    if cat:
+        series['name'] = cat
+        c._option['legend']['data'].append(str(cat))
+    else:
+        series['name'] = x
+
     c._option['series'].append(series)
+
+    return series
 
 
 def make_chart(df, **kwargs):

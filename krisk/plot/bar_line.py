@@ -1,23 +1,8 @@
-
 from copy import deepcopy
 import numpy as np
 import pandas as pd
 
-from krisk.util import get_series_data
-
-# def bar_chart()
-
-# def insert_series_on(data, x, category, chart_type,c):
-#     if category:
-#         #Iterate and append Data for every category
-#         for cat in data.columns:
-#             cat = str(cat)
-#             series = get_series_data(data[cat],x, chart_type, cat)
-#             c._option['legend']['data'].append(cat)
-#             c._option['series'].append(series)
-#     else:
-#         series = get_series_data(data,x, chart_type)
-#         c._option['series'].append(series)
+from krisk.plot.make_chart import insert_series_data
 
 
 def set_bar_line_chart(c, df, x, category, **kwargs):
@@ -30,20 +15,16 @@ def set_bar_line_chart(c, df, x, category, **kwargs):
         c._option['xAxis']['data'] = data.index.values.tolist()
 
     elif chart_type == 'hist':
-        data, bins = get_hist_data(df, x, **kwargs)
+        chart_type = 'bar'
+        data, bins = get_hist_data(df, x, category, **kwargs)
         c._option['xAxis']['data'] = bins
 
     if category:
         # append data for every category
         for cat in data.columns:
-            cat = str(cat)
-            series_data = get_series_data(data[cat], x, chart_type, cat)
-            c._option['legend']['data'].append(cat)
-            c._option['series'].append(series_data)
-
+            insert_series_data(data[cat], x, chart_type, c, cat)
     else:
-        series_data = get_series_data(data, x, chart_type)
-        c._option['series'].append(series_data)
+        insert_series_data(data, x, chart_type, c)
 
     series = c._option['series']
 
