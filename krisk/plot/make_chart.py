@@ -1,10 +1,5 @@
-
-import os
+from krisk.chart import Chart
 from copy import deepcopy
-
-def join_current_dir(file):
-    cwd = os.path.dirname(__file__)
-    return os.path.join(cwd, file)
 
 
 def round_list(arr):
@@ -18,11 +13,30 @@ def round_list(arr):
                               if x.dtype.name.startswith('float') else x)
                     .values.tolist())
         
-def get_series_data(data,x, chart_type, cat=None):
+def insert_data_to_series(data,x, chart_type, cat=None):
+    
     elem_series = {'name': '', 'type': chart_type, 'data': []}
     series = deepcopy(elem_series)
     series['data'] = round_list(data)
     series['type'] = chart_type
     series['name'] = cat if cat else x
+    c._option['series'].append(series)
+
+def make_chart(df, **kwargs):
     
-    return series
+    from krisk.plot.bar_line import set_bar_line_chart
+    from krisk.plot.points import set_scatter_chart
+
+    c = Chart(**kwargs)
+    c._kwargs_chart_['data_columns'] = df.columns
+    x = kwargs['x']
+    y = kwargs.get('y')
+    category = kwargs['category']
+
+    if kwargs['type'] in ['bar', 'line','hist']:
+        set_bar_line_chart(c,df,**kwargs)
+
+    elif kwargs['type'] == 'scatter':
+        set_scatter_chart(c,df,**kwargs)
+
+    return c

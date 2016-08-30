@@ -1,7 +1,13 @@
+from krisk.plot.make_chart import make_chart
 
-from krisk.make_chart import make_chart
 
-def bar(df,x,y=None,category=None,how='count',stacked=False,annotate=None):
+def bar(df,
+        x,
+        y=None,
+        category=None,
+        how='count',
+        stacked=False,
+        annotate=None):
     """
     Parameters
     ----------
@@ -26,7 +32,7 @@ def bar(df,x,y=None,category=None,how='count',stacked=False,annotate=None):
     -------
     Chart Object
     """
-    
+
     # TODO: add optional argument trendline
     kwargs = {}
     kwargs['x'] = x
@@ -36,10 +42,18 @@ def bar(df,x,y=None,category=None,how='count',stacked=False,annotate=None):
     kwargs['type'] = 'bar'
     kwargs['stacked'] = stacked
     kwargs['annotate'] = 'top' if annotate == True else annotate
-    
-    return make_chart(df,**kwargs)
 
-def line(df,x,y=None,category=None,how=None,stacked=False,area=False,annotate=None):
+    return make_chart(df, **kwargs)
+
+
+def line(df,
+         x,
+         y=None,
+         category=None,
+         how=None,
+         stacked=False,
+         area=False,
+         annotate=None):
     """
     Parameters
     ----------
@@ -73,10 +87,17 @@ def line(df,x,y=None,category=None,how=None,stacked=False,area=False,annotate=No
     kwargs['stacked'] = stacked
     kwargs['area'] = area
     kwargs['annotate'] = 'top' if annotate == True else annotate
-    
-    return make_chart(df,**kwargs)
 
-def hist(df,x,category=None,bins=10,normed=False,stacked=False,annotate=None):
+    return make_chart(df, **kwargs)
+
+
+def hist(df,
+         x,
+         category=None,
+         bins=10,
+         normed=False,
+         stacked=False,
+         annotate=None):
     """
     Parameters
     ----------
@@ -108,10 +129,11 @@ def hist(df,x,category=None,bins=10,normed=False,stacked=False,annotate=None):
     kwargs['normed'] = normed
     kwargs['stacked'] = stacked
     kwargs['annotate'] = 'top' if annotate == True else annotate
-    
-    return make_chart(df,**kwargs)
 
-def scatter(df,x,y,size=None,category=None,size_px=(10,70)):
+    return make_chart(df, **kwargs)
+
+
+def scatter(df, x, y, size=None, category=None, size_px=(10, 70)):
     """
     Parameters
     ----------
@@ -130,7 +152,7 @@ def scatter(df,x,y,size=None,category=None,size_px=(10,70)):
     -------
     Chart Object
     """
-    
+
     kwargs = {}
     kwargs['x'] = x
     kwargs['y'] = y
@@ -139,5 +161,5 @@ def scatter(df,x,y,size=None,category=None,size_px=(10,70)):
     #kwargs['saturate'] = saturate #TODO: Fix saturate
     kwargs['size_px'] = size_px
     kwargs['type'] = 'scatter'
-    
-    return make_chart(df,**kwargs)
+
+    return make_chart(df, **kwargs)
