@@ -12,12 +12,12 @@ def set_bar_line_chart(c, df, x, category, **kwargs):
 
     if chart_type in ['bar', 'line']:
         data = get_bar_line_data(df, x, category, **kwargs)
-        c._option['xAxis']['data'] = data.index.values.tolist()
+        c.option['xAxis']['data'] = data.index.values.tolist()
 
     elif chart_type == 'hist':
         chart_type = 'bar'
         data, bins = get_hist_data(df, x, category, **kwargs)
-        c._option['xAxis']['data'] = bins
+        c.option['xAxis']['data'] = bins
 
     if category:
         # append data for every category
@@ -26,7 +26,7 @@ def set_bar_line_chart(c, df, x, category, **kwargs):
     else:
         insert_series_data(data, x, chart_type, c)
 
-    series = c._option['series']
+    series = c.option['series']
 
     ########Provide stacked,annotate, area for bar line hist#################
     d_annotate = {'normal': {'show': True, 'position': 'top'}}

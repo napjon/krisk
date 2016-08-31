@@ -4,9 +4,9 @@ from krisk.plot.make_chart import insert_series_data
 
 def set_scatter_chart(c, df, x, y, category, **kwargs):
 
-    c._option['xAxis'] = {'type': 'value', 'name': x, 'max': int(df[x].max())}
-    c._option['yAxis'] = {'type': 'value', 'name': y, 'max': int(df[y].max())}
-    c._option['visualMap'] = []
+    c.option['xAxis'] = {'type': 'value', 'name': x, 'max': int(df[x].max())}
+    c.option['yAxis'] = {'type': 'value', 'name': y, 'max': int(df[y].max())}
+    c.option['visualMap'] = []
 
     cols = [x, y]
     size = kwargs['size']
@@ -24,7 +24,7 @@ def set_scatter_chart(c, df, x, y, category, **kwargs):
         vmap_size['min'] = df[size].min()
         vmap_size['max'] = df[size].max()
         vmap_size['inRange']['symbolSize'] = list(kwargs['size_px'][:2])
-        c._option['visualMap'].append(vmap_size)
+        c.option['visualMap'].append(vmap_size)
 
     #TODO: Fix Saturate
     #          saturate = kwargs['saturate']

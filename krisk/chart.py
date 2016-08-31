@@ -1,3 +1,5 @@
+# Krisk chart object
+
 import uuid
 import json
 from copy import deepcopy
@@ -7,13 +9,15 @@ from IPython.display import Javascript
 
 
 class Chart(object):
+    """Chart Object"""
     def __init__(self, **kwargs):
+        """Constructor"""
         # Currently, there are three type of data structure.
         # 1. Option dictionary to be passed to Echarts option
         # 2. kwargs_chart: To be passed for make_chart function
         # 3. Other than previous two
         self._chartId = str(uuid.uuid4())
-        self._option = deepcopy(OPTION_TEMPLATE)
+        self.option = deepcopy(OPTION_TEMPLATE)
         self._kwargs_chart_ = kwargs
         self._theme = ''
         self._axes_swapped = True
@@ -48,7 +52,6 @@ class Chart(object):
         
         Parameters
         ----------
-        
         background: string
             hex color
         palettes: list of strings
@@ -66,15 +69,15 @@ class Chart(object):
 
         #         Is this intended? Or should just these parameters made as separate methods?
 
-        self._option.pop('color', None)
-        self._option.pop('graph', None)  #Need further analyze graph color
-        self._option.pop('backgroundColor', None)
+        self.option.pop('color', None)
+        self.option.pop('graph', None)  #Need further analyze graph color
+        self.option.pop('backgroundColor', None)
 
         if background:
-            self._option['backgroundColor'] = background
+            self.option['backgroundColor'] = background
         if palette:
-            self._option['color'] = palette
-            self._option['graph'] = {'color': palette}
+            self.option['color'] = palette
+            self.option['graph'] = {'color': palette}
 
         return self._get_duplicated()
 
@@ -105,16 +108,15 @@ class Chart(object):
             Tooltip font familty
         font_size: int, default 14.
             Tooltip font size
-        
         """
 
-        self._option['tooltip']['trigger'] = trigger
-        self._option['tooltip']['axisPointer']['type'] = axis_pointer
-        self._option['tooltip']['triggerOn'] = trigger_on
+        self.option['tooltip']['trigger'] = trigger
+        self.option['tooltip']['axisPointer']['type'] = axis_pointer
+        self.option['tooltip']['triggerOn'] = trigger_on
 
-        self._option['tooltip']['fontStyle'] = font_style
-        self._option['tooltip']['fontFamily'] = font_family
-        self._option['tooltip']['fontSize'] = font_size
+        self.option['tooltip']['fontStyle'] = font_style
+        self.option['tooltip']['fontFamily'] = font_family
+        self.option['tooltip']['fontSize'] = font_size
 
         return self._get_duplicated()
 
@@ -127,7 +129,6 @@ class Chart(object):
         
         Parameters
         ----------
-        
         columns: list of string or list of tuples
             if list of strings, retrieve the columns value for the tooltip
             if list of tuples, will be represented as (key,unit) for the format
@@ -142,7 +143,7 @@ class Chart(object):
         
         Examples
         --------
-        
+        TODO
         """
 
         # TODO: Make tooltip_format available to all charts.
@@ -171,7 +172,7 @@ class Chart(object):
                                     return {f_columns};
                                 }}""".format(f_columns='+'.join(f_columns))
 
-            self._option['tooltip']['formatter'] = formatter_strings
+            self.option['tooltip']['formatter'] = formatter_strings
 
             return self._get_duplicated()
 
@@ -180,7 +181,7 @@ class Chart(object):
     def get_option(self):
         """Return Chart option that will be injected to Option Javascript object"""
 
-        return self._option
+        return self.option
 
     # ----------------------------------------------------------------------
 
@@ -190,14 +191,14 @@ class Chart(object):
         """Set x,y coordinate of an object in chart layout"""
 
         if x.startswith('-'):
-            self._option[obj]['right'] = x[1:]
+            self.option[obj]['right'] = x[1:]
         else:
-            self._option[obj]['left'] = x
+            self.option[obj]['left'] = x
 
         if y.startswith('-'):
-            self._option[obj]['top'] = y[1:]
+            self.option[obj]['top'] = y[1:]
         else:
-            self._option[obj]['bottom'] = y
+            self.option[obj]['bottom'] = y
 
     def set_title(self, title, x_pos='auto', y_pos='auto'):
         """
@@ -212,10 +213,9 @@ class Chart(object):
             Title of the chart.
         x_pos: str, {'auto', left', 'center', 'right', 'i%'}, default to 'auto'
         y_pos: str, {'auto', top', 'center', 'bottom', 'i%'}, default to 'auto'
-        
         """
 
-        self._option['title']['text'] = title
+        self.option['title']['text'] = title
         self.__set_object_pos('title', x_pos, y_pos)
 
         return self._get_duplicated()
@@ -233,7 +233,6 @@ class Chart(object):
         
         Parameters
         ----------
-        
         align: str, {'auto','left','right'}, default to 'auto'
         orient: str, {'horizontal','vertical'} default to 'horizontal'
         x_pos: str, {'auto', left', 'center', 'right', 'i%'}, default to 'auto'
@@ -244,8 +243,8 @@ class Chart(object):
         Chart Object
         """
 
-        self._option['legend']['align'] = align
-        self._option['legend']['orient'] = orient
+        self.option['legend']['align'] = align
+        self.option['legend']['orient'] = orient
         self.__set_object_pos('legend', x_pos, y_pos)
 
         return self._get_duplicated()
@@ -268,7 +267,6 @@ class Chart(object):
         
         Parameters
         ----------
-        
         save_format: {None, 'png','jpeg'} default to None
         restore: Boolean, default to False
             Whether to add Restore tool to the chart
@@ -324,7 +322,7 @@ class Chart(object):
         toolbox['align'] = align
         toolbox['orient'] = orient
 
-        self._option['toolbox'] = toolbox
+        self.option['toolbox'] = toolbox
         self.__set_object_pos('toolbox', x_pos, y_pos)
 
         return self._get_duplicated()
@@ -352,8 +350,8 @@ class Chart(object):
         """Flip the axes to make it horizontal"""
 
         self._axes_swapped = not self._axes_swapped
-        self._option['xAxis'], self._option['yAxis'] = self._option[
-            'yAxis'], self._option['xAxis']
+        self.option['xAxis'], self.option['yAxis'] = self.option[
+            'yAxis'], self.option['xAxis']
         return self
 
     # ------------------------------------------------------------------------------------------------
@@ -407,7 +405,7 @@ class Chart(object):
         from krisk.plot.make_chart import make_chart
 
         sub_chart = make_chart(df, **copy_chart._kwargs_chart_)
-        copy_chart._option = sub_chart._option
+        copy_chart.option = sub_chart.option
         copy_chart._chartId = sub_chart._chartId
         return copy_chart
 
@@ -418,14 +416,13 @@ class Chart(object):
         Parameters
         ----------
         df: pd.DataFrame
-         
         """
-        option = self.read_df(df)._option
+        option = self.read_df(df).option
         return Javascript(self._get_resync_option_strings(option))
 
     def replot(self, chart):
         """Replot entire chart to its current cell"""
-        return Javascript(self._get_resync_option_strings(chart._option))
+        return Javascript(self._get_resync_option_strings(chart.option))
 
     def _get_resync_option_strings(self, option):
         """Resync Chart option"""
@@ -446,7 +443,7 @@ class Chart(object):
         return (APPEND_ELEMENT.format(id=self._chartId,
                                       width=self._size['width'],
                                       height=self._size['height']))+\
-                (self._get_resync_option_strings(self._option))
+                (self._get_resync_option_strings(self.option))
 
     def _get_duplicated(self):
         c = deepcopy(self)
@@ -458,7 +455,7 @@ class Chart(object):
 
     def to_json(self, path):
         "Save Chart option to json file"
-        json.dump(self._option, open(path, 'w'), indent=4)
+        json.dump(self.option, open(path, 'w'), indent=4)
 
     def to_html(self, path):
         "Save full html file"
