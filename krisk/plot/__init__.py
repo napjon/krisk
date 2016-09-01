@@ -4,7 +4,7 @@ from krisk.plot.make_chart import make_chart
 def bar(df,
         x,
         y=None,
-        category=None,
+        c=None,
         how='count',
         stacked=False,
         annotate=None):
@@ -34,22 +34,25 @@ def bar(df,
     """
 
     # TODO: add optional argument trendline
-    kwargs = {}
-    kwargs['x'] = x
-    kwargs['y'] = y
-    kwargs['category'] = category
-    kwargs['how'] = how
-    kwargs['type'] = 'bar'
-    kwargs['stacked'] = stacked
-    kwargs['annotate'] = 'top' if annotate is True else annotate
 
-    return make_chart(df, **kwargs)
+    return make_chart(df,type='bar',x=x,y=y,c=c,how=how,stacked=stacked,
+                      annotate='top' if annotate == True else annotate)
+    # kwargs = {}
+    # kwargs['x'] = x
+    # kwargs['y'] = y
+    # kwargs['category'] = category
+    # kwargs['how'] = how
+    # kwargs['type'] = 'bar'
+    # kwargs['stacked'] = stacked
+    # kwargs['annotate'] = 'top' if annotate == True else annotate
+
+    # return make_chart(df, **kwargs)
 
 
 def line(df,
          x,
          y=None,
-         category=None,
+         c=None,
          how=None,
          stacked=False,
          area=False,
@@ -63,8 +66,8 @@ def line(df,
         columns to be used as category axis
     y: string, default to None
         if None, use count of category value. otherwise aggregate based on y columns
-    category: string, default to None
-        another grouping columns inside x-axis
+    c: string, default to None
+        category column inside x-axis
     how: string, default to None
         to be passed to pd.group_by(x).aggregate(how). Can be mean,median, or any 
         reduced operations.
@@ -78,22 +81,24 @@ def line(df,
     -------
     Chart Object
     """
-    kwargs = {}
-    kwargs['x'] = x
-    kwargs['y'] = y
-    kwargs['category'] = category
-    kwargs['how'] = how
-    kwargs['type'] = 'line'
-    kwargs['stacked'] = stacked
-    kwargs['area'] = area
-    kwargs['annotate'] = 'top' if annotate is True else annotate
+    return make_chart(df,type='line',x=x,y=y,c=c,how=how,stacked=stacked,area=area,
+                      annotate='top' if annotate == True else annotate)
+    # kwargs = {}
+    # kwargs['x'] = x
+    # kwargs['y'] = y
+    # kwargs['c'] = c
+    # kwargs['how'] = how
+    # kwargs['type'] = 'line'
+    # kwargs['stacked'] = stacked
+    # kwargs['area'] = area
+    # kwargs['annotate'] = 'top' if annotate == True else annotate
 
-    return make_chart(df, **kwargs)
+    # return make_chart(df, **kwargs)
 
 
 def hist(df,
          x,
-         category=None,
+         c=None,
          bins=10,
          normed=False,
          stacked=False,
@@ -105,7 +110,7 @@ def hist(df,
         data to be used for the chart
     x: string
         columns to be used as category axis
-    category: string, default to None
+    c: string, default to None
         another grouping columns inside x-axis
     bins: int, default to 10
         Set number of bins in histogram
@@ -121,19 +126,22 @@ def hist(df,
     -------
     Chart Object
     """
-    kwargs = {}
-    kwargs['x'] = x
-    kwargs['category'] = category
-    kwargs['bins'] = bins
-    kwargs['type'] = 'hist'
-    kwargs['normed'] = normed
-    kwargs['stacked'] = stacked
-    kwargs['annotate'] = 'top' if annotate is True else annotate
+    return make_chart(df,type='hist',x=x,c=c,bins=bins,normed=normed,stacked=stacked,
+                      annotate='top' if annotate == True else annotate
+)
+    # kwargs = {}
+    # kwargs['x'] = x
+    # kwargs['category'] = category
+    # kwargs['bins'] = bins
+    # kwargs['type'] = 'hist'
+    # kwargs['normed'] = normed
+    # kwargs['stacked'] = stacked
+    # kwargs['annotate'] = 'top' if annotate == True else annotate
 
-    return make_chart(df, **kwargs)
+    # return make_chart(df, **kwargs)
 
 
-def scatter(df, x, y, size=None, category=None, size_px=(10, 70)):
+def scatter(df, x, y, s=None, c=None, size_px=(10, 70)):
     """
     Parameters
     ----------
@@ -141,9 +149,9 @@ def scatter(df, x, y, size=None, category=None, size_px=(10, 70)):
         data to be used for the chart
     x,y: string, columns in pd.DataFrame
         Used as coordinate in scatter chart
-    size: string, columns in pd.DataFrame default to None
+    s: string, columns in pd.DataFrame default to None
         Used as sizing value of the scatter points
-    category: string, default to None
+    c: string, default to None
         column used as grouping color category
     size_px: tuple, default to (10,70)
         boundary size, lower and upper limit in pixel for min-max scatter points
@@ -152,14 +160,16 @@ def scatter(df, x, y, size=None, category=None, size_px=(10, 70)):
     -------
     Chart Object
     """
+    #TODO add saturation
+    return make_chart(df,type='scatter',x=x,y=y,s=s,c=c,size_px=size_px)
 
-    kwargs = {}
-    kwargs['x'] = x
-    kwargs['y'] = y
-    kwargs['category'] = category
-    kwargs['size'] = size
-    #kwargs['saturate'] = saturate #TODO: Fix saturate
-    kwargs['size_px'] = size_px
-    kwargs['type'] = 'scatter'
+    # kwargs = {}
+    # kwargs['x'] = x
+    # kwargs['y'] = y
+    # kwargs['category'] = category
+    # kwargs['size'] = size
+    # #kwargs['saturate'] = saturate #TODO: Fix saturate
+    # kwargs['size_px'] = size_px
+    # kwargs['type'] = 'scatter'
 
-    return make_chart(df, **kwargs)
+    # return make_chart(df, **kwargs)
