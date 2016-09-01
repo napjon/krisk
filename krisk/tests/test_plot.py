@@ -11,7 +11,7 @@ def test_bar(gapminder):
     p = kk.bar(gapminder,
                'year',
                y='pop',
-               category='continent',
+               c='continent',
                how='mean',
                stacked=True,
                annotate=True)
@@ -22,7 +22,7 @@ def test_bar(gapminder):
     p = kk.bar(gapminder,
                'year',
                y='pop',
-               category='continent',
+               c='continent',
                how='mean',
                stacked=True,
                annotate='all')
@@ -36,7 +36,7 @@ def test_line(gapminder):
         gapminder,
         'year',
         y='lifeExp',
-        category='continent',
+        c='continent',
         how='mean',
         stacked=True,
         area=True,
@@ -51,7 +51,7 @@ def test_hist(gapminder):
     p = kk.hist(
         gapminder,
         'lifeExp',
-        category='continent',
+        c='continent',
         bins=20,
         normed=True,
         stacked=True)
@@ -67,12 +67,12 @@ def test_scatter(gapminder):
         gapminder[gapminder.year == 1952],
         'lifeExp',
         'gdpPercap',
-        size='pop',
-        category='continent')
+        s='pop',
+        c='continent')
     assert p.get_option() == true_option
 
     # Scatter
     true_option = json.load(open(DATA_DIR + '/scatter_single.json', 'r'))
     p = kk.scatter(
-        gapminder[gapminder.year == 1952], 'lifeExp', 'gdpPercap', size='pop')
+        gapminder[gapminder.year == 1952], 'lifeExp', 'gdpPercap', s='pop')
     assert p.get_option() == true_option

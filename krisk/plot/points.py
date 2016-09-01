@@ -9,9 +9,9 @@ def set_scatter_chart(chart, df, x, y, c, **kwargs):
     chart.option['visualMap'] = []
 
     cols = [x, y]
-    size = kwargs['size']
-    if size is not None:
-        cols.append(size)
+    s = kwargs['s']
+    if s is not None:
+        cols.append(s)
 
         vmap_template_size = {'show': False,
                               'dimension': 2,
@@ -21,8 +21,8 @@ def set_scatter_chart(chart, df, x, y, c, **kwargs):
                               'inRange': {'symbolSize': [10, 70]}}
 
         vmap_size = deepcopy(vmap_template_size)
-        vmap_size['min'] = df[size].min()
-        vmap_size['max'] = df[size].max()
+        vmap_size['min'] = df[s].min()
+        vmap_size['max'] = df[s].max()
         vmap_size['inRange']['symbolSize'] = list(kwargs['size_px'][:2])
         chart.option['visualMap'].append(vmap_size)
 

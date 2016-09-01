@@ -54,22 +54,20 @@ def set_bar_line_chart(chart, df, x, c, **kwargs):
 
 def get_bar_line_data(df, x, c, y, **kwargs):
 
-    if c:
-        if y is None:
-            data = pd.crosstab(df[x], df[c])
-        else:
-            data = df.pivot_table(
+    if c and y:
+        data = df.pivot_table(
                 index=x,
                 values=y,
                 columns=c,
                 aggfunc=kwargs['how'],
                 fill_value=0)
+    elif c and y is None:
+        data = pd.crosstab(df[x], df[c])
+    elif c is None and y:
+        AssertionError('Use y in category instead')
     else:
-        if y is None:
-            data = df[x].value_counts()
-        else:
-            raise AssertionError('Use y in category instead')
-
+        data = df[x].value_counts()
+            
     return data
 
 

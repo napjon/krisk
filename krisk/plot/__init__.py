@@ -37,16 +37,6 @@ def bar(df,
 
     return make_chart(df,type='bar',x=x,y=y,c=c,how=how,stacked=stacked,
                       annotate='top' if annotate == True else annotate)
-    # kwargs = {}
-    # kwargs['x'] = x
-    # kwargs['y'] = y
-    # kwargs['category'] = category
-    # kwargs['how'] = how
-    # kwargs['type'] = 'bar'
-    # kwargs['stacked'] = stacked
-    # kwargs['annotate'] = 'top' if annotate == True else annotate
-
-    # return make_chart(df, **kwargs)
 
 
 def line(df,
@@ -83,17 +73,6 @@ def line(df,
     """
     return make_chart(df,type='line',x=x,y=y,c=c,how=how,stacked=stacked,area=area,
                       annotate='top' if annotate == True else annotate)
-    # kwargs = {}
-    # kwargs['x'] = x
-    # kwargs['y'] = y
-    # kwargs['c'] = c
-    # kwargs['how'] = how
-    # kwargs['type'] = 'line'
-    # kwargs['stacked'] = stacked
-    # kwargs['area'] = area
-    # kwargs['annotate'] = 'top' if annotate == True else annotate
-
-    # return make_chart(df, **kwargs)
 
 
 def hist(df,
@@ -127,19 +106,8 @@ def hist(df,
     Chart Object
     """
     return make_chart(df,type='hist',x=x,c=c,bins=bins,normed=normed,stacked=stacked,
-                      annotate='top' if annotate == True else annotate
-)
-    # kwargs = {}
-    # kwargs['x'] = x
-    # kwargs['category'] = category
-    # kwargs['bins'] = bins
-    # kwargs['type'] = 'hist'
-    # kwargs['normed'] = normed
-    # kwargs['stacked'] = stacked
-    # kwargs['annotate'] = 'top' if annotate == True else annotate
-
-    # return make_chart(df, **kwargs)
-
+                      annotate='top' if annotate == True else annotate)
+   
 
 def scatter(df, x, y, s=None, c=None, size_px=(10, 70)):
     """
@@ -162,14 +130,3 @@ def scatter(df, x, y, s=None, c=None, size_px=(10, 70)):
     """
     #TODO add saturation
     return make_chart(df,type='scatter',x=x,y=y,s=s,c=c,size_px=size_px)
-
-    # kwargs = {}
-    # kwargs['x'] = x
-    # kwargs['y'] = y
-    # kwargs['category'] = category
-    # kwargs['size'] = size
-    # #kwargs['saturate'] = saturate #TODO: Fix saturate
-    # kwargs['size_px'] = size_px
-    # kwargs['type'] = 'scatter'
-
-    # return make_chart(df, **kwargs)
