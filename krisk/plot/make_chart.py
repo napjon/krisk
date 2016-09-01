@@ -14,7 +14,7 @@ def round_list(arr):
                     .values.tolist())
 
 
-def insert_series_data(data, x, chart_type, c, cat=None):
+def insert_series_data(data, x, chart_type, chart, cat=None):
     elem_series = {'name': '', 'type': chart_type, 'data': []}
     series = deepcopy(elem_series)
     series['data'] = round_list(data)
@@ -22,11 +22,11 @@ def insert_series_data(data, x, chart_type, c, cat=None):
 
     if cat:
         series['name'] = cat
-        c._option['legend']['data'].append(str(cat))
+        chart.option['legend']['data'].append(str(cat))
     else:
         series['name'] = x
 
-    c._option['series'].append(series)
+    chart.option['series'].append(series)
 
     return series
 
@@ -36,16 +36,16 @@ def make_chart(df, **kwargs):
     from krisk.plot.bar_line import set_bar_line_chart
     from krisk.plot.points import set_scatter_chart
 
-    c = Chart(**kwargs)
-    c._kwargs_chart_['data_columns'] = df.columns
+    chart = Chart(**kwargs)
+    chart._kwargs_chart_['data_columns'] = df.columns
     x = kwargs['x']
     y = kwargs.get('y')
     category = kwargs['category']
 
     if kwargs['type'] in ['bar', 'line', 'hist']:
-        set_bar_line_chart(c, df, **kwargs)
+        set_bar_line_chart(chart, df, **kwargs)
 
     elif kwargs['type'] == 'scatter':
-        set_scatter_chart(c, df, **kwargs)
+        set_scatter_chart(chart, df, **kwargs)
 
-    return c
+    return chart

@@ -41,7 +41,7 @@ def bar(df,
     kwargs['how'] = how
     kwargs['type'] = 'bar'
     kwargs['stacked'] = stacked
-    kwargs['annotate'] = 'top' if annotate == True else annotate
+    kwargs['annotate'] = 'top' if annotate is True else annotate
 
     return make_chart(df, **kwargs)
 
@@ -86,7 +86,7 @@ def line(df,
     kwargs['type'] = 'line'
     kwargs['stacked'] = stacked
     kwargs['area'] = area
-    kwargs['annotate'] = 'top' if annotate == True else annotate
+    kwargs['annotate'] = 'top' if annotate is True else annotate
 
     return make_chart(df, **kwargs)
 
@@ -128,7 +128,7 @@ def hist(df,
     kwargs['type'] = 'hist'
     kwargs['normed'] = normed
     kwargs['stacked'] = stacked
-    kwargs['annotate'] = 'top' if annotate == True else annotate
+    kwargs['annotate'] = 'top' if annotate is True else annotate
 
     return make_chart(df, **kwargs)
 
