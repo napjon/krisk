@@ -14,7 +14,7 @@ def round_list(arr):
                     .values.tolist())
 
 
-def insert_series_data(data, x, chart_type, c, cat=None):
+def insert_series_data(data, x, chart_type, chart, cat=None):
     elem_series = {'name': '', 'type': chart_type, 'data': []}
     series = deepcopy(elem_series)
     series['data'] = round_list(data)
@@ -22,11 +22,11 @@ def insert_series_data(data, x, chart_type, c, cat=None):
 
     if cat:
         series['name'] = cat
-        c.option['legend']['data'].append(str(cat))
+        chart.option['legend']['data'].append(str(cat))
     else:
         series['name'] = x
 
-    c.option['series'].append(series)
+    chart.option['series'].append(series)
 
     return series
 
@@ -48,4 +48,4 @@ def make_chart(df, **kwargs):
     elif kwargs['type'] == 'scatter':
         set_scatter_chart(chart, df, **kwargs)
 
-    return c
+    return chart

@@ -2,11 +2,11 @@ from copy import deepcopy
 from krisk.plot.make_chart import insert_series_data
 
 
-def set_scatter_chart(c, df, x, y, category, **kwargs):
+def set_scatter_chart(chart, df, x, y, category, **kwargs):
 
-    c.option['xAxis'] = {'type': 'value', 'name': x, 'max': int(df[x].max())}
-    c.option['yAxis'] = {'type': 'value', 'name': y, 'max': int(df[y].max())}
-    c.option['visualMap'] = []
+    chart.option['xAxis'] = {'type': 'value', 'name': x, 'max': int(df[x].max())}
+    chart.option['yAxis'] = {'type': 'value', 'name': y, 'max': int(df[y].max())}
+    chart.option['visualMap'] = []
 
     cols = [x, y]
     size = kwargs['size']
@@ -24,7 +24,7 @@ def set_scatter_chart(c, df, x, y, category, **kwargs):
         vmap_size['min'] = df[size].min()
         vmap_size['max'] = df[size].max()
         vmap_size['inRange']['symbolSize'] = list(kwargs['size_px'][:2])
-        c.option['visualMap'].append(vmap_size)
+        chart.option['visualMap'].append(vmap_size)
 
     #TODO: Fix Saturate
     #          saturate = kwargs['saturate']
@@ -37,11 +37,11 @@ def set_scatter_chart(c, df, x, y, category, **kwargs):
     #             cols.append(saturate)
 
     columns = cols + df.columns.difference(cols).tolist()
-    c._kwargs_chart_['columns'] = columns
+    chart._kwargs_chart_['columns'] = columns
     data = df[columns]
     if category:
         #Iterate and append Data for every category
         for cat, subset in data.groupby(category):
-            insert_series_data(subset, x, kwargs['type'], c, cat)
+            insert_series_data(subset, x, kwargs['type'], chart, cat)
     else:
-        insert_series_data(data, x, kwargs['type'], c)
+        insert_series_data(data, x, kwargs['type'], chart)
