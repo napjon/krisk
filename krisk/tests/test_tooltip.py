@@ -6,7 +6,7 @@ DATA_DIR = 'krisk/tests/data'
 
 
 def test_tooltip(gap_chart):
-    tooltip = gap_chart._option['tooltip']
+    tooltip = gap_chart.option['tooltip']
     true_tooltip = json.load(open(DATA_DIR + '/tooltip.json', 'r'))
     assert tooltip == true_tooltip
 
@@ -24,7 +24,7 @@ def test_tooltip_style():
 
 def test_option(gap_chart):
     true_option = json.load(open(DATA_DIR + '/scatter_tooltip.json', 'r'))
-    assert gap_chart._option == true_option
+    assert gap_chart.option == true_option
 
 
 def test_repr(gap_chart):
