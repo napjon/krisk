@@ -28,6 +28,17 @@ def test_bar(gapminder):
                annotate='all')
     assert p.get_option() == true_option
 
+    p = kk.bar(gapminder,'continent',y='gdpPercap',how='mean')
+    assert p.get_option() == {'legend': {'data': []},
+                             'series': [{'data': [4426.026, 8955.554, 802.675, 3255.367, 19980.596],
+                               'name': 'continent',
+                               'type': 'bar'}],
+                             'title': {'text': ''},
+                             'tooltip': {'axisPointer': {'type': ''}},
+                             'xAxis': {'data': ['Africa', 'Americas', 'Asia', 'Europe', 'Oceania']},
+                             'yAxis': {}}
+
+
 
 def test_line(gapminder):
 

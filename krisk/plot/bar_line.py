@@ -6,6 +6,7 @@ from krisk.plot.make_chart import insert_series_data
 
 
 def set_bar_line_chart(chart, df, x, c, **kwargs):
+    """Construct Bar, Line, and Histogram"""
 
     data = None
     chart_type = kwargs['type']
@@ -53,7 +54,8 @@ def set_bar_line_chart(chart, df, x, c, **kwargs):
 
 
 def get_bar_line_data(df, x, c, y, **kwargs):
-
+    """Get Bar and Line manipulated data"""
+    
     if c and y:
         data = df.pivot_table(
                 index=x,
@@ -64,7 +66,7 @@ def get_bar_line_data(df, x, c, y, **kwargs):
     elif c and y is None:
         data = pd.crosstab(df[x], df[c])
     elif c is None and y:
-        AssertionError('Use y in category instead')
+        data = df.groupby(x)[y].agg(kwargs['how'])
     else:
         data = df[x].value_counts()
             
@@ -72,6 +74,7 @@ def get_bar_line_data(df, x, c, y, **kwargs):
 
 
 def get_hist_data(df, x, c, **kwargs):
+    """Get Histogram manipulated data"""
 
     y_val, x_val = np.histogram(
         df[x], bins=kwargs['bins'], normed=kwargs['normed'])
