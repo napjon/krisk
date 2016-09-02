@@ -11,7 +11,7 @@ def test_bar(gapminder):
     p = kk.bar(gapminder,
                'year',
                y='pop',
-               category='continent',
+               c='continent',
                how='mean',
                stacked=True,
                annotate=True)
@@ -22,11 +22,22 @@ def test_bar(gapminder):
     p = kk.bar(gapminder,
                'year',
                y='pop',
-               category='continent',
+               c='continent',
                how='mean',
                stacked=True,
                annotate='all')
     assert p.get_option() == true_option
+
+    p = kk.bar(gapminder,'continent',y='gdpPercap',how='mean')
+    assert p.get_option() == {'legend': {'data': []},
+                             'series': [{'data': [4426.026, 8955.554, 802.675, 3255.367, 19980.596],
+                               'name': 'continent',
+                               'type': 'bar'}],
+                             'title': {'text': ''},
+                             'tooltip': {'axisPointer': {'type': ''}},
+                             'xAxis': {'data': ['Africa', 'Americas', 'Asia', 'Europe', 'Oceania']},
+                             'yAxis': {}}
+
 
 
 def test_line(gapminder):
@@ -36,7 +47,7 @@ def test_line(gapminder):
         gapminder,
         'year',
         y='lifeExp',
-        category='continent',
+        c='continent',
         how='mean',
         stacked=True,
         area=True,
@@ -51,7 +62,7 @@ def test_hist(gapminder):
     p = kk.hist(
         gapminder,
         'lifeExp',
-        category='continent',
+        c='continent',
         bins=20,
         normed=True,
         stacked=True)
@@ -67,12 +78,12 @@ def test_scatter(gapminder):
         gapminder[gapminder.year == 1952],
         'lifeExp',
         'gdpPercap',
-        size='pop',
-        category='continent')
+        s='pop',
+        c='continent')
     assert p.get_option() == true_option
 
     # Scatter
     true_option = json.load(open(DATA_DIR + '/scatter_single.json', 'r'))
     p = kk.scatter(
-        gapminder[gapminder.year == 1952], 'lifeExp', 'gdpPercap', size='pop')
+        gapminder[gapminder.year == 1952], 'lifeExp', 'gdpPercap', s='pop')
     assert p.get_option() == true_option

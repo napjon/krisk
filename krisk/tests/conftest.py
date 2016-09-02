@@ -28,8 +28,8 @@ def gap_chart(gapminder):
         gapminder[gapminder.year == 2007],
         'lifeExp',
         'gdpPercap',
-        size='pop',
-        category='continent')
+        s='pop',
+        c='continent')
     p.set_size(width=1000, height=500)
     p.set_tooltip_format(
         ['country', 'lifeExp', 'gdpPercap', 'pop', 'continent'])
