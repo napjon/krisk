@@ -40,16 +40,18 @@ def set_bar_line_chart(chart, df, x, c, **kwargs):
                 s['areaStyle'] = {'normal': {}}
 
             if kwargs['annotate'] == 'all':
+                s['label'] = deepcopy(d_annotate)
 
                 if chart_type == 'bar':
-                    d_ant = deepcopy(d_annotate)
-                    d_ant['normal']['position'] = 'inside'
-                    s['label'] = deepcopy(d_ant)
-                else:
-                    s['label'] = deepcopy(d_annotate)
+                    s['label']['normal']['position'] = 'inside'
+
+        if kwargs['type'] in ['line','bar'] and kwargs['full']:
+            chart.option['yAxis']['max'] = 1
 
     if kwargs['annotate'] == 'top':
         series[-1]['label'] = d_annotate
+
+    
     # TODO: make annotate receive all kinds supported in echarts.
 
 
@@ -69,6 +71,10 @@ def get_bar_line_data(df, x, c, y, **kwargs):
         data = df.groupby(x)[y].agg(kwargs['how'])
     else:
         data = df[x].value_counts()
+
+
+    if c and kwargs['stacked'] and kwargs['full']:
+        data = data.div(data.sum(1),axis=0)
             
     return data
 
