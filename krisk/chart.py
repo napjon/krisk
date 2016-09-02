@@ -152,11 +152,11 @@ class Chart(object):
             raise TypeError('Chart Type not supported')
         else:
             f_columns = []
-            for c in columns:
-                if isinstance(c, str):
-                    key, unit = c, ' '
-                elif isinstance(c, tuple):
-                    key, unit = c
+            for col in columns:
+                if isinstance(col, str):
+                    key, unit = col, ' '
+                elif isinstance(col, tuple):
+                    key, unit = col
                 else:
                     raise TypeError('Columns type not supported')
 
@@ -446,9 +446,9 @@ class Chart(object):
                 (self._get_resync_option_strings(self.option))
 
     def _get_duplicated(self):
-        c = deepcopy(self)
-        c._chartId = str(uuid.uuid4())
-        return c
+        chart = deepcopy(self)
+        chart._chartId = str(uuid.uuid4())
+        return chart
     # ----------------------------------------------------------------------
 
     # Saving chart option
