@@ -7,7 +7,8 @@ def bar(df,
         c=None,
         how='count',
         stacked=False,
-        annotate=None):
+        annotate=None,
+        full=False):
     """
     Parameters
     ----------
@@ -26,7 +27,9 @@ def bar(df,
         Whether to stacked category on top of the other categories.
     annotate: string, {'all',True} default to None
         if True, annotate value on top of the plot element. If stacked is also True, annotate the last
-        category. if 'all' and stacked, annotate all category 
+        category. if 'all' and stacked, annotate all category
+    full: boolean, default to False.
+        If true, set to full area stacked chart. Only work if stacked is True.
     
     Returns
     -------
@@ -35,7 +38,7 @@ def bar(df,
 
     # TODO: add optional argument trendline
 
-    return make_chart(df,type='bar',x=x,y=y,c=c,how=how,stacked=stacked,
+    return make_chart(df,type='bar',x=x,y=y,c=c,how=how,stacked=stacked,full=full,
                       annotate='top' if annotate == True else annotate)
 
 
@@ -46,7 +49,8 @@ def line(df,
          how=None,
          stacked=False,
          area=False,
-         annotate=None):
+         annotate=None,
+         full=False):
     """
     Parameters
     ----------
@@ -65,13 +69,15 @@ def line(df,
         Whether to stacked category on top of the other categories.
     annotate: string, {'all',True} default to None
         if True, annotate value on top of the plot element. If stacked is also True, annotate the last
-        category. if 'all' and stacked, annotate all category 
+        category. if 'all' and stacked, annotate all category
+    full: boolean, default to False.
+        If true, set to full area stacked chart. Only work if stacked is True.
     
     Returns
     -------
     Chart Object
     """
-    return make_chart(df,type='line',x=x,y=y,c=c,how=how,stacked=stacked,area=area,
+    return make_chart(df,type='line',x=x,y=y,c=c,how=how,stacked=stacked,area=area,full=full,
                       annotate='top' if annotate == True else annotate)
 
 
