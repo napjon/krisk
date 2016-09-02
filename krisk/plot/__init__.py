@@ -8,7 +8,8 @@ def bar(df,
         how='count',
         stacked=False,
         annotate=None,
-        full=False):
+        full=False,
+        trendline=False):
     """
     Parameters
     ----------
@@ -26,10 +27,13 @@ def bar(df,
     stacked: Boolean, default to False.
         Whether to stacked category on top of the other categories.
     annotate: string, {'all',True} default to None
-        if True, annotate value on top of the plot element. If stacked is also True, annotate the last
-        category. if 'all' and stacked, annotate all category
+        if True, annotate value on top of the plot element. If stacked is also True, annotate the 
+        last category. if 'all' and stacked, annotate all category
     full: boolean, default to False.
         If true, set to full area stacked chart. Only work if stacked is True.
+    trendline: boolean, default to False.
+        If true, add line that connected the bars. Only work if not category, category but stacked,
+        or not full.  
     
     Returns
     -------
@@ -39,6 +43,7 @@ def bar(df,
     # TODO: add optional argument trendline
 
     return make_chart(df,type='bar',x=x,y=y,c=c,how=how,stacked=stacked,full=full,
+                      trendline=trendline,
                       annotate='top' if annotate == True else annotate)
 
 
