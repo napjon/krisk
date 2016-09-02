@@ -3,11 +3,12 @@ import pytest
 import krisk.plot as kk
 DATA_DIR = 'krisk/tests/data'
 
+read_option_tests = lambda f: json.load(open(DATA_DIR + '/' + f, 'r'))
 
 def test_bar(gapminder):
 
     #Bar
-    true_option = json.load(open(DATA_DIR + '/bar.json', 'r'))
+    true_option = read_option_tests('bar.json')
     p = kk.bar(gapminder,
                'year',
                y='pop',
@@ -17,8 +18,14 @@ def test_bar(gapminder):
                annotate=True)
     assert p.get_option() == true_option
 
+    #Bar with x-axis and category
+    true_option = read_option_tests('bar_x_c.json')
+    p = kk.bar(gapminder,'year',c='continent',stacked=True)
+    assert p.get_option() == true_option
+
+
     # Bar Annotate All
-    true_option = json.load(open(DATA_DIR + '/bar_ann_all.json', 'r'))
+    true_option = read_option_tests('/bar_ann_all.json')
     p = kk.bar(gapminder,
                'year',
                y='pop',
@@ -42,7 +49,7 @@ def test_bar(gapminder):
 
 def test_line(gapminder):
 
-    true_option = json.load(open(DATA_DIR + '/line.json', 'r'))
+    true_option = read_option_tests('line.json')
     p = kk.line(
         gapminder,
         'year',
@@ -55,8 +62,27 @@ def test_line(gapminder):
 
     assert p.get_option() == true_option
 
+def test_full_bar_line(gapminder):
+    bar = kk.bar(gapminder,'year',c='continent',y='pop',how='mean',stacked=True,full=True,annotate='all')
+    line = kk.line(gapminder,'year',c='continent',y='pop',how='mean',stacked=True,full=True,annotate='all')
+   
+    for i in range(len(bar.option['series'])):
+            bar.option['series'][i].pop('type')
+            line.option['series'][i].pop('type')
+
+            bar.option['series'][i].pop('label')
+            line.option['series'][i].pop('label')
+
+    true_option = read_option_tests('full_bar_line.json')
+
+    assert bar.option == line.option == true_option
 
 def test_hist(gapminder):
+
+    true_option  = read_option_tests('hist_x.json')
+    p = kk.hist(gapminder,'lifeExp',bins=10)
+    assert p.get_option() == true_option
+
 
     true_option = json.load(open(DATA_DIR + '/hist.json', 'r'))
     p = kk.hist(
@@ -71,6 +97,10 @@ def test_hist(gapminder):
 
 
 def test_scatter(gapminder):
+    # Simple Scatter
+    p = kk.scatter(gapminder[gapminder.year == 1952],'pop','lifeExp')
+    true_option = read_option_tests('simple_scatter.json')
+    assert p.get_option() == true_option
 
     # Grouped Scatter
     true_option = json.load(open(DATA_DIR + '/scatter.json', 'r'))
@@ -83,7 +113,7 @@ def test_scatter(gapminder):
     assert p.get_option() == true_option
 
     # Scatter
-    true_option = json.load(open(DATA_DIR + '/scatter_single.json', 'r'))
+    true_option = read_option_tests('scatter_single.json')
     p = kk.scatter(
         gapminder[gapminder.year == 1952], 'lifeExp', 'gdpPercap', s='pop')
     assert p.get_option() == true_option
