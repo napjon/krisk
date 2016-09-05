@@ -19,8 +19,6 @@ def set_bar_line_chart(chart, df, x, c, **kwargs):
         chart_type = 'bar'
         data, bins = get_hist_data(df, x, c, **kwargs)
         chart.option['xAxis']['data'] = bins
-    else:
-        raise AssertionError('This chart type is not supported in bar_line!')
 
     if c:
         # append data for every category
