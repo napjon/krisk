@@ -51,6 +51,20 @@ def set_bar_line_chart(chart, df, x, c, **kwargs):
     if kwargs['annotate'] == 'top':
         series[-1]['label'] = d_annotate
 
+    if kwargs['type'] == 'bar' and kwargs['trendline']:
+        trendline = {'name':'trendline', 'type': 'line'}
+
+        if c and kwargs['stacked']:
+            trendline['data']  =  [0] * len(series[-1]['data'])
+            trendline['stack'] = c
+        elif c is None:
+            trendline['data'] = series[0]['data']
+        else:
+            raise AssertionError('Trendline must either stacked category, or not category')
+
+        series.append(trendline)
+
+
     
     # TODO: make annotate receive all kinds supported in echarts.
 
