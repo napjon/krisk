@@ -77,6 +77,20 @@ def test_full_bar_line(gapminder):
 
     assert bar.option == line.option == true_option
 
+
+def test_trendline(gapminder):
+
+    p = kk.bar(gapminder,'year',how='mean',y='pop',trendline=True)
+    assert p.get_option() == read_option_tests('bar_year_pop_mean_trendline.json')
+
+    p = kk.bar(gapminder,'year',how='mean',y='pop',trendline=True,c='continent',stacked=True)
+    assert p.get_option() == read_option_tests('bar_year_pop_mean_continent_trendline.json')
+
+    try:
+        kk.bar(gapminder,'year',how='mean',y='pop',trendline=True,c='continent')
+    except AssertionError:
+        pass
+
 def test_hist(gapminder):
 
     true_option  = read_option_tests('hist_x.json')
