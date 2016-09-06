@@ -1,0 +1,154 @@
+{
+    "xAxis": {
+        "boundaryGap": false,
+        "data": [
+            0,
+            28,
+            34,
+            39,
+            44,
+            49,
+            55,
+            60,
+            65,
+            70,
+            75,
+            81,
+            0
+        ]
+    },
+    "legend": {
+        "data": [
+            "Africa",
+            "Americas",
+            "Asia",
+            "Europe",
+            "Oceania"
+        ]
+    },
+    "title": {
+        "text": ""
+    },
+    "yAxis": {},
+    "series": [
+        {
+            "name": "Africa",
+            "stack": "continent",
+            "type": "bar",
+            "data": [
+                0,
+                0,
+                0,
+                1,
+                2,
+                2,
+                1,
+                1,
+                3,
+                2,
+                0
+            ]
+        },
+        {
+            "name": "Americas",
+            "stack": "continent",
+            "type": "bar",
+            "data": [
+                0,
+                0,
+                0,
+                0,
+                0,
+                0,
+                0,
+                3,
+                4,
+                5,
+                0
+            ]
+        },
+        {
+            "name": "Asia",
+            "stack": "continent",
+            "type": "bar",
+            "data": [
+                0,
+                3,
+                2,
+                6,
+                0,
+                0,
+                0,
+                0,
+                0,
+                0,
+                0
+            ]
+        },
+        {
+            "name": "Europe",
+            "stack": "continent",
+            "type": "bar",
+            "data": [
+                0,
+                0,
+                0,
+                0,
+                0,
+                0,
+                2,
+                1,
+                4,
+                4,
+                1
+            ]
+        },
+        {
+            "name": "Oceania",
+            "stack": "continent",
+            "type": "bar",
+            "data": [
+                0,
+                0,
+                0,
+                0,
+                0,
+                0,
+                0,
+                0,
+                2,
+                5,
+                5
+            ]
+        },
+        {
+            "lineStyle": {
+                "normal": {
+                    "color": "#000"
+                }
+            },
+            "data": [
+                0,
+                3,
+                2,
+                7,
+                2,
+                2,
+                3,
+                5,
+                13,
+                16,
+                6,
+                0
+            ],
+            "smooth": true,
+            "type": "line",
+            "name": "density"
+        }
+    ],
+    "tooltip": {
+        "axisPointer": {
+            "type": ""
+        }
+    }
+}

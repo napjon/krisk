@@ -96,7 +96,8 @@ def hist(df,
          bins=10,
          normed=False,
          stacked=False,
-         annotate=None):
+         annotate=None,
+         density=False):
     """
     Parameters
     ----------
@@ -114,13 +115,16 @@ def hist(df,
         Whether to stacked category on top of the other categories.
     annotate: string, {'all',True} default to None
         if True, annotate value on top of the plot element. If stacked is also True, annotate the last
-        category. if 'all' and stacked, annotate all category 
+        category. if 'all' and stacked, annotate all category
+    density: boolean, default to False.
+        Whether to add density to the plot
     
     Returns
     -------
     Chart Object
     """
     return make_chart(df,type='hist',x=x,c=c,bins=bins,normed=normed,stacked=stacked,
+                      density=density,
                       annotate='top' if annotate == True else annotate)
    
 
@@ -138,6 +142,7 @@ def scatter(df, x, y, s=None, c=None, size_px=(10, 70)):
         column used as grouping color category
     size_px: tuple, default to (10,70)
         boundary size, lower and upper limit in pixel for min-max scatter points
+
         
     Returns
     -------

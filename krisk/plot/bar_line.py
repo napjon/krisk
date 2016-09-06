@@ -2,7 +2,7 @@ from copy import deepcopy
 import numpy as np
 import pandas as pd
 
-from krisk.plot.make_chart import insert_series_data
+from krisk.plot.make_chart import insert_series_data, round_list
 
 
 def set_bar_line_chart(chart, df, x, c, **kwargs):
@@ -50,9 +50,12 @@ def set_bar_line_chart(chart, df, x, c, **kwargs):
 
     if kwargs['annotate'] == 'top':
         series[-1]['label'] = d_annotate
+     # TODO: make annotate receive all kinds supported in echarts.
 
+    # Special Bar Condition: Trendline
     if kwargs['type'] == 'bar' and kwargs['trendline']:
-        trendline = {'name':'trendline', 'type': 'line'}
+        trendline = {'name':'trendline', 'type': 'line',
+                     'lineStyle': {'normal': {'color': '#000'}}}
 
         if c and kwargs['stacked']:
             trendline['data']  =  [0] * len(series[-1]['data'])
@@ -64,14 +67,39 @@ def set_bar_line_chart(chart, df, x, c, **kwargs):
 
         series.append(trendline)
 
+    # Special Line Condition: Smooth
     if kwargs['type'] == 'line' and kwargs['smooth']:
         for s in series:
             s['smooth'] = True
-            
+
+
+    # Special Histogram Condition: Density
+    #TODO NEED IMPROVEMENT!
+    if kwargs['type'] == 'hist' and kwargs['density']:
+        
+        density = {'name':'density', 'type': 'line', 'smooth': True,
+                   'lineStyle': {'normal': {'color': '#000'}}}
+        chart.option['xAxis']['boundaryGap'] = False
+
+        # The density have to be closed at zero. So all of xAxis and series must be updated
+        # To incorporate the changes
+        chart.option['xAxis']['data'] = [0] + chart.option['xAxis']['data'] + [0]
+
+        for s in series:
+            s['data'] = [0] + s['data']
+
+        if c and kwargs['stacked']:
+            density['data'] = [0] + round_list(data.sum(axis=1)) + [0]
+        elif c is None:
+            density['data'] =  [0] + round_list(data) + [0] 
+        else:
+            raise AssertionError('Density must either stacked category, or not category')
+
+        series.append(density)
 
 
     
-    # TODO: make annotate receive all kinds supported in echarts.
+   
 
 
 def get_bar_line_data(df, x, c, y, **kwargs):
