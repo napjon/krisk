@@ -45,7 +45,18 @@ def test_bar(gapminder):
                              'xAxis': {'data': ['Africa', 'Americas', 'Asia', 'Europe', 'Oceania']},
                              'yAxis': {}}
 
+def test_trendline(gapminder):
 
+    p = kk.bar(gapminder,'year',how='mean',y='pop',trendline=True)
+    assert p.get_option() == read_option_tests('bar_year_pop_mean_trendline.json')
+
+    p = kk.bar(gapminder,'year',how='mean',y='pop',trendline=True,c='continent',stacked=True)
+    assert p.get_option() == read_option_tests('bar_year_pop_mean_continent_trendline.json')
+
+    try:
+        kk.bar(gapminder,'year',how='mean',y='pop',trendline=True,c='continent')
+    except AssertionError:
+        pass
 
 def test_line(gapminder):
 
@@ -61,6 +72,11 @@ def test_line(gapminder):
         annotate='all')
 
     assert p.get_option() == true_option
+
+def test_smooth_line(gapminder):
+
+    p = kk.line(gapminder[gapminder.year == 1952],'continent',y='pop',how='mean',smooth=True)
+    assert p.get_option()['series'][0]['smooth'] == True
 
 def test_full_bar_line(gapminder):
     bar = kk.bar(gapminder,'year',c='continent',y='pop',how='mean',stacked=True,full=True,annotate='all')
@@ -78,19 +94,6 @@ def test_full_bar_line(gapminder):
     assert bar.option == line.option == true_option
 
 
-def test_trendline(gapminder):
-
-    p = kk.bar(gapminder,'year',how='mean',y='pop',trendline=True)
-    assert p.get_option() == read_option_tests('bar_year_pop_mean_trendline.json')
-
-    p = kk.bar(gapminder,'year',how='mean',y='pop',trendline=True,c='continent',stacked=True)
-    assert p.get_option() == read_option_tests('bar_year_pop_mean_continent_trendline.json')
-
-    try:
-        kk.bar(gapminder,'year',how='mean',y='pop',trendline=True,c='continent')
-    except AssertionError:
-        pass
-
 def test_hist(gapminder):
 
     true_option  = read_option_tests('hist_x.json')
@@ -98,7 +101,7 @@ def test_hist(gapminder):
     assert p.get_option() == true_option
 
 
-    true_option = json.load(open(DATA_DIR + '/hist.json', 'r'))
+    true_option = read_option_tests('hist.json')
     p = kk.hist(
         gapminder,
         'lifeExp',
@@ -110,6 +113,30 @@ def test_hist(gapminder):
     assert p.get_option() == true_option
 
 
+def test_density(gapminder):
+
+    option = kk.hist(gapminder,'lifeExp',density=True).get_option()
+
+    assert option['series'][0]['data'] == [0, 4, 2, 7, 2, 2, 3, 5, 13, 16, 6]
+    assert option['series'][-1] == {'data': [0, 4, 2, 7, 2, 2, 3, 5, 13, 16, 6, 0],
+                                   'lineStyle': {'normal': {'color': '#000'}},
+                                   'name': 'density',
+                                   'smooth': True,
+                                   'type': 'line'}
+    assert option['xAxis'] == {'boundaryGap': False,
+                               'data': [0, 28, 34, 39, 44, 49, 55, 60, 65, 70, 75, 81, 0]}
+
+    true_option = read_option_tests('hist_lifeExp_b10_continent_density.json')
+    option2 = kk.hist(gapminder,'lifeExp',bins=10,c='continent',stacked=True,density=True).get_option()
+    assert true_option == option2
+
+    try:
+        kk.hist(gapminder,'year',density=True,c='continent')
+    except AssertionError:
+        pass
+
+
+
 def test_scatter(gapminder):
     # Simple Scatter
     p = kk.scatter(gapminder[gapminder.year == 1952],'pop','lifeExp')
@@ -117,7 +144,7 @@ def test_scatter(gapminder):
     assert p.get_option() == true_option
 
     # Grouped Scatter
-    true_option = json.load(open(DATA_DIR + '/scatter.json', 'r'))
+    true_option = read_option_tests('scatter.json')
     p = kk.scatter(
         gapminder[gapminder.year == 1952],
         'lifeExp',
