@@ -130,6 +130,11 @@ def test_density(gapminder):
     option2 = kk.hist(gapminder,'lifeExp',bins=10,c='continent',stacked=True,density=True).get_option()
     assert true_option == option2
 
+    try:
+        kk.hist(gapminder,'year',density=True,c='continent')
+    except AssertionError:
+        pass
+
 
 
 def test_scatter(gapminder):
