@@ -64,6 +64,11 @@ def set_bar_line_chart(chart, df, x, c, **kwargs):
 
         series.append(trendline)
 
+    if kwargs['type'] == 'line' and kwargs['smooth']:
+        for s in series:
+            s['smooth'] = True
+            
+
 
     
     # TODO: make annotate receive all kinds supported in echarts.
@@ -89,6 +94,7 @@ def get_bar_line_data(df, x, c, y, **kwargs):
 
     if c and kwargs['stacked'] and kwargs['full']:
         data = data.div(data.sum(1),axis=0)
+
             
     return data
 

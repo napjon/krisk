@@ -109,6 +109,12 @@ def test_hist(gapminder):
 
     assert p.get_option() == true_option
 
+def test_smoth_line(gapminder):
+
+    p = kk.line(gapminder[gapminder.year == 1952],'continent',y='pop',how='mean',smooth=True)
+    assert p.get_option()['series'][0]['smooth'] == True
+
+
 
 def test_scatter(gapminder):
     # Simple Scatter
