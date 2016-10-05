@@ -42,6 +42,8 @@ Krisk bring Echarts to Python Data Science Ecosystem, and helpful tools for high
 # Install
 ```Python
 pip install jupyter pandas krisk
+jupyter nbextension install --py krisk --sys-prefix
+jupyter nbextension enable  --py krisk --sys-prefix
 ```
 
 
