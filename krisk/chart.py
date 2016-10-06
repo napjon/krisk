@@ -363,6 +363,64 @@ class Chart(object):
             'yAxis'], self.option['xAxis']
         return self
 
+    def _set_label_axes(self, xy, name='', h_align='middle', v_align=30, rotation=0, font_size=16):
+        """Set label axes name and other customization"""
+        label_kwargs = dict(name=name,
+                            nameLocation=h_align,
+                            nameGap=v_align,
+                            nameTextStyle={'fontSize':font_size},
+                            nameRotate=rotation)
+
+        assert xy in ['x','y']
+        self.option[xy + 'Axis'].update(**label_kwargs)
+        return self
+
+    def set_xlabel(self, name, **kwargs):
+        """Set x-axis label and other type of customization.
+
+        Parameters
+        ----------
+        name: the label of axes
+        h_align: {start, middle, end}, default middle
+            horizontal alignment of label. start will position the label at leftmost position
+        v_align: int default 30
+            vertical alignment position of label. zero makes close to x-axis and going further away
+        rotation: int default 0
+            the rotation of the label
+        font_size: int default 16
+            the font size of the label
+
+        Return
+        ------
+        Chart object
+        """
+        return self._set_label_axes('x', name=name, **kwargs)
+
+    def set_ylabel(self, name, **kwargs):
+        """Set y-axis label and other type of customization.
+        
+        Parameters
+        ----------
+        name: the label of axes
+        h_align: {start, middle, end}, default middle
+            vertical alignment of label. start will position the label at bottom position
+        v_align: int default 30
+            horizontal alignment position of label. zero makes close to y-axis and going further 
+            away
+        rotation: int default 90
+            the rotation of the label
+        font_size: int default 16
+            the font size of the label
+
+        Return
+        ------
+        Chart object
+        """
+
+        if kwargs.get('rotation', None) is None:
+            kwargs['rotation'] = 90
+        return self._set_label_axes('y', name=name, **kwargs)
+
     # ------------------------------------------------------------------------------------------------
     # Events
     def on_event(self, event, handler):
