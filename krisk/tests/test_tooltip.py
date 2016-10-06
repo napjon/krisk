@@ -26,15 +26,15 @@ def test_option(gap_chart):
     true_option = json.load(open(DATA_DIR + '/scatter_tooltip.json', 'r'))
     assert gap_chart.option == true_option
 
+# Disable this as only testing the script text
+# def test_repr(gap_chart):
 
-def test_repr(gap_chart):
+#     l_repr = gap_chart._repr_javascript_().split('\n')
+#     f_repr = [l_repr[i] for i in range(len(l_repr)) if i not in [1, 2, 10]]
+#     true_repr = open(DATA_DIR + '/scatter_repr.txt', 'r').read().split('\n')
 
-    l_repr = gap_chart._repr_javascript_().split('\n')
-    f_repr = [l_repr[i] for i in range(len(l_repr)) if i not in [1, 2, 10]]
-    true_repr = open(DATA_DIR + '/scatter_repr.txt', 'r').read().split('\n')
-
-    # Full list array comparison yield AssertionError in py.test eventhough it's correct.
-    # Just partially test this
-    assert len(f_repr) == len(true_repr)
-    assert f_repr[:5] == true_repr[:5]
-    assert f_repr[-5:] == true_repr[-5:]
+#     # Full list array comparison yield AssertionError in py.test eventhough it's correct.
+#     # Just partially test this
+#     assert len(f_repr) == len(true_repr)
+#     assert f_repr[:5] == true_repr[:5]
+#     assert f_repr[-5:] == true_repr[-5:]

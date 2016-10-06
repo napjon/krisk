@@ -6,16 +6,25 @@ from copy import deepcopy
 from krisk.template import *
 from krisk.connections import get_paths
 from IPython.display import Javascript
+from krisk.util import get_content
+
 
 
 class Chart(object):
     """Chart Object"""
+
+    JS_TEMPLATE_PATH = 'static/krisk.js'
+    EVENT_TEMPLATE_PATH = 'static/on_event.js'
+
+
     def __init__(self, **kwargs):
         """Constructor"""
         # Currently, there are three type of data structure.
         # 1. Option dictionary to be passed to Echarts option
         # 2. kwargs_chart: To be passed for make_chart function
         # 3. Other than previous two
+
+
         self._chartId = str(uuid.uuid4())
         self.option = deepcopy(OPTION_TEMPLATE)
         self._kwargs_chart_ = kwargs
@@ -187,7 +196,7 @@ class Chart(object):
 
     # Set Title, Legend and Toolbox
 
-    def __set_object_pos(self, obj, x, y):
+    def _set_object_pos(self, obj, x, y):
         """Set x,y coordinate of an object in chart layout"""
 
         if x.startswith('-'):
@@ -216,7 +225,7 @@ class Chart(object):
         """
 
         self.option['title']['text'] = title
-        self.__set_object_pos('title', x_pos, y_pos)
+        self._set_object_pos('title', x_pos, y_pos)
 
         return self._get_duplicated()
 
@@ -245,7 +254,7 @@ class Chart(object):
 
         self.option['legend']['align'] = align
         self.option['legend']['orient'] = orient
-        self.__set_object_pos('legend', x_pos, y_pos)
+        self._set_object_pos('legend', x_pos, y_pos)
 
         return self._get_duplicated()
 
@@ -323,7 +332,7 @@ class Chart(object):
         toolbox['orient'] = orient
 
         self.option['toolbox'] = toolbox
-        self.__set_object_pos('toolbox', x_pos, y_pos)
+        self._set_object_pos('toolbox', x_pos, y_pos)
 
         return self._get_duplicated()
 
@@ -427,8 +436,12 @@ class Chart(object):
     def _get_resync_option_strings(self, option):
         """Resync Chart option"""
 
-        events = [EVENTS_TEMPLATE.format(
+        js_template = get_content(self.JS_TEMPLATE_PATH)
+        event_template = get_content(self.EVENT_TEMPLATE_PATH)
+
+        events = [event_template.format(
             event=e, function=self._events[e]) for e in self._events]
+
         OPTION_KWS = dict(
             requires=get_paths().__repr__(),
             chartId=self._chartId,
@@ -436,7 +449,8 @@ class Chart(object):
             option=json.dumps(
                 option, indent=4),
             events='\n'.join(events))
-        return RESET_OPTION.format(**OPTION_KWS)
+
+        return js_template.format(**OPTION_KWS)
 
     def _repr_javascript_(self):
         """Embedding the result of the plot to Jupyter"""
