@@ -12,19 +12,6 @@ THEMES = ['dark', 'vintage', 'roma', 'shine', 'infographic', 'macarons']
 # PATH_LOCAL = join_current_dir('static')
 # PATH_LOCAL = 'pandas-echarts/krisk/static'
 
-# def init_notebook():
-#     """Inject Javascript to notebook, default using local js.
-
-#     """
-#     return Javascript("""
-#     require.config({
-#                  baseUrl : '%s',
-#                  paths: {
-#                      echarts: 'echarts.min'
-#                  }
-#     });
-#     """ % PATH_LOCAL)
-
 
 def init_notebook():
     """
