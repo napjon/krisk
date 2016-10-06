@@ -1,9 +1,11 @@
 machine:
   python:
     version: 3.5.1
-  post:
-    - pip install cython
 
+dependencies:
+  pre:
+    - pip install cython
+    
 test:
   override:
     - pip install coverage pytest
