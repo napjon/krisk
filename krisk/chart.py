@@ -3,19 +3,36 @@
 import uuid
 import json
 from copy import deepcopy
-from krisk.template import *
 from krisk.connections import get_paths
 from IPython.display import Javascript
-from krisk.util import get_content
+from krisk.util import get_content, join_current_dir
 
+JS_TEMPLATE_PATH = 'static/krisk.js'
+EVENT_TEMPLATE_PATH = 'static/on_event.js'
+HTML_TEMPLATE_PATH = 'static/template.html'
+
+APPEND_ELEMENT = """
+$('#{id}').attr('id','{id}'+'_old');
+element.append('<div id="{id}" style="width: {width}px;height:{height}px;"></div>');"""
+
+OPTION_TEMPLATE = {
+    'title': {
+        'text': ''
+    },
+    'tooltip': {'axisPointer': {'type': ''}},
+    'legend': {
+        'data': []
+    },
+    'xAxis': {
+        'data': []
+    },
+    'yAxis': {},
+    'series': []
+}
 
 
 class Chart(object):
     """Chart Object"""
-
-    JS_TEMPLATE_PATH = 'static/krisk.js'
-    EVENT_TEMPLATE_PATH = 'static/on_event.js'
-
 
     def __init__(self, **kwargs):
         """Constructor"""
@@ -363,6 +380,65 @@ class Chart(object):
             'yAxis'], self.option['xAxis']
         return self
 
+    def _set_label_axes(self, xy, **kwargs):
+        """Set label axes name and other customization"""
+        assert xy in ['x','y']
+        self.option[xy + 'Axis'].update(**kwargs)
+        return self
+
+    def set_xlabel(self, name, axis_position='middle', axis_gap=30, rotation=0, font_size=16):
+        """Set x-axis label and other type of customization.
+
+        Parameters
+        ----------
+        name: the label of axes
+        axis_position: {start, middle, end}, default middle
+            horizontal alignment of label. start will position the label at leftmost position
+        axis_gap: int default 30
+            vertical alignment position of label. zero start from x-axis and going further away
+        rotation: int default 0
+            the rotation of the label
+        font_size: int default 16
+            the font size of the label
+
+        Return
+        ------
+        Chart object
+        """
+        label_kwargs = dict(name=name,
+                            nameLocation=axis_position,
+                            nameGap=axis_gap,
+                            nameTextStyle={'fontSize':font_size},
+                            nameRotate=rotation)
+        return self._set_label_axes('x', **label_kwargs)
+
+    def set_ylabel(self, name, axis_position='middle', axis_gap=30, rotation=90, font_size=16):
+        """Set y-axis label and other type of customization.
+        
+        Parameters
+        ----------
+        name: the label of axes
+        axis_position: {start, middle, end}, default middle
+            vertical alignment of label. start will position the label at bottom position
+        axis_gap: int default 30
+            horizontal alignment position of label. zero start from y-axis and going further 
+            away
+        rotation: int default 90
+            the rotation of the label
+        font_size: int default 16
+            the font size of the label
+
+        Return
+        ------
+        Chart object
+        """
+        label_kwargs = dict(name=name,
+                            nameLocation=axis_position,
+                            nameGap=axis_gap,
+                            nameTextStyle={'fontSize':font_size},
+                            nameRotate=rotation)
+        return self._set_label_axes('y', **label_kwargs)
+
     # ------------------------------------------------------------------------------------------------
     # Events
     def on_event(self, event, handler):
@@ -436,8 +512,8 @@ class Chart(object):
     def _get_resync_option_strings(self, option):
         """Resync Chart option"""
 
-        js_template = get_content(self.JS_TEMPLATE_PATH)
-        event_template = get_content(self.EVENT_TEMPLATE_PATH)
+        js_template = get_content(JS_TEMPLATE_PATH)
+        event_template = get_content(EVENT_TEMPLATE_PATH)
 
         events = [event_template.format(
             event=e, function=self._events[e]) for e in self._events]
@@ -474,4 +550,12 @@ class Chart(object):
     def to_html(self, path):
         "Save full html file"
         # TODO: Optional add open new tab as soon as it save the html file
-        save_html(self._repr_javascript_(), path)
+        from jinja2 import Template
+
+        script = self._repr_javascript_()
+        script = script.replace('element', '$("body")')
+
+        html_template = Template(get_content(HTML_TEMPLATE_PATH))
+        html_content = html_template.render(SCRIPT=script)
+        with open(path, 'w') as f:
+            f.write(html_content)
