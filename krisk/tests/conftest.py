@@ -21,6 +21,14 @@ def gapminder():
         DATA_DIR + '/gapminderDataFiveYear.txt', sep='\t').groupby(
             ['year', 'continent'], as_index=False).first())
 
+@pytest.fixture(scope="module")
+def decl_chart():
+    "Declarative Chart"
+    from krisk.chart import Chart
+    chart = Chart()
+    chart.option['series'] = [{'data': [10, 3, 7, 4, 5], 'name': 'continent', 'type': 'bar'}]
+    chart.option['xAxis'] =  {'data': ['Americas', 'Asia', 'Africa', 'Oceania', 'Europe']}
+    return chart
 
 @pytest.fixture
 def gap_chart(gapminder):
