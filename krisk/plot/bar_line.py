@@ -111,7 +111,7 @@ def get_bar_line_data(df, x, c, y, **kwargs):
                 values=y,
                 columns=c,
                 aggfunc=kwargs['how'],
-                fill_value=0)
+                fill_value=None)
     elif c and y is None:
         data = pd.crosstab(df[x], df[c])
     elif c is None and y:
