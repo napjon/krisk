@@ -48,3 +48,19 @@ def test_color(bar_simple):
         background='green', palette=['purple']).get_option()
     assert colored['backgroundColor'] == 'green'
     assert colored['color'] == ['purple']
+
+def test_label_axes(decl_chart):
+    decl_chart.set_xlabel('xlabel')
+    decl_chart.set_ylabel('ylabel')
+    assert decl_chart.option['xAxis'] == {'data': ['Americas', 'Asia', 'Africa', 'Oceania', 'Europe'],
+                                            'name': 'xlabel',
+                                            'nameGap': 30,
+                                            'nameLocation': 'middle',
+                                            'nameRotate': 0,
+                                            'nameTextStyle': {'fontSize': 16}}
+
+    assert decl_chart.option['yAxis'] == {'name': 'ylabel',
+                                           'nameGap': 30,
+                                           'nameLocation': 'middle',
+                                           'nameRotate': 90,
+                                           'nameTextStyle': {'fontSize': 16}}

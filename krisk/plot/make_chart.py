@@ -39,6 +39,10 @@ def make_chart(df, **kwargs):
     chart = Chart(**kwargs)
     chart._kwargs_chart_['data_columns'] = df.columns
 
+    chart.set_xlabel(kwargs['x'])
+    if kwargs.get('y', None):
+        chart.set_ylabel(kwargs['y'])
+
     if kwargs['type'] in ['bar', 'line', 'hist']:
         set_bar_line_chart(chart, df, **kwargs)
 
