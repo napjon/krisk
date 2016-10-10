@@ -10,32 +10,32 @@ def set_scatter_chart(chart, df, x, y, c, **kwargs):
 
     cols = [x, y]
     s = kwargs['s']
+    dimension = 1
     if s is not None:
+        dimension += 1
         cols.append(s)
 
-        vmap_template_size = {'show': False,
-                              'dimension': 2,
-                              'min': 0,
-                              'max': 250,
-                              'precision': 0.1,
-                              'inRange': {'symbolSize': [10, 70]}}
-
-        vmap_size = deepcopy(vmap_template_size)
-        vmap_size['min'] = df[s].min()
-        vmap_size['max'] = df[s].max()
-        vmap_size['inRange']['symbolSize'] = list(kwargs['size_px'][:2])
+        vmap_size = dict(show=False,
+                         dimension=dimension,
+                         precision=0.1,
+                         min=df[s].min(),
+                         max=df[s].max(),
+                         inRange={'symbolSize': list(kwargs['size_px'][:2])})
         chart.option['visualMap'].append(vmap_size)
 
     #TODO: Fix Saturate
-    #          saturate = kwargs['saturate']
-    #         if saturate is not None:
-    #             vmap_saturate = deepcopy(visual_map_template)
-    #             vmap_saturate['min'] = float(df[saturate].min())
-    #             vmap_saturate['max'] = float(df[saturate].max())
-    #             vmap_saturate['inRange']['colorLightness'] = [1,0.5]
-    #             c._option['visualMap'].append(vmap_saturate)
-    #             cols.append(saturate)
+    saturate = kwargs['saturate']
+    if saturate is not None:
+        dimension += 1
+        cols.append(saturate)
 
+        vmap_saturate = dict(show=False,
+                             dimension=dimension,
+                             min=df[saturate].min(),
+                             max=df[saturate].max(),
+                             inRange={'colorLightness': [0.1, 0.9]})
+        chart.option['visualMap'].append(vmap_saturate)
+        
     columns = cols + df.columns.difference(cols).tolist()
     chart._kwargs_chart_['columns'] = columns
     data = df[columns]
