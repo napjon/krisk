@@ -3,11 +3,11 @@
 import uuid
 import json
 from copy import deepcopy
-# from krisk.connections import get_paths
 from IPython.display import Javascript
 from krisk.util import get_content, join_current_dir
 
-__all__ = ['DEFAULTS']
+__all__ = ['rcParams', 'Chart']
+
 
 JS_LIBS = ['echarts', 'dark', 'vintage', 'roma', 'shine', 'infographic', 'macarons']
 JS_TEMPLATE_PATH = 'static/krisk.js'
@@ -34,7 +34,7 @@ OPTION_TEMPLATE = {
     'series': []
 }
 
-DEFAULTS = dict(theme='',
+rcParams = dict(theme='',
     size=dict(width=600,height=400),
     color=dict(background='',palette=''))
 
@@ -61,9 +61,9 @@ class Chart(object):
         self._axes_swapped = True
         self._events = {}
 
-        self._size = DEFAULTS['size']
-        self._theme = DEFAULTS['theme']
-        self.set_color(**DEFAULTS['color'])
+        self._size = rcParams['size']
+        self._theme = rcParams['theme']
+        self.set_color(**rcParams['color'])
 
     # Color and Themes
 
@@ -87,7 +87,9 @@ class Chart(object):
         self._theme = theme
         return self._get_duplicated()
 
-    def set_color(self, background='', palette=''):
+    def set_color(self,
+                  background=rcParams['color']['background'], 
+                  palette=rcParams['color']['palette']):
         """
         Set background and pallete color
         
@@ -368,7 +370,7 @@ class Chart(object):
 
         return self._get_duplicated()
 
-    def set_size(self, width=600, height=400):
+    def set_size(self, width=rcParams['size']['width'], height=rcParams['size']['height']):
         """
         Set height and width of the chart in pixel
         

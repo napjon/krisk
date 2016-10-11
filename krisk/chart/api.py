@@ -1,1 +1,1 @@
-from krisk.chart.core import DEFAULTS, Chart
+from krisk.chart.core import rcParams, Chart
