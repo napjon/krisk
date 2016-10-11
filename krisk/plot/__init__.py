@@ -128,7 +128,7 @@ def hist(df,
                       annotate='top' if annotate == True else annotate)
    
 
-def scatter(df, x, y, s=None, c=None, size_px=(10, 70)):
+def scatter(df, x, y, s=None, c=None, saturate=None, size_px=(10, 70)):
     """
     Parameters
     ----------
@@ -140,6 +140,7 @@ def scatter(df, x, y, s=None, c=None, size_px=(10, 70)):
         Used as sizing value of the scatter points
     c: string, default to None
         column used as grouping color category
+    saturation
     size_px: tuple, default to (10,70)
         boundary size, lower and upper limit in pixel for min-max scatter points
 
@@ -149,4 +150,4 @@ def scatter(df, x, y, s=None, c=None, size_px=(10, 70)):
     Chart Object
     """
     #TODO add saturation
-    return make_chart(df,type='scatter',x=x,y=y,s=s,c=c,size_px=size_px)
+    return make_chart(df,type='scatter',x=x,y=y,s=s,c=c,saturate=saturate,size_px=size_px)
