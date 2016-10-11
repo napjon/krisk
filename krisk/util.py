@@ -14,3 +14,19 @@ def get_content(filepath):
 	abs_path = join_current_dir(filepath)
 	with open(abs_path, 'r') as f:
 		return f.read()
+
+
+def init_notebook():
+    """
+    Inject Javascript to notebook, default using local js.
+    This function must be last executed in a cell to produce the Javascript in the output cell    
+    """
+    from IPython.display import Javascript
+    return Javascript("""
+    require.config({
+                 baseUrl : "//cdn.rawgit.com/napjon/krisk/master/krisk/static",
+                 paths: {
+                      echarts: "//cdnjs.cloudflare.com/ajax/libs/echarts/3.2.1/echarts.min"
+                  }
+    });
+    """)

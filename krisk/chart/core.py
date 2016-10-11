@@ -3,13 +3,17 @@
 import uuid
 import json
 from copy import deepcopy
-from krisk.connections import get_paths
+# from krisk.connections import get_paths
 from IPython.display import Javascript
 from krisk.util import get_content, join_current_dir
 
+__all__ = ['DEFAULTS']
+
+JS_LIBS = ['echarts', 'dark', 'vintage', 'roma', 'shine', 'infographic', 'macarons']
 JS_TEMPLATE_PATH = 'static/krisk.js'
 EVENT_TEMPLATE_PATH = 'static/on_event.js'
 HTML_TEMPLATE_PATH = 'static/template.html'
+DEFAULT_CFG_PATH = 'static/defaults.json'
 
 APPEND_ELEMENT = """
 $('#{id}').attr('id','{id}'+'_old');
@@ -30,6 +34,15 @@ OPTION_TEMPLATE = {
     'series': []
 }
 
+DEFAULTS = dict(theme='',
+    size=dict(width=600,height=400),
+    color=dict(background='',palette=''))
+
+
+# def set(rc):
+#     DEFAULTS.update(dict)
+#     return DEFAULTS
+
 
 class Chart(object):
     """Chart Object"""
@@ -45,10 +58,12 @@ class Chart(object):
         self._chartId = str(uuid.uuid4())
         self.option = deepcopy(OPTION_TEMPLATE)
         self._kwargs_chart_ = kwargs
-        self._theme = ''
         self._axes_swapped = True
         self._events = {}
-        self._size = {'width': 600, 'height': 400}
+
+        self._size = DEFAULTS['size']
+        self._theme = DEFAULTS['theme']
+        self.set_color(**DEFAULTS['color'])
 
     # Color and Themes
 
@@ -63,7 +78,7 @@ class Chart(object):
             {'dark','vintage','roma','shine','infographic','macarons'}, default None
         """
 
-        themes = get_paths()[1:]
+        themes = JS_LIBS[1:] + ['']
 
         if theme not in themes:
             raise AssertionError("Invalid theme name: {theme}".format(
@@ -519,7 +534,7 @@ class Chart(object):
             event=e, function=self._events[e]) for e in self._events]
 
         OPTION_KWS = dict(
-            requires=get_paths().__repr__(),
+            requires=JS_LIBS.__repr__(),
             chartId=self._chartId,
             theme=self._theme,
             option=json.dumps(

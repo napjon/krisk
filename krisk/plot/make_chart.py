@@ -1,5 +1,5 @@
 from copy import deepcopy
-from krisk.chart import Chart
+from krisk.chart.core import Chart
 
 
 def round_list(arr):

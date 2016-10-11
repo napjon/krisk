@@ -1,0 +1,1 @@
+from krisk.chart.core import DEFAULTS, Chart
