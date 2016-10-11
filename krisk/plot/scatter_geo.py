@@ -23,7 +23,7 @@ def set_scatter_chart(chart, df, x, y, c, **kwargs):
                          inRange={'symbolSize': list(kwargs['size_px'][:2])})
         chart.option['visualMap'].append(vmap_size)
 
-    #TODO: Fix Saturate
+    #TODO: Fix Saturate for large value
     saturate = kwargs['saturate']
     if saturate is not None:
         dimension += 1
