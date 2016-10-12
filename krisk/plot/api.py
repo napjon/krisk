@@ -9,7 +9,10 @@ def bar(df,
         stacked=False,
         annotate=None,
         full=False,
-        trendline=False):
+        trendline=False,
+        sort_on='index',
+        sort_c_on=None,
+        ascending=True):
     """
     Parameters
     ----------
@@ -17,33 +20,42 @@ def bar(df,
         data to be used for the chart
     x: string
         columns to be used as category axis
-    y: string, default to None
+    y: string, default None
         if None, use count of category value. otherwise aggregate based on y columns
-    category: string, default to None
+    category: string, default None
         another grouping columns inside x-axis
-    how: string, default to None
+    how: string, default None
         to be passed to pd.group_by(x).aggregate(how). Can be mean,median, or any 
         reduced operations.
-    stacked: Boolean, default to False.
+    stacked: Boolean, default False.
         Whether to stacked category on top of the other categories.
-    annotate: string, {'all',True} default to None
+    annotate: string, {'all',True} default None
         if True, annotate value on top of the plot element. If stacked is also True, annotate the 
         last category. if 'all' and stacked, annotate all category
-    full: boolean, default to False.
+    full: boolean, default False.
         If true, set to full area stacked chart. Only work if stacked is True.
-    trendline: boolean, default to False.
+    trendline: boolean, default False.
         If true, add line that connected the bars. Only work if not category, category but stacked,
-        or not full.  
+        or not full.
+    sort_on: {'index', 'values', int, 'count', 'mean', 'std', 'min', '25%', '50%', '75%', 'max'},
+         default 'index'.
+        Add sort mode. Only work when c is None.
+        If index, sort index on lexicographical order. use as s.sort_index()
+        if values, sort based on values. Use as s.sort_values()
+        If string, deviation from value provided by pd.Series.describe()
+        if integer, treat as value and deviate from that value
+    sort_c_on: string, default None.
+        specify a category to sort if c is specified. Must be specified when use sort_on other than 
+        default.
+    ascending: boolean, default True
+        sort ascending vs. descending
     
     Returns
     -------
     Chart Object
     """
-
-    # TODO: add optional argument trendline
-
     return make_chart(df,type='bar',x=x,y=y,c=c,how=how,stacked=stacked,full=full,
-                      trendline=trendline,
+                      trendline=trendline, sort_on=sort_on, sort_c_on=sort_c_on, ascending=ascending,
                       annotate='top' if annotate == True else annotate)
 
 
@@ -56,7 +68,10 @@ def line(df,
          area=False,
          annotate=None,
          full=False,
-         smooth=False):
+         smooth=False,
+         sort_on='index',
+         sort_c_on=None,
+         ascending=True):
     """
     Parameters
     ----------
@@ -64,29 +79,41 @@ def line(df,
         data to be used for the chart
     x: string
         columns to be used as category axis
-    y: string, default to None
+    y: string, default None
         if None, use count of category value. otherwise aggregate based on y columns
-    c: string, default to None
+    c: string, default None
         category column inside x-axis
-    how: string, default to None
+    how: string, default None
         to be passed to pd.group_by(x).aggregate(how). Can be mean,median, or any 
         reduced operations.
-    stacked: Boolean, default to False.
+    stacked: Boolean, default False.
         Whether to stacked category on top of the other categories.
-    annotate: string, {'all',True} default to None
+    annotate: string, {'all',True} default None
         if True, annotate value on top of the plot element. If stacked is also True, annotate the last
         category. if 'all' and stacked, annotate all category
-    full: boolean, default to False.
+    full: boolean, default False.
         If true, set to full area stacked chart. Only work if stacked is True.
-    smooth: boolean, default to False.
+    smooth: boolean, default False.
         If true, smooth the line.
-    
+   sort_on: {'index', 'values', int, 'count', 'mean', 'std', 'min', '25%', '50%', '75%', 'max'},
+         default 'index'.
+        Add sort mode. Only work when c is None.
+        If index, sort index on lexicographical order. use as s.sort_index()
+        if values, sort based on values. Use as s.sort_values()
+        If string, deviation from value provided by pd.Series.describe()
+        if integer, treat as value and deviate from that value
+    sort_c_on: string, default None.
+        specify a category to sort if c is specified. Must be specified when use sort_on other than 
+        default.
+    ascending: boolean, default True
+        sort ascending vs. descending
+        
     Returns
     -------
     Chart Object
     """
     return make_chart(df,type='line',x=x,y=y,c=c,how=how,stacked=stacked,area=area,full=full,
-                      smooth=smooth,
+                      smooth=smooth, sort_on=sort_on, sort_c_on=sort_c_on, ascending=ascending,
                       annotate='top' if annotate == True else annotate)
 
 
@@ -105,18 +132,18 @@ def hist(df,
         data to be used for the chart
     x: string
         columns to be used as category axis
-    c: string, default to None
+    c: string, default None
         another grouping columns inside x-axis
-    bins: int, default to 10
+    bins: int, default 10
         Set number of bins in histogram
-    normed: boolean, default to False
+    normed: boolean, default False
         Whether normalize the histogram
-    stacked: Boolean, default to False.
+    stacked: Boolean, default False.
         Whether to stacked category on top of the other categories.
-    annotate: string, {'all',True} default to None
+    annotate: string, {'all',True} default None
         if True, annotate value on top of the plot element. If stacked is also True, annotate the last
         category. if 'all' and stacked, annotate all category
-    density: boolean, default to False.
+    density: boolean, default False.
         Whether to add density to the plot
     
     Returns
@@ -136,12 +163,12 @@ def scatter(df, x, y, s=None, c=None, saturate=None, size_px=(10, 70)):
         data to be used for the chart
     x,y: string, columns in pd.DataFrame
         Used as coordinate in scatter chart
-    s: string, columns in pd.DataFrame default to None
+    s: string, columns in pd.DataFrame default None
         Used as sizing value of the scatter points
-    c: string, default to None
+    c: string, default None
         column used as grouping color category
     saturation
-    size_px: tuple, default to (10,70)
+    size_px: tuple, default (10,70)
         boundary size, lower and upper limit in pixel for min-max scatter points
 
         

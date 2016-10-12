@@ -103,6 +103,25 @@ def test_full_bar_line(gapminder):
 
     assert remove_name_label(bar).option == remove_name_label(line).option == true_option
 
+def test_sort_bar_line(gapminder):
+    p = kk.line(gapminder,'year', y='pop', how='mean',c='continent', sort_on='mean', sort_c_on='Americas')
+
+    assert p.option['xAxis']['data'] == [1952, 1957, 1962, 1967, 1972, 1977, 1982, 1987, 1992, 1997, 2002, 2007]
+    assert p.option['legend']['data'] == ['Africa', 'Americas', 'Asia', 'Europe', 'Oceania']
+    assert p.option['series'][0] == {'data': [-10595881.167,
+                                              -9604550.167,
+                                              -8874458.167,
+                                              -7114907.167,
+                                              -5114619.167,
+                                              -2722602.167,
+                                              158346.833,
+                                              3379549.833,
+                                              6422966.833,
+                                              9196608.833,
+                                              11411735.833,
+                                              13457809.833],
+                                     'name': 'Africa',
+                                     'type': 'line'}
 
 def test_hist(gapminder):
 
