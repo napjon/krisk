@@ -95,11 +95,7 @@ def set_bar_line_chart(chart, df, x, c, **kwargs):
         else:
             raise AssertionError('Density must either stacked category, or not category')
 
-        series.append(density)
-
-
-    
-   
+        series.append(density)   
 
 
 def get_bar_line_data(df, x, c, y, **kwargs):
@@ -119,11 +115,29 @@ def get_bar_line_data(df, x, c, y, **kwargs):
     else:
         data = df[x].value_counts()
 
+    #Specify sort_on and order method
+    sort_on = kwargs['sort_on']
+    descr_keys = pd.Series([0]).describe().keys().tolist()
+    
+    if isinstance(sort_on, str):
+        assert sort_on in ['index','values'] + descr_keys
 
+    if sort_on == 'index':
+        data.sort_index(inplace=True, ascending=kwargs['ascending'])
+    else:
+        if sort_on != 'values':
+            val_deviation = data.describe().loc[sort_on] if isinstance(sort_on, str) else sort_on
+            data = data - val_deviation
+        if c:
+            assert kwargs['sort_c_on'] is not None
+            data.sort_values(kwargs['sort_c_on'], inplace=True, ascending=kwargs['ascending'])
+        else:
+            data.sort_values(inplace=True, ascending=kwargs['ascending'])
+
+    # Stacked when category
     if c and kwargs['stacked'] and kwargs['full']:
         data = data.div(data.sum(1),axis=0)
 
-            
     return data
 
 
