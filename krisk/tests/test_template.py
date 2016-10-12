@@ -4,7 +4,7 @@ ECHARTS_VERSION = '3.2.1'
 
 
 def test_html():
-    from krisk.chart import Chart
+    from krisk.chart.api import Chart
 
     c = Chart()
     c.to_html('../sample.html')
@@ -16,7 +16,7 @@ def test_html():
 
 
 def test_init_nb():
-    from krisk.connections import init_notebook
+    from krisk.util import init_notebook
 
     js_data = init_notebook().data
     js_init_template = """

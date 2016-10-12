@@ -22,14 +22,27 @@ def gapminder():
             ['year', 'continent'], as_index=False).first())
 
 
+@pytest.fixture(scope="module")
+def decl_chart():
+    "Declarative Chart"
+    from krisk.chart.api import Chart
+    chart = Chart()
+    chart.option['series'] = [{'data': [10, 3, 7, 4, 5],
+                               'name': 'continent',
+                               'type': 'bar'}]
+    chart.option['xAxis'] = {'data': ['Americas', 'Asia', 'Africa', 'Oceania',
+                                      'Europe']}
+    return chart
+
+
 @pytest.fixture
 def gap_chart(gapminder):
     p = kk.scatter(
         gapminder[gapminder.year == 2007],
         'lifeExp',
         'gdpPercap',
-        size='pop',
-        category='continent')
+        s='pop',
+        c='continent')
     p.set_size(width=1000, height=500)
     p.set_tooltip_format(
         ['country', 'lifeExp', 'gdpPercap', 'pop', 'continent'])
