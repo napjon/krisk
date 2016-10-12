@@ -2,5 +2,6 @@
 branch: True
 omit = 
   */test_*.py
+  krisk/__init__.py
 source = 
   krisk

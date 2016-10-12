@@ -19,6 +19,8 @@ Krisk bring Echarts to Python Data Science Ecosystem, and helpful tools for high
 # Install
 ```Python
 pip install jupyter pandas krisk
+jupyter nbextension install --py krisk --sys-prefix
+jupyter nbextension enable  --py krisk --sys-prefix
 ```
 
 
@@ -28,6 +30,7 @@ pip install jupyter pandas krisk
 * [Themes and Colors](http://nbviewer.jupyter.org/github/napjon/krisk/blob/master/notebooks/themes-colors.ipynb)
 * [Legend, Title, and Toolbox](http://nbviewer.jupyter.org/github/napjon/krisk/blob/master/notebooks/legend-title-toolbox.ipynb)
 * [Resync Data and Reproducible Charts](http://nbviewer.jupyter.org/github/napjon/krisk/blob/master/notebooks/resync-reproducible.ipynb)
+* [Declarative Visualization](http://nbviewer.jupyter.org/github/napjon/krisk/blob/master/notebooks/declarative-visualization.ipynb)
 
 
 # What It Does
