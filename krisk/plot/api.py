@@ -45,8 +45,8 @@ def bar(df,
         If string, deviation from value provided by pd.Series.describe()
         if integer, treat as value and deviate from that value
     sort_c_on: string, default None.
-        specify a category to sort if c is specified. Must be specified when use sort_on other than 
-        default.
+        specify a category as basis sort value if c is specified. Must be specified when use 
+        sort_on other than default value.
     ascending: boolean, default True
         sort ascending vs. descending
     
@@ -103,8 +103,8 @@ def line(df,
         If string, deviation from value provided by pd.Series.describe()
         if integer, treat as value and deviate from that value
     sort_c_on: string, default None.
-        specify a category to sort if c is specified. Must be specified when use sort_on other than 
-        default.
+        specify a category as basis sort value if c is specified. Must be specified when use 
+        sort_on other than default value.
     ascending: boolean, default True
         sort ascending vs. descending
         
@@ -176,5 +176,4 @@ def scatter(df, x, y, s=None, c=None, saturate=None, size_px=(10, 70)):
     -------
     Chart Object
     """
-    #TODO add saturation
     return make_chart(df,type='scatter',x=x,y=y,s=s,c=c,saturate=saturate,size_px=size_px)
