@@ -3,7 +3,6 @@
 
 from krisk.util import init_notebook
 import krisk.plot.api as plot
-# Override chart to prevent all variables to be accessed except two below
 import krisk.chart.api as chart
 from krisk.chart.api import rcParams, Chart
 
