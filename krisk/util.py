@@ -18,8 +18,9 @@ def get_content(filepath):
 
 def init_notebook():
     """
-    Inject Javascript to notebook, default using local js.
-    This function must be last executed in a cell to produce the Javascript in the output cell    
+    Inject Javascript to notebook, useful when you provide html notebook generated (e.g nbviewwer).
+    You don't have to use this when using notebook, as it already provided by nbextension.
+    This function must be last executed in a cell to produce Javascript in the output cell    
     """
     from IPython.display import Javascript
     return Javascript("""

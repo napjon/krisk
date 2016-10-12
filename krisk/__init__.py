@@ -3,8 +3,8 @@
 
 from krisk.util import init_notebook
 import krisk.plot.api as plot
-
-import krisk.chart.api as chart #block all variables beside two below
+# Override chart to prevent all variables to be accessed except two below
+import krisk.chart.api as chart
 from krisk.chart.api import rcParams, Chart
 
 __version__ = '0.1.11'

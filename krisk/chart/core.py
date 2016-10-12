@@ -36,7 +36,29 @@ OPTION_TEMPLATE = {
 
 rcParams = dict(theme='',
     size=dict(width=600,height=400),
-    color=dict(background='',palette=''))
+    color=dict(background='',palette=''),
+    # TODO: Add tooltip, legend, and toolbox in 0.3
+    # tooltip_style=dict(trigger='item',
+    #                   axis_pointer='line',
+    #                   trigger_on='mousemove',
+    #                   font_style='normal',
+    #                   font_family='sans-serif',
+    #                   font_size=14),
+    # legend=dict(align='auto',
+    #            orient='horizontal',
+    #            x_pos='auto',
+    #            y_pos='auto'),
+    # toolbox=dict(save_format=None,
+    #             restore=False,
+    #             data_view=None,
+    #             data_zoom=False,
+    #             magic_type=None,
+    #             brush=None,
+    #             align='auto',
+    #             orient='horizontal',
+    #             x_pos='auto',
+    #             y_pos='auto')
+    )
 
 
 # def set(rc):
@@ -64,6 +86,9 @@ class Chart(object):
         self._size = rcParams['size']
         self._theme = rcParams['theme']
         self.set_color(**rcParams['color'])
+        # self.set_legend(**rcParams['legend'])
+        # self.set_toolbox(**rcParams['toolbox'])
+        # self.set_tooltip_style(**rcParams['tooltip_style'])
 
     # Color and Themes
 
@@ -87,9 +112,7 @@ class Chart(object):
         self._theme = theme
         return self._get_duplicated()
 
-    def set_color(self,
-                  background=rcParams['color']['background'], 
-                  palette=rcParams['color']['palette']):
+    def set_color(self, background='', palette=''):
         """
         Set background and pallete color
         
@@ -370,7 +393,7 @@ class Chart(object):
 
         return self._get_duplicated()
 
-    def set_size(self, width=rcParams['size']['width'], height=rcParams['size']['height']):
+    def set_size(self, width=600, height=400):
         """
         Set height and width of the chart in pixel
         
