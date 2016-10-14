@@ -26,20 +26,6 @@ def test_read_df(gapminder):
 
     assert africa_opt == asia_opt
 
-# Disable this as only testing the script text
-# def test_on_event(df_simple):
-#     p = kk.bar(df_simple, 'x')
-
-#     def handler_foo(params):
-#         return m.resync_data(df_simple)
-
-#     on_event = p.on_event('click', handler_foo)
-
-#     assert on_event._events == {'click': 'handler_foo'}
-#     code_handler = on_event._repr_javascript_().split('\n')[-13]
-#     input_code = '    var code_input = "import json; handler_foo(json.loads(\'" + json_strings + "\'))";'
-#     assert code_handler == input_code
-
 
 def test_color(bar_simple):
 
@@ -48,6 +34,17 @@ def test_color(bar_simple):
         background='green', palette=['purple']).get_option()
     assert colored['backgroundColor'] == 'green'
     assert colored['color'] == ['purple']
+
+def test_template(decl_chart):
+    assert decl_chart.option['legend']['data'] == []
+    assert decl_chart.option['series'][0]['data'] == [10, 3, 7, 4, 5]
+    assert decl_chart.option['series'][0]['name'] == 'continent'
+    assert decl_chart.option['series'][0]['type'] == 'bar'
+
+    assert decl_chart.option['title']['text'] == ''
+    assert decl_chart.option['tooltip']['axisPointer'] == {'type': ''}
+    assert decl_chart.option['xAxis']['data'] == ['Americas', 'Asia', 'Africa', 'Oceania', 'Europe']
+    assert decl_chart.option['yAxis'] == {}
 
 def test_label_axes(decl_chart):
     decl_chart.set_xlabel('xlabel')
