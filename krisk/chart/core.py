@@ -37,33 +37,28 @@ OPTION_TEMPLATE = {
 rcParams = dict(theme='',
     size=dict(width=600,height=400),
     color=dict(background='',palette=''),
-    # TODO: Add tooltip, legend, and toolbox in 0.3
-    # tooltip_style=dict(trigger='item',
-    #                   axis_pointer='line',
-    #                   trigger_on='mousemove',
-    #                   font_style='normal',
-    #                   font_family='sans-serif',
-    #                   font_size=14),
-    # legend=dict(align='auto',
-    #            orient='horizontal',
-    #            x_pos='auto',
-    #            y_pos='auto'),
-    # toolbox=dict(save_format=None,
-    #             restore=False,
-    #             data_view=None,
-    #             data_zoom=False,
-    #             magic_type=None,
-    #             brush=None,
-    #             align='auto',
-    #             orient='horizontal',
-    #             x_pos='auto',
-    #             y_pos='auto')
+    tooltip_style=dict(trigger='item',
+                      axis_pointer='line',
+                      trigger_on='mousemove',
+                      font_style='normal',
+                      font_family='sans-serif',
+                      font_size=14),
+    legend=dict(align='auto',
+               orient='horizontal',
+               x_pos='auto',
+               y_pos='auto'),
+    toolbox=dict(save_format=None,
+                restore=False,
+                data_view=None,
+                data_zoom=False,
+                magic_type=None,
+                brush=None,
+                align='auto',
+                orient='horizontal',
+                x_pos='auto',
+                y_pos='auto')
     )
 
-
-# def set(rc):
-#     DEFAULTS.update(dict)
-#     return DEFAULTS
 
 
 class Chart(object):
@@ -83,12 +78,13 @@ class Chart(object):
         self._axes_swapped = True
         self._events = {}
 
-        self._size = rcParams['size']
-        self._theme = rcParams['theme']
-        self.set_color(**rcParams['color'])
-        # self.set_legend(**rcParams['legend'])
-        # self.set_toolbox(**rcParams['toolbox'])
-        # self.set_tooltip_style(**rcParams['tooltip_style'])
+        rc = deepcopy(rcParams)
+        self._size = rc['size']
+        self._theme = rc['theme']
+        self.set_color(**rc['color'])
+        self.set_legend(**rc['legend'])
+        self.set_toolbox(**rc['toolbox'])
+        self.set_tooltip_style(**rc['tooltip_style'])
 
     # Color and Themes
 

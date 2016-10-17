@@ -10,16 +10,16 @@ def test_replot_and_resync(bar_simple, df_simple):
 
 def test_flip(bar_simple):
 
-    assert bar_simple.get_option()['xAxis'] == bar_simple.flip_axes(
-    ).get_option()['yAxis']
+    assert bar_simple.option['xAxis'] == bar_simple.flip_axes(
+    ).option['yAxis']
 
 
 def test_read_df(gapminder):
 
     africa = kk.bar(gapminder[gapminder.continent == 'Africa'], 'year')
     asia = africa.read_df(gapminder[gapminder.continent == 'Asia'])
-    africa_opt = africa.get_option()
-    asia_opt = asia.get_option()
+    africa_opt = africa.option
+    asia_opt = asia.option
 
     africa_opt.pop('series')
     asia_opt.pop('series')
@@ -31,7 +31,7 @@ def test_color(bar_simple):
 
     # Set color modify the bar_simple itself! Potentially bug
     colored = bar_simple.set_color(
-        background='green', palette=['purple']).get_option()
+        background='green', palette=['purple']).option
     assert colored['backgroundColor'] == 'green'
     assert colored['color'] == ['purple']
 
@@ -42,7 +42,7 @@ def test_template(decl_chart):
     assert decl_chart.option['series'][0]['type'] == 'bar'
 
     assert decl_chart.option['title']['text'] == ''
-    assert decl_chart.option['tooltip']['axisPointer'] == {'type': ''}
+    assert decl_chart.option['tooltip']['axisPointer'] == {'type': 'line'}
     assert decl_chart.option['xAxis']['data'] == ['Americas', 'Asia', 'Africa', 'Oceania', 'Europe']
     assert decl_chart.option['yAxis'] == {}
 

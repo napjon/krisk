@@ -98,7 +98,7 @@ def test_line(gapminder):
 def test_smooth_line(gapminder):
 
     p = kk.line(gapminder[gapminder.year == 1952],'continent',y='pop',how='mean',smooth=True)
-    assert p.get_option()['series'][0]['smooth'] == True
+    assert p.option['series'][0]['smooth'] == True
 
 def test_full_bar_line(gapminder):
     bar = kk.bar(gapminder,'year',c='continent',y='pop',how='mean',stacked=True,full=True,annotate='all')
@@ -182,7 +182,12 @@ def test_scatter(gapminder):
     opt1 = read_option_tests('simple_scatter.json')
     assert_scatter_data(p1, opt1)
     assert p1.option['title'] ==  {'text': ''}
-    assert p1.option['tooltip'] == {'axisPointer': {'type': ''}}
+    assert p1.option['tooltip'] == {'axisPointer': {'type': 'line'},
+                                     'fontFamily': 'sans-serif',
+                                     'fontSize': 14,
+                                     'fontStyle': 'normal',
+                                     'trigger': 'item',
+                                     'triggerOn': 'mousemove'}
 
     # Grouped Scatter
     p2 = kk.scatter(
