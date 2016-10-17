@@ -10,29 +10,29 @@ def test_title(bar_simple):
 
 def test_legend(bar_simple):
     # Blank Legend
-    assert bar_simple.option['legend'] == {'data': []}
+    assert bar_simple.option['legend'] == {'align': 'auto',
+                                           'bottom': 'auto',
+                                           'data': [],
+                                           'left': 'auto',
+                                           'orient': 'horizontal'}
 
     # Legend with orientation and position
     c_l = bar_simple.set_legend(orient='vertical', x_pos='-5%', y_pos='auto')
     assert bar_simple.option['legend'] == {'align': 'auto',
-                                            'bottom': 'auto',
-                                            'data': [],
-                                            'orient': 'vertical',
-                                            'right': '5%'}
+                                           'bottom': 'auto',
+                                           'data': [],
+                                           'left': 'auto',
+                                           'orient': 'vertical',
+                                           'right': '5%'}
 
 
 def test_toolbox(bar_simple):
-    # No Toolbox
-    assert bar_simple.option.get('toolbox', None) == None
-
     # Default Toolbox
-    c_d = bar_simple.set_toolbox().option['toolbox']
+    c_d = bar_simple.option['toolbox']
     assert c_d == {'align': 'auto',
                    'bottom': 'auto',
-                   'feature': {'dataZoom': {'show': False,
-                                            'title': 'Zoom'},
-                               'restore': {'show': False,
-                                           'title': 'Reset'}},
+                   'feature': {'dataZoom': {'show': False, 'title': 'Zoom'},
+                    'restore': {'show': False, 'title': 'Reset'}},
                    'left': 'auto',
                    'orient': 'horizontal'}
 
@@ -41,10 +41,8 @@ def test_toolbox(bar_simple):
         align='right', orient='vertical', x_pos='-5%', y_pos='-5%')
              .option['toolbox'])
     assert c_dop == {'align': 'right',
-                     'feature': {'dataZoom': {'show': False,
-                                              'title': 'Zoom'},
-                                 'restore': {'show': False,
-                                             'title': 'Reset'}},
+                     'feature': {'dataZoom': {'show': False, 'title': 'Zoom'},
+                      'restore': {'show': False, 'title': 'Reset'}},
                      'orient': 'vertical',
                      'right': '5%',
                      'top': '5%'}
