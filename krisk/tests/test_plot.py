@@ -92,6 +92,8 @@ def test_line(gapminder):
         annotate='all')
     opt = read_option_tests('line.json')
     assert_barline_data(p, opt)
+    assert p.option['tooltip']['axisPointer']['type'] == 'shadow'
+    assert p.option['tooltip']['trigger'] == 'axis'
 
 def test_smooth_line(gapminder):
 
@@ -133,6 +135,7 @@ def test_sort_bar_line(gapminder):
                                               13457809.833],
                                      'name': 'Africa',
                                      'type': 'line'}
+
 
 def test_hist(gapminder):
     p1 = kk.hist(gapminder,'lifeExp',bins=10)

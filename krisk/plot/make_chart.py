@@ -43,6 +43,9 @@ def make_chart(df, **kwargs):
     if kwargs.get('y', None):
         chart.set_ylabel(kwargs['y'])
 
+    if kwargs['type'] == 'line':
+        chart.set_tooltip_style(trigger='axis',axis_pointer='shadow')
+
     if kwargs['type'] in ['bar', 'line', 'hist']:
         set_bar_line_chart(chart, df, **kwargs)
 
