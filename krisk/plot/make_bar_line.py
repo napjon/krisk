@@ -12,13 +12,18 @@ def set_bar_line_chart(chart, df, x, c, **kwargs):
     chart_type = kwargs['type']
 
     if chart_type in ['bar', 'line']:
-        data = get_bar_line_data(df, x, c, **kwargs)
+        data = get_bar_or_line_data(df, x, c, **kwargs)
         chart.option['xAxis']['data'] = data.index.values.tolist()
 
     elif chart_type == 'hist':
         chart_type = 'bar'
         data, bins = get_hist_data(df, x, c, **kwargs)
         chart.option['xAxis']['data'] = bins
+    elif chart_type == 'bar_line':
+        chart.option['xAxis']['data'] = round_list(df[x])
+        insert_series_data(data, x, chart_type, chart)
+        return
+
 
     if c:
         # append data for every category
@@ -97,8 +102,14 @@ def set_bar_line_chart(chart, df, x, c, **kwargs):
 
         series.append(density)   
 
+def get_barline_data(df,x,c,y):
+    df[x] df[y]
+    pd.crosstab(x, y, )
 
-def get_bar_line_data(df, x, c, y, **kwargs):
+
+
+
+def get_bar_or_line_data(df, x, c, y, **kwargs):
     """Get Bar and Line manipulated data"""
     
     if c and y:

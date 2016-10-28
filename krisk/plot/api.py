@@ -116,6 +116,9 @@ def line(df,
                       smooth=smooth, sort_on=sort_on, sort_c_on=sort_c_on, ascending=ascending,
                       annotate='top' if annotate == True else annotate)
 
+def bar_line(df, x, ybar, yline):
+    return make_chart(df, type='bar_line')
+
 
 def hist(df,
          x,

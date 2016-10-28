@@ -33,8 +33,8 @@ def insert_series_data(data, x, chart_type, chart, cat=None):
 
 def make_chart(df, **kwargs):
 
-    from krisk.plot.bar_line import set_bar_line_chart
-    from krisk.plot.scatter_geo import set_scatter_chart
+    from krisk.plot.make_bar_line import set_bar_line_chart
+    from krisk.plot.make_scatter_geo import set_scatter_chart
 
     chart = Chart(**kwargs)
     chart._kwargs_chart_['data_columns'] = df.columns
