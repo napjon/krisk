@@ -103,8 +103,9 @@ def set_bar_line_chart(chart, df, x, c, **kwargs):
         series.append(density)   
 
 def get_barline_data(df,x,c,y):
-    df[x] df[y]
-    pd.crosstab(x, y, )
+    pass
+    # df[x] df[y]
+    # pd.crosstab(x, y, )
 
 
 
