@@ -21,7 +21,7 @@ def set_bar_line_chart(chart, df, x, c, **kwargs):
         chart.option['xAxis']['data'] = bins
 
     elif chart_type == 'bar_line':
-        set_barline(df, chart, **kwargs)
+        set_barline(df, x, chart, **kwargs)
         chart.option['xAxis']['data'] = round_list(df[x])
         return
 
@@ -169,14 +169,19 @@ def get_hist_data(df, x, c, **kwargs):
     return data, bins
 
 
-def set_barline(df, chart, **kwargs):
+def set_barline(df, x, chart, **kwargs):
     """Set histogram charts"""
 
     ybar = kwargs['ybar']
     yline = kwargs['yline']
 
+    data = (df
+            .groupby(x)
+            .agg({ybar: kwargs['bar_aggfunc'],
+                  yline: kwargs['line_aggfunc']}))
+
     get_series = lambda s, type: dict(name=s,
-                                      data=round_list(df[s]),
+                                      data=round_list(data[s]),
                                       type=type)
     chart.option['series'] = [
         get_series(ybar, 'bar'),

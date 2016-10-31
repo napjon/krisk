@@ -116,8 +116,11 @@ def line(df,
                       smooth=smooth, sort_on=sort_on, sort_c_on=sort_c_on, ascending=ascending,
                       annotate='top' if annotate == True else annotate)
 
-def bar_line(df, x, ybar, yline, c=None):
-    return make_chart(df, x=x, ybar=ybar, yline=yline, c=c,  type='bar_line')
+
+def bar_line(df, x, ybar, yline, bar_aggfunc='mean', line_aggfunc='mean'):
+    return make_chart(df, x=x, ybar=ybar, yline=yline,
+                      bar_aggfunc=bar_aggfunc, line_aggfunc=line_aggfunc,
+                      c=None, type='bar_line')
 
 
 def hist(df,
