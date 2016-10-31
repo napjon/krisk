@@ -419,6 +419,7 @@ class Chart(object):
     def _set_label_axes(self, xy, **kwargs):
         """Set label axes name and other customization"""
         assert xy in ['x','y']
+
         self.option[xy + 'Axis'].update(**kwargs)
         return self
 
@@ -468,6 +469,8 @@ class Chart(object):
         ------
         Chart object
         """
+        if self._kwargs_chart_['type'] == 'bar_line':
+            raise NotImplementedError
         label_kwargs = dict(name=name,
                             nameLocation=axis_position,
                             nameGap=axis_gap,

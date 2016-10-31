@@ -19,11 +19,11 @@ def set_bar_line_chart(chart, df, x, c, **kwargs):
         chart_type = 'bar'
         data, bins = get_hist_data(df, x, c, **kwargs)
         chart.option['xAxis']['data'] = bins
-    elif chart_type == 'bar_line':
-        chart.option['xAxis']['data'] = round_list(df[x])
-        insert_series_data(data, x, chart_type, chart)
-        return
 
+    elif chart_type == 'bar_line':
+        set_barline(df, chart, **kwargs)
+        chart.option['xAxis']['data'] = round_list(df[x])
+        return
 
     if c:
         # append data for every category
@@ -55,20 +55,21 @@ def set_bar_line_chart(chart, df, x, c, **kwargs):
 
     if kwargs['annotate'] == 'top':
         series[-1]['label'] = d_annotate
-     # TODO: make annotate receive all kinds supported in echarts.
+    # TODO: make annotate receive all kinds supported in echarts.
 
     # Special Bar Condition: Trendline
     if kwargs['type'] == 'bar' and kwargs['trendline']:
-        trendline = {'name':'trendline', 'type': 'line',
+        trendline = {'name': 'trendline', 'type': 'line',
                      'lineStyle': {'normal': {'color': '#000'}}}
 
         if c and kwargs['stacked']:
-            trendline['data']  =  [0] * len(series[-1]['data'])
+            trendline['data'] = [0] * len(series[-1]['data'])
             trendline['stack'] = c
         elif c is None:
             trendline['data'] = series[0]['data']
         else:
-            raise AssertionError('Trendline must either stacked category, or not category')
+            raise AssertionError('Trendline must either stacked category,'
+                                 ' or not category')
 
         series.append(trendline)
 
@@ -86,8 +87,8 @@ def set_bar_line_chart(chart, df, x, c, **kwargs):
                    'lineStyle': {'normal': {'color': '#000'}}}
         chart.option['xAxis']['boundaryGap'] = False
 
-        # The density have to be closed at zero. So all of xAxis and series must be updated
-        # To incorporate the changes
+        # The density have to be closed at zero. So all of xAxis and series
+        # must be updated to incorporate the changes
         chart.option['xAxis']['data'] = [0] + chart.option['xAxis']['data'] + [0]
 
         for s in series:
@@ -98,16 +99,10 @@ def set_bar_line_chart(chart, df, x, c, **kwargs):
         elif c is None:
             density['data'] =  [0] + round_list(data) + [0] 
         else:
-            raise AssertionError('Density must either stacked category, or not category')
+            raise AssertionError('Density must either stacked category, '
+                                 'or not category')
 
         series.append(density)   
-
-def get_barline_data(df,x,c,y):
-    pass
-    # df[x] df[y]
-    # pd.crosstab(x, y, )
-
-
 
 
 def get_bar_or_line_data(df, x, c, y, **kwargs):
@@ -138,11 +133,14 @@ def get_bar_or_line_data(df, x, c, y, **kwargs):
         data.sort_index(inplace=True, ascending=kwargs['ascending'])
     else:
         if sort_on != 'values':
-            val_deviation = data.describe().loc[sort_on] if isinstance(sort_on, str) else sort_on
+            val_deviation = (data.describe().loc[sort_on]
+                             if isinstance(sort_on, str) else sort_on)
             data = data - val_deviation
         if c:
             assert kwargs['sort_c_on'] is not None
-            data.sort_values(kwargs['sort_c_on'], inplace=True, ascending=kwargs['ascending'])
+            (data.sort_values(kwargs['sort_c_on'],
+                              inplace=True,
+                              ascending=kwargs['ascending']))
         else:
             data.sort_values(inplace=True, ascending=kwargs['ascending'])
 
@@ -169,3 +167,24 @@ def get_hist_data(df, x, c, **kwargs):
         data = pd.Series(y_val)
 
     return data, bins
+
+
+def set_barline(df, chart, **kwargs):
+    """Set histogram charts"""
+
+    ybar = kwargs['ybar']
+    yline = kwargs['yline']
+
+    get_series = lambda s, type: dict(name=s,
+                                      data=round_list(df[s]),
+                                      type=type)
+    chart.option['series'] = [
+        get_series(ybar, 'bar'),
+        dict(yAxisIndex=1, **get_series(yline, 'line'))
+    ]
+
+    get_yaxis = lambda s: {'name': s, 'splitLine': {'show': False}}
+    chart.option['yAxis'] = [get_yaxis(ybar),
+                             get_yaxis(yline)]
+
+    chart.set_tooltip_style(axis_pointer='shadow', trigger='axis')

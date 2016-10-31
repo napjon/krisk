@@ -30,7 +30,6 @@ def insert_series_data(data, x, chart_type, chart, cat=None):
 
     return series
 
-
 def make_chart(df, **kwargs):
 
     from krisk.plot.make_bar_line import set_bar_line_chart
@@ -38,15 +37,15 @@ def make_chart(df, **kwargs):
 
     chart = Chart(**kwargs)
     chart._kwargs_chart_['data_columns'] = df.columns
-
     chart.set_xlabel(kwargs['x'])
+
     if kwargs.get('y', None):
         chart.set_ylabel(kwargs['y'])
 
     if kwargs['type'] == 'line':
         chart.set_tooltip_style(trigger='axis',axis_pointer='shadow')
 
-    if kwargs['type'] in ['bar', 'line', 'hist']:
+    if kwargs['type'] in ['bar', 'line', 'hist', 'bar_line']:
         set_bar_line_chart(chart, df, **kwargs)
 
     elif kwargs['type'] == 'scatter':
