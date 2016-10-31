@@ -122,7 +122,7 @@ def get_bar_or_line_data(df, x, c, y, **kwargs):
     else:
         data = df[x].value_counts()
 
-    #Specify sort_on and order method
+    # Specify sort_on and order method
     sort_on = kwargs['sort_on']
     descr_keys = pd.Series([0]).describe().keys().tolist()
     
@@ -133,8 +133,7 @@ def get_bar_or_line_data(df, x, c, y, **kwargs):
         data.sort_index(inplace=True, ascending=kwargs['ascending'])
     else:
         if sort_on != 'values':
-            val_deviation = (data.describe().loc[sort_on]
-                             if isinstance(sort_on, str) else sort_on)
+            val_deviation = sort_on(data) if callable(sort_on) else sort_on
             data = data - val_deviation
         if c:
             assert kwargs['sort_c_on'] is not None

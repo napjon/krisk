@@ -42,7 +42,7 @@ def bar(df,
         Add sort mode. Only work when c is None.
         If index, sort index on lexicographical order. use as s.sort_index()
         if values, sort based on values. Use as s.sort_values()
-        If string, deviation from value provided by pd.Series.describe()
+        If function, use it as function to aggregate. e.g. np.mean
         if integer, treat as value and deviate from that value
     sort_c_on: string, default None.
         specify a category as basis sort value if c is specified. Must be specified when use 
@@ -100,7 +100,7 @@ def line(df,
         Add sort mode. Only work when c is None.
         If index, sort index on lexicographical order. use as s.sort_index()
         if values, sort based on values. Use as s.sort_values()
-        If string, deviation from value provided by pd.Series.describe()
+        If function, use it as function to aggregate. e.g. np.mean
         if integer, treat as value and deviate from that value
     sort_c_on: string, default None.
         specify a category as basis sort value if c is specified. Must be specified when use 

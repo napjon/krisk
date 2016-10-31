@@ -469,7 +469,7 @@ class Chart(object):
         ------
         Chart object
         """
-        if self._kwargs_chart_['type'] == 'bar_line':
+        if self._kwargs_chart_.get('type', None) == 'bar_line':
             raise NotImplementedError
         label_kwargs = dict(name=name,
                             nameLocation=axis_position,
