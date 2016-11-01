@@ -22,14 +22,14 @@ def bar(df,
         columns to be used as category axis
     y: string, default None
         if None, use count of category. otherwise aggregate based on y columns
-    category: string, default None
+    c: string, default None
         another grouping columns inside x-axis
     how: string, default None
         to be passed to pd.group_by(x).aggregate(how). Can be mean,median,
         or any reduced operations.
     stacked: Boolean, default False.
         Whether to stacked category on top of the other categories.
-    annotate: string, {'all',True} default None
+    annotate: string, {'all', True, None} default None
         if True, annotate value on top of the plot element. If stacked is
         also True, annotate the last category. if 'all' and stacked,
         annotate all category
@@ -118,9 +118,9 @@ def line(df,
 
 
 def bar_line(df, x, ybar, yline, bar_aggfunc='mean', line_aggfunc='mean',
-             sort_on='index', ascending=True):
+             sort_on='index', ascending=True, is_distinct=False,
+             hide_split_line=True, style_tooltip=True):
     """
-
     Parameters
     ----------
     df: pd.DataFrame
@@ -140,6 +140,14 @@ def bar_line(df, x, ybar, yline, bar_aggfunc='mean', line_aggfunc='mean',
         sort based on values
     ascending: boolean, default True
         sort ascending vs. descending
+    is_distinct: boolean, default False
+        Don't use aggregation on this data. Will use drop_duplicates instead.
+        Ignore `bar_aggfunc`, `line_aggfunc`, `sort_on`, `ascending` parameters
+    hide_split_line: boolean, default True
+        Whether to hide the split line of both y-axis.
+    style_tooltip: boolean, default True
+        Whether to offer help to style tooltip. If True, execute
+        `chart.set_tooltip_style(trigger='axis',axis_pointer='shadow')`
 
     Returns
     -------
@@ -147,7 +155,10 @@ def bar_line(df, x, ybar, yline, bar_aggfunc='mean', line_aggfunc='mean',
     """
     return make_chart(df, x=x, ybar=ybar, yline=yline,
                       bar_aggfunc=bar_aggfunc, line_aggfunc=line_aggfunc,
+                      is_distinct=is_distinct,
                       sort_on=sort_on, ascending=ascending,
+                      hide_split_line=hide_split_line,
+                      style_tooltip=style_tooltip,
                       c=None, type='bar_line')
 
 
@@ -174,7 +185,7 @@ def hist(df,
         Whether normalize the histogram
     stacked: Boolean, default False.
         Whether to stacked category on top of the other categories.
-    annotate: string, {'all',True} default None
+    annotate: string, {'all',True, None} default None
         if True, annotate value on top of the plot element. If stacked is also
         True, annotate the last category. if 'all' and stacked, annotate all
         category
@@ -187,7 +198,7 @@ def hist(df,
     """
     return make_chart(df,type='hist',x=x,c=c,bins=bins,normed=normed,
                       stacked=stacked, density=density,
-                      annotate='top' if annotate == True else annotate)
+                      annotate='top' if annotate is True else annotate)
    
 
 def scatter(df, x, y, s=None, c=None, saturate=None, size_px=(10, 70)):
@@ -202,7 +213,8 @@ def scatter(df, x, y, s=None, c=None, saturate=None, size_px=(10, 70)):
         Used as sizing value of the scatter points
     c: string, default None
         column used as grouping color category
-    saturation
+    saturate: string, default None
+        column to use for saturation
     size_px: tuple, default (10,70)
         boundary size, lower and upper limit in pixel for min-max scatter points
 

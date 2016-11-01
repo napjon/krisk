@@ -30,6 +30,7 @@ def insert_series_data(data, x, chart_type, chart, cat=None):
 
     return series
 
+
 def make_chart(df, **kwargs):
 
     from krisk.plot.make_bar_line import set_bar_line_chart

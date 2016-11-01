@@ -174,17 +174,21 @@ def set_barline(df, x, chart, **kwargs):
     ybar = kwargs['ybar']
     yline = kwargs['yline']
 
-    data = (df
-            .groupby(x)
-            .agg({ybar: kwargs['bar_aggfunc'],
-                  yline: kwargs['line_aggfunc']}))
-
-    assert kwargs['sort_on'] in ['index', 'ybar', 'yline']
-    if kwargs['sort_on'] == 'index':
-        data.sort_index(ascending=kwargs['ascending'], inplace=True)
+    if kwargs['is_distinct'] is True:
+        data = df[[x, ybar, yline]].drop_duplicates().copy()
+        data.index = data.pop(x)
     else:
-        data.sort_values(kwargs[kwargs['sort_on']],
-                         ascending=kwargs['ascending'], inplace=True)
+        data = (df
+                .groupby(x)
+                .agg({ybar: kwargs['bar_aggfunc'],
+                      yline: kwargs['line_aggfunc']}))
+
+        assert kwargs['sort_on'] in ['index', 'ybar', 'yline']
+        if kwargs['sort_on'] == 'index':
+            data.sort_index(ascending=kwargs['ascending'], inplace=True)
+        else:
+            data.sort_values(kwargs[kwargs['sort_on']],
+                             ascending=kwargs['ascending'], inplace=True)
 
     def get_series(col, type): return dict(name=col, type=type,
                                            data=round_list(data[col]))
@@ -193,9 +197,11 @@ def set_barline(df, x, chart, **kwargs):
         dict(yAxisIndex=1, **get_series(yline, 'line'))
     ]
 
-    def get_yaxis(col): return {'name': col, 'splitLine': {'show': False}}
-    chart.option['yAxis'] = [get_yaxis(ybar), get_yaxis(yline)]
+    if kwargs['hide_split_line'] is True:
+        def get_yaxis(col): return {'name': col, 'splitLine': {'show': False}}
+        chart.option['yAxis'] = [get_yaxis(ybar), get_yaxis(yline)]
 
-    chart.set_tooltip_style(axis_pointer='shadow', trigger='axis')
+    if kwargs['style_tooltip'] is True:
+        chart.set_tooltip_style(axis_pointer='shadow', trigger='axis')
 
     return data
