@@ -21,8 +21,8 @@ def set_bar_line_chart(chart, df, x, c, **kwargs):
         chart.option['xAxis']['data'] = bins
 
     elif chart_type == 'bar_line':
-        set_barline(df, x, chart, **kwargs)
-        chart.option['xAxis']['data'] = round_list(df[x])
+        data = set_barline(df, x, chart, **kwargs)
+        chart.option['xAxis']['data'] = data.index.values.tolist()
         return
 
     if c:
@@ -180,24 +180,22 @@ def set_barline(df, x, chart, **kwargs):
                   yline: kwargs['line_aggfunc']}))
 
     assert kwargs['sort_on'] in ['index', 'ybar', 'yline']
-
     if kwargs['sort_on'] == 'index':
         data.sort_index(ascending=kwargs['ascending'], inplace=True)
     else:
         data.sort_values(kwargs[kwargs['sort_on']],
                          ascending=kwargs['ascending'], inplace=True)
 
-
-    get_series = lambda s, type: dict(name=s,
-                                      data=round_list(data[s]),
-                                      type=type)
+    def get_series(col, type): return dict(name=col, type=type,
+                                           data=round_list(data[col]))
     chart.option['series'] = [
         get_series(ybar, 'bar'),
         dict(yAxisIndex=1, **get_series(yline, 'line'))
     ]
 
-    get_yaxis = lambda s: {'name': s, 'splitLine': {'show': False}}
-    chart.option['yAxis'] = [get_yaxis(ybar),
-                             get_yaxis(yline)]
+    def get_yaxis(col): return {'name': col, 'splitLine': {'show': False}}
+    chart.option['yAxis'] = [get_yaxis(ybar), get_yaxis(yline)]
 
     chart.set_tooltip_style(axis_pointer='shadow', trigger='axis')
+
+    return data
