@@ -169,7 +169,7 @@ def get_hist_data(df, x, c, **kwargs):
 
 
 def set_barline(df, x, chart, **kwargs):
-    """Set histogram charts"""
+    """Set Bar-Line charts"""
 
     ybar = kwargs['ybar']
     yline = kwargs['yline']
@@ -178,6 +178,15 @@ def set_barline(df, x, chart, **kwargs):
             .groupby(x)
             .agg({ybar: kwargs['bar_aggfunc'],
                   yline: kwargs['line_aggfunc']}))
+
+    assert kwargs['sort_on'] in ['index', 'ybar', 'yline']
+
+    if kwargs['sort_on'] == 'index':
+        data.sort_index(ascending=kwargs['ascending'], inplace=True)
+    else:
+        data.sort_values(kwargs[kwargs['sort_on']],
+                         ascending=kwargs['ascending'], inplace=True)
+
 
     get_series = lambda s, type: dict(name=s,
                                       data=round_list(data[s]),

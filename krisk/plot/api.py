@@ -37,12 +37,10 @@ def bar(df,
     trendline: boolean, default False.
         If true, add line that connected the bars. Only work if not category, category but stacked,
         or not full.
-    sort_on: {'index', 'values', int, 'count', 'mean', 'std', 'min', '25%', '50%', '75%', 'max'},
-         default 'index'.
-        Add sort mode. Only work when c is None.
+    sort_on: {'index', 'values', int, function}, default 'index'.
         If index, sort index on lexicographical order. use as s.sort_index()
         if values, sort based on values. Use as s.sort_values()
-        If function, use it as function to aggregate. e.g. np.mean
+        If function, use it as aggregate (e.g. grouped.agg('mean' or np.mean))
         if integer, treat as value and deviate from that value
     sort_c_on: string, default None.
         specify a category as basis sort value if c is specified. Must be specified when use 
@@ -95,12 +93,10 @@ def line(df,
         If true, set to full area stacked chart. Only work if stacked is True.
     smooth: boolean, default False.
         If true, smooth the line.
-   sort_on: {'index', 'values', int, 'count', 'mean', 'std', 'min', '25%', '50%', '75%', 'max'},
-         default 'index'.
-        Add sort mode. Only work when c is None.
+    sort_on: {'index', 'values', int, function}, default 'index'.
         If index, sort index on lexicographical order. use as s.sort_index()
         if values, sort based on values. Use as s.sort_values()
-        If function, use it as function to aggregate. e.g. np.mean
+        If function, use it as aggregate (e.g. grouped.agg('mean' or np.mean))
         if integer, treat as value and deviate from that value
     sort_c_on: string, default None.
         specify a category as basis sort value if c is specified. Must be specified when use 
@@ -117,9 +113,37 @@ def line(df,
                       annotate='top' if annotate == True else annotate)
 
 
-def bar_line(df, x, ybar, yline, bar_aggfunc='mean', line_aggfunc='mean'):
+def bar_line(df, x, ybar, yline, bar_aggfunc='mean', line_aggfunc='mean',
+             sort_on='index', ascending=True):
+    """
+
+    Parameters
+    ----------
+    df: pd.DataFrame
+        data to be used for the chart
+    x: string
+        column to be used as category axis
+    ybar: string
+        column to be used as bar values
+    yline:
+        column to be used as line values
+    bar_aggfunc: string (mapping function) or function, default 'mean'
+        Function to use for aggregating groups on bar values
+    line_aggfunc: string (mapping function) or function, default 'mean'
+        Function to use for aggregating groups on line values
+    sort_on: {'index', 'ybar', 'yline'}, default 'index'
+        sorting x-axis. If index, sort on x. if either `ybar` or `yline`,
+        sort based on values
+    ascending: boolean, default True
+        sort ascending vs. descending
+
+    Returns
+    -------
+    Chart Object
+    """
     return make_chart(df, x=x, ybar=ybar, yline=yline,
                       bar_aggfunc=bar_aggfunc, line_aggfunc=line_aggfunc,
+                      sort_on=sort_on, ascending=ascending,
                       c=None, type='bar_line')
 
 
