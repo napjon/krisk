@@ -1,2 +1,1 @@
-recursive-exclude krisk/static *.*
-include krisk/static/template.html
+recursive-include krisk *.py *.js *.html
