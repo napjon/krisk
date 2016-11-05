@@ -25,9 +25,9 @@ def init_notebook():
     from IPython.display import Javascript
     return Javascript("""
     require.config({
-                 baseUrl : "//cdn.rawgit.com/napjon/krisk/master/krisk/static",
+                 baseUrl : "https://cdn.rawgit.com/napjon/krisk/master/krisk/static",
                  paths: {
-                      echarts: "//cdnjs.cloudflare.com/ajax/libs/echarts/3.2.1/echarts.min"
+                      echarts: "https://cdnjs.cloudflare.com/ajax/libs/echarts/3.2.1/echarts.min"
                   }
     });
     """)
