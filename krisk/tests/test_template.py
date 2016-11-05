@@ -21,9 +21,9 @@ def test_init_nb():
     js_data = init_notebook().data
     js_init_template = """
     require.config({{
-                 baseUrl : "//cdn.rawgit.com/napjon/krisk/master/krisk/static",
+                 baseUrl : "https://cdn.rawgit.com/napjon/krisk/master/krisk/static",
                  paths: {{
-                      echarts: "//cdnjs.cloudflare.com/ajax/libs/echarts/{VER}/echarts.min"
+                      echarts: "https://cdnjs.cloudflare.com/ajax/libs/echarts/{VER}/echarts.min"
                   }}
     }});
     """
