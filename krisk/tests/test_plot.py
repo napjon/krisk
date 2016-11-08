@@ -12,6 +12,7 @@ def assert_barline_data(plot, true_option, test_legend=True):
     if test_legend:
         assert plot.option['legend']['data'] == true_option['legend']['data']
 
+
 def assert_scatter_data(plot, true_option):
     assert plot.option['series'][0]['data'] == true_option['series'][0]['data']
     assert plot.option['xAxis'] == true_option['xAxis']
@@ -105,6 +106,7 @@ def test_smooth_line(gapminder):
                 how='mean',smooth=True)
     assert p.option['series'][0]['smooth'] == True
 
+
 def test_full_bar_line(gapminder):
     bar = kk.bar(gapminder,'year',c='continent',y='pop',how='mean',
                  stacked=True,full=True,annotate='all')
@@ -122,6 +124,7 @@ def test_full_bar_line(gapminder):
 
     assert_barline_data(bar, true_option)
     assert_barline_data(line, true_option)
+
 
 def test_sort_bar_line(gapminder):
     p = kk.line(gapminder,'year', y='pop', how='mean',c='continent',
@@ -188,7 +191,6 @@ def test_density(gapminder):
         pass
 
 
-
 def test_scatter(gapminder):
     # Simple Scatter
     p1 = kk.scatter(gapminder[gapminder.year == 1952],'pop','lifeExp')
@@ -221,3 +223,29 @@ def test_scatter(gapminder):
                     'lifeExp', 'gdpPercap', s='pop')
     opt3 = read_option_tests('scatter_single.json')
     assert_scatter_data(p3, opt3)
+
+
+def test_bar_line(gapminder):
+
+    p1 = kk.bar_line(gapminder, 'continent', 'lifeExp', 'gdpPercap')
+    assert p1.option['series'][0] == {'data': [59.03, 69.06, 37.479,
+                                               68.433, 74.663],
+                                      'name': 'lifeExp',
+                                      'type': 'bar'}
+    assert p1.option['series'][-1] == {'data': [4426.026, 8955.554, 802.675,
+                                                3255.367, 19980.596],
+                                       'name': 'gdpPercap',
+                                       'type': 'line',
+                                       'yAxisIndex': 1}
+    assert p1.option['xAxis']['data'] == ['Africa', 'Americas', 'Asia',
+                                          'Europe', 'Oceania']
+
+    p2 = kk.bar_line(gapminder, 'continent', 'lifeExp', 'gdpPercap',
+                     is_distinct=True)
+    assert p2.option['series'][0]['data'] == [43.077, 62.485, 28.801,
+                                              55.23, 69.12]
+    assert p2.option['series'][-1]['data'] == [2449.008, 5911.315, 779.445,
+                                               1601.056, 10039.596]
+    assert p2.option['xAxis']['data'] == ['Africa', 'Americas', 'Asia',
+                                          'Europe', 'Oceania']
+

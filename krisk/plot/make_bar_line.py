@@ -175,7 +175,7 @@ def set_barline(df, x, chart, **kwargs):
     yline = kwargs['yline']
 
     if kwargs['is_distinct'] is True:
-        data = df[[x, ybar, yline]].drop_duplicates().copy()
+        data = df[[x, ybar, yline]].drop_duplicates(subset=[x]).copy()
         data.index = data.pop(x)
     else:
         data = (df

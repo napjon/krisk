@@ -86,8 +86,10 @@ def line(df,
     how: string, default None
         to be passed to pd.group_by(x).aggregate(how). Can be mean,median,
         or any reduced operations.
-    stacked: Boolean, default False.
+    stacked: boolean, default False.
         Whether to stacked category on top of the other categories.
+    area: boolean, default False.
+        Whether to fill the area with line colors.
     annotate: string, {'all',True} default None
         if True, annotate value on top of the plot element. If stacked is
         also True, annotate the last category. if 'all' and stacked,
@@ -142,7 +144,9 @@ def bar_line(df, x, ybar, yline, bar_aggfunc='mean', line_aggfunc='mean',
         sort ascending vs. descending
     is_distinct: boolean, default False
         Don't use aggregation on this data. Will use drop_duplicates instead.
-        Ignore `bar_aggfunc`, `line_aggfunc`, `sort_on`, `ascending` parameters
+        Ignore `bar_aggfunc`, `line_aggfunc`, `sort_on`, `ascending` parameters.
+        sort_on deliberately disabled in is_distinct mode to allow already
+        sorted distinct data.
     hide_split_line: boolean, default True
         Whether to hide the split line of both y-axis.
     style_tooltip: boolean, default True
