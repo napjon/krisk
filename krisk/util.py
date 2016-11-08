@@ -4,16 +4,16 @@ import codecs
 
 
 def join_current_dir(file):
-	"""Join filepath with current file directory"""
-	cwd = os.path.dirname(__file__)
-	return os.path.join(cwd, file)
+    """Join filepath with current file directory"""
+    cwd = os.path.dirname(__file__)
+    return os.path.join(cwd, file)
 
 
 def get_content(filepath):
-	"""Retrieve content from file"""
-	abs_path = join_current_dir(filepath)
-	with open(abs_path, 'r') as f:
-		return f.read()
+    """Retrieve content from file"""
+    abs_path = join_current_dir(filepath)
+    with open(abs_path, 'r') as f:
+        return f.read()
 
 
 def init_notebook():
@@ -25,9 +25,9 @@ def init_notebook():
     from IPython.display import Javascript
     return Javascript("""
     require.config({
-                 baseUrl : "//cdn.rawgit.com/napjon/krisk/master/krisk/static",
+                 baseUrl : "https://cdn.rawgit.com/napjon/krisk/master/krisk/static",
                  paths: {
-                      echarts: "//cdnjs.cloudflare.com/ajax/libs/echarts/3.2.1/echarts.min"
+                      echarts: "https://cdnjs.cloudflare.com/ajax/libs/echarts/3.2.1/echarts.min"
                   }
     });
     """)
