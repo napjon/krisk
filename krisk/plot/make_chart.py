@@ -37,7 +37,7 @@ def make_chart(df, **kwargs):
     from krisk.plot.make_scatter_geo import set_scatter_chart
 
     chart = Chart(**kwargs)
-    chart._kwargs_chart_['data_columns'] = df.columns
+    chart.kwargs['data_columns'] = df.columns
     chart.set_xlabel(kwargs['x'])
 
     if kwargs.get('y', None):

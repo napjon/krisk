@@ -229,3 +229,25 @@ def scatter(df, x, y, s=None, c=None, saturate=None, size_px=(10, 70)):
     """
     return make_chart(df,type='scatter',x=x,y=y,s=s,c=c,
                       saturate=saturate,size_px=size_px)
+
+def waterfall(df, x, y, is_float, category=None, color_coded=False,
+              annotate=True):
+    """
+    Firxt category axis automatically not float.
+
+    Parameters
+    ----------
+    df: pd.DataFrame
+    x: string, columns in pd.DataFrame
+        columns to be used as category axis
+    y: string, columns in pd.DataFrame
+        columns to be used as value
+    to_float: string, columns in pd.DataFrame
+        columns to be used
+    color_coded
+    annotate
+
+    Returns
+    -------
+
+    """
