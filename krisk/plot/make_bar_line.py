@@ -209,12 +209,43 @@ def set_barline(df, x, chart, **kwargs):
     return data
 
 
-def set_waterfall(df, x, chart, **kwargs):
+def set_waterfall(s, chart, **kwargs):
+    invisible_bar = {'name': 'float1',
+                     'type': 'bar',
+                     'stack': 'stack',
+                     "itemStyle": {
+                         "normal": {
+                             "barBorderColor": 'rgba(0,0,0,0)',
+                             "color": 'rgba(0,0,0,0)'
+                         },
+                         "emphasis": {
+                             "barBorderColor": 'rgba(0,0,0,0)',
+                             "color": 'rgba(0,0,0,0)'
+                         }
+                     }}
+    visible_bar = {'name': 'float2', 'type': 'bar', 'stack': 'stack'}
+    invisible_series = s.cumsum().shift(1).fillna(0)
+
+    if (invisible_series >= 0).all() is np.False_:
+        raise NotImplementedError("cumulative sum should all be positive")
+
+    visible_series = s.copy().abs().values
+
+    invisible_series = np.where(s < 0,
+                                invisible_series - visible_series,
+                                invisible_series)
+    invisible_bar['data'] = invisible_series.tolist()
+
+    chart.option['series'].append(invisible_bar)
+    chart.option['series'].append(visible_bar)
+    visible_bar['data'] = visible_series.tolist()
+
+    return chart
 
 
 
 
-    pass
+
 
 
 
