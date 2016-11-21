@@ -22,11 +22,6 @@ def set_bar_line_chart(chart, df, x, c, **kwargs):
         data, bins = get_hist_data(df, x, c, **kwargs)
         chart.option['xAxis']['data'] = bins
 
-    elif chart_type == 'bar_line':
-        data = set_barline(df, x, chart, **kwargs)
-        chart.option['xAxis']['data'] = data.index.values.tolist()
-        return
-
     if c:
         # append data for every category
         for cat in data.columns:
@@ -170,7 +165,7 @@ def get_hist_data(df, x, c, **kwargs):
     return data, bins
 
 
-def set_barline(df, x, chart, **kwargs):
+def set_barline(chart, df, x, **kwargs):
     """Set Bar-Line charts"""
 
     ybar = kwargs['ybar']
@@ -206,11 +201,18 @@ def set_barline(df, x, chart, **kwargs):
     if kwargs['style_tooltip'] is True:
         chart.set_tooltip_style(axis_pointer='shadow', trigger='axis')
 
+    chart.option['xAxis']['data'] = data.index.values.tolist()
     return data
 
 
-def set_waterfall(s, chart, **kwargs):
-    invisible_bar = {'name': 'float1',
+def set_waterfall(chart, s, **kwargs):
+
+    # TODO
+    # * Set annotation
+    # * Find a way to naming index and value
+    # * Possible customize tooltip solution
+
+    invisible_bar = {'name': '',
                      'type': 'bar',
                      'stack': 'stack',
                      "itemStyle": {
@@ -223,25 +225,45 @@ def set_waterfall(s, chart, **kwargs):
                              "color": 'rgba(0,0,0,0)'
                          }
                      }}
-    visible_bar = {'name': 'float2', 'type': 'bar', 'stack': 'stack'}
+    visible_bar = {'type': 'bar', 'stack': 'stack'}
+
     invisible_series = s.cumsum().shift(1).fillna(0)
 
     if (invisible_series >= 0).all() is np.False_:
-        raise NotImplementedError("cumulative sum should all be positive")
-
-    visible_series = s.copy().abs().values
+        raise NotImplementedError("cumulative sum should be positive")
 
     invisible_series = np.where(s < 0,
-                                invisible_series - visible_series,
+                                invisible_series - s.abs(),
                                 invisible_series)
-    invisible_bar['data'] = invisible_series.tolist()
-
+    invisible_bar['data'] = round_list(invisible_series)
     chart.option['series'].append(invisible_bar)
-    chart.option['series'].append(visible_bar)
-    visible_bar['data'] = visible_series.tolist()
 
-    return chart
+    def add_bar(series, name):
+        """Append bar to chart series"""
 
+        bar = deepcopy(visible_bar)
+        bar['name'] = name
+        bar['data'] = round_list(series)
+        chart.option['series'].append(bar)
+
+    if kwargs['color_coded']:
+
+        boolean_pivot = (pd.DataFrame(s)
+                         .pivot_table(values=s.name,
+                                      index=s.index,
+                                      columns=s > 0)
+                         .abs()
+                         .round(3)
+                         .fillna('-'))
+
+        add_bar(boolean_pivot[True], kwargs['up_name'])
+        add_bar(boolean_pivot[False], kwargs['down_name'])
+    else:
+        add_bar(s.abs(), s.name)
+
+    chart.option['xAxis']['data'] = s.index.values.tolist()
+
+    return s
 
 
 
