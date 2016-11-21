@@ -39,8 +39,10 @@ def make_chart(df, **kwargs):
     from krisk.plot.make_scatter_geo import set_scatter_chart
 
     chart = Chart(**kwargs)
-    # chart.kwargs['data_columns'] = df.columns
-    # chart.set_xlabel(kwargs['x'])
+
+    if kwargs['type'] not in ['waterfall']:
+        chart.kwargs['data_columns'] = df.columns
+        chart.set_xlabel(kwargs['x'])
 
     if kwargs.get('y', None):
         chart.set_ylabel(kwargs['y'])
@@ -51,7 +53,7 @@ def make_chart(df, **kwargs):
         set_bar_line_chart(chart, df, **kwargs)
     elif kwargs['type'] == 'bar_line':
         set_barline(chart, df, **kwargs)
-    if kwargs['type'] == 'waterfall':
+    elif kwargs['type'] == 'waterfall':
         set_waterfall(chart, df,   **kwargs)
     elif kwargs['type'] == 'scatter':
         set_scatter_chart(chart, df, **kwargs)
