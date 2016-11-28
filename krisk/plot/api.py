@@ -249,6 +249,9 @@ def waterfall(s, color_coded=False, annotate=None,
     -------
     Chart Object
     """
+    if annotate not in [None, 'inside', 'outside']:
+        raise ValueError("invalid parameters")
+
     return make_chart(s, type='waterfall', up_name=up_name, down_name=down_name,
                       color_coded=color_coded, annotate=annotate)
 
