@@ -6,6 +6,7 @@ import pandas as pd
 from krisk.plot.make_chart import insert_series_data, round_list
 from krisk.util import future_warning
 
+d_annotate = {'normal': {'show': True, 'position': 'top'}}
 
 def set_bar_line_chart(chart, df, x, c, **kwargs):
     """Construct Bar, Line, and Histogram"""
@@ -32,7 +33,7 @@ def set_bar_line_chart(chart, df, x, c, **kwargs):
     series = chart.option['series']
 
     ########Provide stacked,annotate, area for bar line hist#################
-    d_annotate = {'normal': {'show': True, 'position': 'top'}}
+
 
     if c and kwargs['stacked']:
         for s in series:
@@ -235,7 +236,7 @@ def set_waterfall(chart, s, **kwargs):
     invisible_series = np.where(s < 0,
                                 invisible_series - s.abs(),
                                 invisible_series)
-    invisible_bar['data'] = round_list(invisible_series)
+    invisible_bar['data'] = invisible_series.tolist()
     chart.option['series'].append(invisible_bar)
 
     def add_bar(series, name):
@@ -245,6 +246,10 @@ def set_waterfall(chart, s, **kwargs):
         bar['name'] = name
         bar['data'] = round_list(series)
         chart.option['series'].append(bar)
+
+    def add_annotate(bar_series, position):
+        bar_series['label'] = deepcopy(d_annotate)
+        bar_series['label']['normal']['position'] = position
 
     if kwargs['color_coded']:
 
@@ -258,10 +263,35 @@ def set_waterfall(chart, s, **kwargs):
 
         add_bar(boolean_pivot[True], kwargs['up_name'])
         add_bar(boolean_pivot[False], kwargs['down_name'])
+
+        chart.option['legend']['data'] = [kwargs['up_name'],
+                                          kwargs['down_name']]
     else:
         add_bar(s.abs(), s.name)
 
+    assert kwargs['annotate'] in [None, 'inside', 'outside']
+    if kwargs['annotate']:
+        if kwargs['annotate'] == 'inside':
+            for bar_series in chart.option['series']:
+                add_annotate(bar_series, kwargs['annotate'])
+        else:
+            add_annotate(chart.option['series'][1], "top")
+            if kwargs['color_coded']:
+                add_annotate(chart.option['series'][2], "bottom")
+
     chart.option['xAxis']['data'] = s.index.values.tolist()
+    chart.set_tooltip_style(trigger='axis', axis_pointer='shadow')
+
+    chart.option['tooltip']['formatter'] = """function (params) {
+            var tar;
+            if (params[1].value != '-') {
+                tar = params[1];
+            }
+            else {
+                tar = params[2];
+            }
+            return tar.name + '<br/>' + tar.seriesName + ' : ' + tar.value;
+        }"""
 
     return s
 
