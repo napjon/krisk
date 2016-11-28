@@ -210,9 +210,7 @@ def set_barline(chart, df, x, **kwargs):
 def set_waterfall(chart, s, **kwargs):
 
     # TODO
-    # * Set annotation
     # * Find a way to naming index and value
-    # * Possible customize tooltip solution
 
     invisible_bar = {'name': '',
                      'type': 'bar',
