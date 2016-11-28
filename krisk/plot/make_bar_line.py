@@ -8,6 +8,7 @@ from krisk.util import future_warning
 
 d_annotate = {'normal': {'show': True, 'position': 'top'}}
 
+
 def set_bar_line_chart(chart, df, x, c, **kwargs):
     """Construct Bar, Line, and Histogram"""
 
@@ -95,7 +96,7 @@ def set_bar_line_chart(chart, df, x, c, **kwargs):
         if c and kwargs['stacked']:
             density['data'] = [0] + round_list(data.sum(axis=1)) + [0]
         elif c is None:
-            density['data'] =  [0] + round_list(data) + [0] 
+            density['data'] =  [0] + round_list(data) + [0]
         else:
             raise AssertionError('Density must either stacked category, '
                                  'or not category')
@@ -236,7 +237,7 @@ def set_waterfall(chart, s, **kwargs):
     invisible_series = np.where(s < 0,
                                 invisible_series - s.abs(),
                                 invisible_series)
-    invisible_bar['data'] = invisible_series.tolist()
+    invisible_bar['data'] = invisible_series.round(3).tolist()
     chart.option['series'].append(invisible_bar)
 
     def add_bar(series, name):
