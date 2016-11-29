@@ -71,7 +71,6 @@ class Chart(object):
         # 2. kwargs_chart: To be passed for make_chart function
         # 3. Other than previous two
 
-
         self._chartId = str(uuid.uuid4())
         self.option = deepcopy(OPTION_TEMPLATE)
         self._kwargs_chart_ = kwargs
@@ -85,6 +84,10 @@ class Chart(object):
         self.set_legend(**rc['legend'])
         self.set_toolbox(**rc['toolbox'])
         self.set_tooltip_style(**rc['tooltip_style'])
+
+    @property
+    def kwargs(self):
+        return self._kwargs_chart_
 
     # Color and Themes
 

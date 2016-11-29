@@ -249,3 +249,81 @@ def test_bar_line(gapminder):
     assert p2.option['xAxis']['data'] == ['Africa', 'Americas', 'Asia',
                                           'Europe', 'Oceania']
 
+
+def test_waterfall():
+    np.random.seed(0)
+    import pandas as pd
+    df = pd.DataFrame({'val': -1 + 10 * np.random.randn(10)})
+
+    p1 = kk.waterfall(df['val'])
+
+    p1.option['tooltip']['formatter'] = """function (params) {
+                var tar;
+                if (params[1].value != '-') {
+                    tar = params[1];
+                }
+                else {
+                    tar = params[2];
+                }
+                return tar.name + '<br/>' + tar.seriesName + ' : ' + tar.value;
+            }"""
+
+    assert p1.option['tooltip']['axisPointer'] == {'type': 'shadow'}
+    assert p1.option['series'][0]['name'] == ''
+
+    p1_data_invis = p1.option['series'][0].pop('data')
+    assert p1_data_invis == [0.0, 16.641, 19.642, 28.429, 49.838, 56.741,
+                             56.741, 62.729, 60.696, 60.696]
+    assert p1.option['series'][0] == {
+         'name': '',
+         'type': 'bar',
+         'stack': 'stack',
+         "itemStyle": {
+             "normal": {
+                 "barBorderColor": 'rgba(0,0,0,0)',
+                 "color": 'rgba(0,0,0,0)'
+             },
+             "emphasis": {
+                 "barBorderColor": 'rgba(0,0,0,0)',
+                 "color": 'rgba(0,0,0,0)'
+             }
+             }}
+
+    p1_data_val = p1.option['series'][1].pop('data')
+    assert p1_data_val == [16.641, 3.002, 8.787, 21.409, 17.676, 10.773, 8.501,
+                           2.514, 2.032, 3.106]
+
+    assert p1.option['series'][1] == {'name': 'val',
+                                      'stack': 'stack',
+                                      'type': 'bar'}
+
+    p2 = kk.waterfall(df['val'], color_coded=True,
+                      annotate="outside", up_name="up")
+
+    p2_data_pos_val = p2.option['series'][1].pop('data')
+    p2_data_neg_val = p2.option['series'][2].pop('data')
+
+    assert p2_data_pos_val == [16.641, 3.002, 8.787, 21.409,
+                               17.676, '-', 8.501, '-', '-', 3.106]
+    assert p2_data_neg_val == ['-', '-', '-', '-', '-',
+                               10.773, '-', 2.514, 2.032, '-']
+
+    pos_series = p2.option['series'][1]
+    neg_series = p2.option['series'][2]
+
+    assert pos_series == {
+        'label': {'normal': {'position': 'top', 'show': True}},
+        'name': 'up', 'stack': 'stack', 'type': 'bar'
+    }
+    assert neg_series == {
+        'label': {'normal': {'position': 'bottom', 'show': True}},
+        'name': 'negative', 'stack': 'stack', 'type': 'bar'
+    }
+
+
+
+
+
+
+
+
