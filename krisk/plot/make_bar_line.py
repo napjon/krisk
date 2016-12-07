@@ -24,6 +24,10 @@ def set_bar_line_chart(chart, df, x, c, **kwargs):
         data = set_barline(df, x, chart, **kwargs)
         chart.option['xAxis']['data'] = data.index.values.tolist()
         return
+    elif chart_type in ['bar_tidy', 'line_tidy']:
+        chart_type = chart_type.replace('_tidy', '')
+        data = df
+        chart.option['xAxis']['data'] = data.index.values.tolist()
 
     if c:
         # append data for every category
@@ -57,8 +61,18 @@ def set_bar_line_chart(chart, df, x, c, **kwargs):
         series[-1]['label'] = d_annotate
     # TODO: make annotate receive all kinds supported in echarts.
 
+    # Add Custom Styling
+    if kwargs['type'] == 'hist':
+        histogram_custom_style(chart, data, c, series, **kwargs)
+    elif kwargs['type'] in ['bar', 'bar_tidy']:
+        bar_custom_style(c, series, **kwargs)
+    elif kwargs['type'] in ['line', 'line_tidy']:
+        line_custom_style(series, **kwargs)
+
+
+def bar_custom_style(c, series, **kwargs):
     # Special Bar Condition: Trendline
-    if kwargs['type'] == 'bar' and kwargs['trendline']:
+    if kwargs['trendline']:
         trendline = {'name': 'trendline', 'type': 'line',
                      'lineStyle': {'normal': {'color': '#000'}}}
 
@@ -70,15 +84,17 @@ def set_bar_line_chart(chart, df, x, c, **kwargs):
         else:
             raise AssertionError('Trendline must either stacked category,'
                                  ' or not category')
-
         series.append(trendline)
 
+
+def line_custom_style(series, **kwargs):
     # Special Line Condition: Smooth
-    if kwargs['type'] == 'line' and kwargs['smooth']:
+    if kwargs['smooth']:
         for s in series:
             s['smooth'] = True
 
 
+def histogram_custom_style(chart, data, c, series, **kwargs):
     # Special Histogram Condition: Density
     #TODO NEED IMPROVEMENT!
     if kwargs['type'] == 'hist' and kwargs['density']:
@@ -97,7 +113,7 @@ def set_bar_line_chart(chart, df, x, c, **kwargs):
         if c and kwargs['stacked']:
             density['data'] = [0] + round_list(data.sum(axis=1)) + [0]
         elif c is None:
-            density['data'] =  [0] + round_list(data) + [0] 
+            density['data'] = [0] + round_list(data) + [0]
         else:
             raise AssertionError('Density must either stacked category, '
                                  'or not category')

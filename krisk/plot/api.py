@@ -119,6 +119,43 @@ def line(df,
                       annotate='top' if annotate is True else annotate)
 
 
+def line_tidy(df,
+         stacked=False,
+         area=False,
+         annotate=None,
+         full=False,
+         smooth=False):
+
+    """
+    This plot assume DataFrame can be directly consumed (tidy data). Used for
+    customized manipulation data that normal plot can't provides.
+        * data is cleaned and aggregated.
+        * No duplicate values for each index-column pair (tidy)
+        * index is used for category x-axis.
+        * each column corresponds to one series.
+        * values in one column belong to column data series.
+    stacked: boolean, default False.
+        Whether to stacked category on top of the other categories.
+    area: boolean, default False.
+        Whether to fill the area with line colors.
+    annotate: string, {'all',True} default None
+        if True, annotate value on top of the plot element. If stacked is
+        also True, annotate the last category. if 'all' and stacked,
+        annotate all category
+    full: boolean, default False.
+        If true, set to full area stacked chart. Only work if stacked is True.
+    smooth: boolean, default False.
+        If true, smooth the line.
+
+    Returns
+    -------
+    Chart Object
+    """
+    return make_chart(df, type='line_tidy',stacked=stacked,
+                      area=area, full=full, smooth=smooth,
+                      annotate='top' if annotate is True else annotate)
+
+
 def bar_line(df, x, ybar, yline, bar_aggfunc='mean', line_aggfunc='mean',
              sort_on='index', ascending=True, is_distinct=False,
              hide_split_line=True, style_tooltip=True):

@@ -1,5 +1,6 @@
 from copy import deepcopy
 from krisk.chart.api import Chart
+import pandas as pd
 
 
 def round_list(arr):
@@ -37,18 +38,30 @@ def make_chart(df, **kwargs):
     from krisk.plot.make_scatter_geo import set_scatter_chart
 
     chart = Chart(**kwargs)
+
+    if kwargs['type'] in ['bar_tidy', 'line_tidy']:
+        try
+        if isinstance(df, pd.DataFrame):
+            kwargs['c'] = 'unnamed'
+        elif isinstance(df, pd.Series):
+            df = pd.DataFrame(df)
+            kwargs['c'] = None
+
+        kwargs['x'] = df.index.name
+
     chart._kwargs_chart_['data_columns'] = df.columns
     chart.set_xlabel(kwargs['x'])
 
     if kwargs.get('y', None):
         chart.set_ylabel(kwargs['y'])
 
-    if kwargs['type'] == 'line':
+    if kwargs['type'] in ['line', 'line_tidy']:
         chart.set_tooltip_style(trigger='axis',axis_pointer='shadow')
 
-    if kwargs['type'] in ['bar', 'line', 'hist', 'bar_line']:
+    if kwargs['type'] in ['bar', 'line',
+                          'bar_tidy', 'line_tidy',
+                          'hist', 'bar_line']:
         set_bar_line_chart(chart, df, **kwargs)
-
     elif kwargs['type'] == 'scatter':
         set_scatter_chart(chart, df, **kwargs)
 
