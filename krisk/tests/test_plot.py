@@ -62,6 +62,7 @@ def test_bar(gapminder):
                              'yAxis': {}}
     assert_barline_data(p4, opt4, test_legend=False) 
 
+
 def test_trendline(gapminder):
 
     # p = kk.bar(gapminder,'year',how='mean',y='pop',trendline=True)
@@ -85,6 +86,7 @@ def test_trendline(gapminder):
     except AssertionError:
         pass
 
+
 def test_line(gapminder):
     p = kk.line(
         gapminder,
@@ -99,6 +101,7 @@ def test_line(gapminder):
     assert_barline_data(p, opt)
     assert p.option['tooltip']['axisPointer']['type'] == 'shadow'
     assert p.option['tooltip']['trigger'] == 'axis'
+
 
 def test_smooth_line(gapminder):
 

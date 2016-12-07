@@ -120,11 +120,8 @@ def line(df,
 
 
 def line_tidy(df,
-         stacked=False,
-         area=False,
-         annotate=None,
-         full=False,
-         smooth=False):
+              annotate=None,
+              smooth=False):
 
     """
     This plot assume DataFrame can be directly consumed (tidy data). Used for
@@ -134,16 +131,10 @@ def line_tidy(df,
         * index is used for category x-axis.
         * each column corresponds to one series.
         * values in one column belong to column data series.
-    stacked: boolean, default False.
-        Whether to stacked category on top of the other categories.
-    area: boolean, default False.
-        Whether to fill the area with line colors.
-    annotate: string, {'all',True} default None
-        if True, annotate value on top of the plot element. If stacked is
-        also True, annotate the last category. if 'all' and stacked,
-        annotate all category
-    full: boolean, default False.
-        If true, set to full area stacked chart. Only work if stacked is True.
+    df: pd.DataFrame
+        data to be used for the chart
+    annotate: boolean, default False
+        if True, annotate value on top of the plot element.
     smooth: boolean, default False.
         If true, smooth the line.
 
@@ -152,8 +143,7 @@ def line_tidy(df,
     Chart Object
     """
     return make_chart(df, x=df.index.name, c="unnamed",
-                      type='line_tidy',stacked=stacked,
-                      area=area, full=full, smooth=smooth,
+                      type='line_tidy', smooth=smooth,
                       annotate='top' if annotate is True else annotate)
 
 

@@ -54,7 +54,6 @@ def make_chart(df, **kwargs):
         chart.set_xlabel(kwargs['x'])
     except AttributeError:
         if kwargs['type'] in ['line_tidy', 'bar_tidy']:
-            df = pd.DataFrame(df)
             kwargs['c'] = None
 
     if kwargs.get('y', None):

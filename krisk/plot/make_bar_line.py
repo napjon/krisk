@@ -31,7 +31,7 @@ def set_bar_line_chart(chart, df, x, c, **kwargs):
     elif chart_type in ['bar_tidy', 'line_tidy']:
         chart_type = chart_type.replace('_tidy', '')
         data = df
-        chart.option['xAxis']['data'] = data.index.values.tolist()
+        chart.option['xAxis']['data'] = data.index.astype(str).tolist()
 
     if c:
         # append data for every category
@@ -43,23 +43,22 @@ def set_bar_line_chart(chart, df, x, c, **kwargs):
     series = chart.option['series']
 
     ########Provide stacked,annotate, area for bar line hist#################
-    d_annotate = {'normal': {'show': True, 'position': 'top'}}
+    if kwargs['type'] in ['hist', 'bar', 'line']:
+        if c and kwargs['stacked']:
+            for s in series:
+                s['stack'] = c
 
-    if c and kwargs['stacked']:
-        for s in series:
-            s['stack'] = c
+                if chart_type == 'line' and kwargs['area']:
+                    s['areaStyle'] = {'normal': {}}
 
-            if chart_type == 'line' and kwargs['area']:
-                s['areaStyle'] = {'normal': {}}
+                if kwargs['annotate'] == 'all':
+                    s['label'] = deepcopy(d_annotate)
 
-            if kwargs['annotate'] == 'all':
-                s['label'] = deepcopy(d_annotate)
+                    if chart_type == 'bar':
+                        s['label']['normal']['position'] = 'inside'
 
-                if chart_type == 'bar':
-                    s['label']['normal']['position'] = 'inside'
-
-        if kwargs['type'] in ['line','bar'] and kwargs['full']:
-            chart.option['yAxis']['max'] = 1
+            if kwargs['type'] in ['line','bar'] and kwargs['full']:
+                chart.option['yAxis']['max'] = 1
 
     if kwargs['annotate'] == 'top':
         series[-1]['label'] = d_annotate
