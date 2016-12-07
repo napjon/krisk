@@ -1,8 +1,12 @@
 from copy import deepcopy
+
 import numpy as np
 import pandas as pd
 
 from krisk.plot.make_chart import insert_series_data, round_list
+from krisk.util import future_warning
+
+d_annotate = {'normal': {'show': True, 'position': 'top'}}
 
 
 def set_bar_line_chart(chart, df, x, c, **kwargs):
@@ -184,7 +188,7 @@ def get_hist_data(df, x, c, **kwargs):
     return data, bins
 
 
-def set_barline(df, x, chart, **kwargs):
+def set_barline(chart, df, x, **kwargs):
     """Set Bar-Line charts"""
 
     ybar = kwargs['ybar']
@@ -220,4 +224,93 @@ def set_barline(df, x, chart, **kwargs):
     if kwargs['style_tooltip'] is True:
         chart.set_tooltip_style(axis_pointer='shadow', trigger='axis')
 
+    chart.option['xAxis']['data'] = data.index.values.tolist()
     return data
+
+
+def set_waterfall(chart, s, **kwargs):
+
+    # TODO
+    # * Find a way to naming index and value
+
+    invisible_bar = {'name': '',
+                     'type': 'bar',
+                     'stack': 'stack',
+                     "itemStyle": {
+                         "normal": {
+                             "barBorderColor": 'rgba(0,0,0,0)',
+                             "color": 'rgba(0,0,0,0)'
+                         },
+                         "emphasis": {
+                             "barBorderColor": 'rgba(0,0,0,0)',
+                             "color": 'rgba(0,0,0,0)'
+                         }
+                     }}
+    visible_bar = {'type': 'bar', 'stack': 'stack'}
+
+    invisible_series = s.cumsum().shift(1).fillna(0)
+
+    if (invisible_series >= 0).all() is np.False_:
+        raise NotImplementedError("cumulative sum should be positive")
+
+    invisible_series = np.where(s < 0,
+                                invisible_series - s.abs(),
+                                invisible_series)
+    invisible_bar['data'] = invisible_series.round(3).tolist()
+    chart.option['series'].append(invisible_bar)
+
+    def add_bar(series, name):
+        """Append bar to chart series"""
+
+        bar = deepcopy(visible_bar)
+        bar['name'] = name
+        bar['data'] = series.values.tolist()
+        chart.option['series'].append(bar)
+
+    def add_annotate(bar_series, position):
+        bar_series['label'] = deepcopy(d_annotate)
+        bar_series['label']['normal']['position'] = position
+
+    if kwargs['color_coded']:
+
+        boolean_pivot = (pd.DataFrame(s)
+                         .pivot_table(values=s.name,
+                                      index=s.index,
+                                      columns=s > 0)
+                         .abs()
+                         .round(3)
+                         .fillna('-'))
+
+        add_bar(boolean_pivot[True], kwargs['up_name'])
+        add_bar(boolean_pivot[False], kwargs['down_name'])
+
+        chart.option['legend']['data'] = [kwargs['up_name'],
+                                          kwargs['down_name']]
+    else:
+        add_bar(s.abs().round(3), s.name)
+
+    assert kwargs['annotate'] in [None, 'inside', 'outside']
+    if kwargs['annotate']:
+        if kwargs['annotate'] == 'inside':
+            for bar_series in chart.option['series']:
+                add_annotate(bar_series, kwargs['annotate'])
+        else:
+            add_annotate(chart.option['series'][1], "top")
+            if kwargs['color_coded']:
+                add_annotate(chart.option['series'][2], "bottom")
+
+    chart.option['xAxis']['data'] = s.index.values.tolist()
+    chart.set_tooltip_style(trigger='axis', axis_pointer='shadow')
+
+    chart.option['tooltip']['formatter'] = """function (params) {
+            var tar;
+            if (params[1].value != '-') {
+                tar = params[1];
+            }
+            else {
+                tar = params[2];
+            }
+            return tar.name + '<br/>' + tar.seriesName + ' : ' + tar.value;
+        }"""
+
+    return s

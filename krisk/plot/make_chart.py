@@ -34,34 +34,43 @@ def insert_series_data(data, x, chart_type, chart, cat=None):
 
 def make_chart(df, **kwargs):
 
-    from krisk.plot.make_bar_line import set_bar_line_chart
+    from krisk.plot.make_bar_line import (set_bar_line_chart,
+                                          set_barline,
+                                          set_waterfall)
     from krisk.plot.make_scatter_geo import set_scatter_chart
 
     chart = Chart(**kwargs)
 
-    if kwargs['type'] in ['bar_tidy', 'line_tidy']:
-        try
-        if isinstance(df, pd.DataFrame):
-            kwargs['c'] = 'unnamed'
-        elif isinstance(df, pd.Series):
+        # try:
+        #     df.columns
+        #     kwargs['c'] = 'unnamed'
+        # except AttributeError:
+        #     kwargs['c'] = None
+        #
+        # kwargs['x'] = df.index.name
+
+    try:
+        chart.kwargs['data_columns'] = df.columns
+        chart.set_xlabel(kwargs['x'])
+    except AttributeError:
+        if kwargs['type'] in ['line_tidy', 'bar_tidy']:
             df = pd.DataFrame(df)
             kwargs['c'] = None
-
-        kwargs['x'] = df.index.name
-
-    chart._kwargs_chart_['data_columns'] = df.columns
-    chart.set_xlabel(kwargs['x'])
 
     if kwargs.get('y', None):
         chart.set_ylabel(kwargs['y'])
 
     if kwargs['type'] in ['line', 'line_tidy']:
-        chart.set_tooltip_style(trigger='axis',axis_pointer='shadow')
+        chart.set_tooltip_style(trigger='axis', axis_pointer='shadow')
 
     if kwargs['type'] in ['bar', 'line',
                           'bar_tidy', 'line_tidy',
-                          'hist', 'bar_line']:
+                          'hist']:
         set_bar_line_chart(chart, df, **kwargs)
+    elif kwargs['type'] == 'bar_line':
+        set_barline(chart, df, **kwargs)
+    elif kwargs['type'] == 'waterfall':
+        set_waterfall(chart, df,   **kwargs)
     elif kwargs['type'] == 'scatter':
         set_scatter_chart(chart, df, **kwargs)
 
