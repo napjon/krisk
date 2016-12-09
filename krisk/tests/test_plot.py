@@ -324,6 +324,43 @@ def test_waterfall():
     }
 
 
+def test_tidy_plots(gapminder):
+
+    df1 = gapminder.pivot_table(values='lifeExp', index='year',
+                                columns='continent', aggfunc='mean')
+
+    p1_opt = kk.line_tidy(df1).option
+    p2_opt = kk.bar_tidy(df1).option
+
+    assert (p1_opt['xAxis']['data'] ==
+            p2_opt['xAxis']['data'] ==
+            df1.index.astype(str).tolist())
+
+    assert (p1_opt['series'][0]['data'] ==
+            p2_opt['series'][0]['data'] ==
+            df1.iloc[:,0].values.round(3).tolist())
+
+    assert [e['name'] for e in p1_opt['series']] == p1_opt['legend']['data']
+    assert [e['name'] for e in p2_opt['series']] == p2_opt['legend']['data']
+
+    p3_opt = kk.bar_tidy(df1, stacked=True, trendline=True,
+                         annotate=True).option
+
+    # test trendline
+    assert p3_opt['series'][-1]['data'] == [0] * df1.shape[0]
+    assert p3_opt['series'][-1]['name'] == 'trendline'
+    # test annotate
+    assert p3_opt['series'][-2]['label'] == {'normal': {'position': 'top',
+                                                        'show': True}}
+    # test stacked
+    assert ([e['stack']for e in p3_opt['series']] ==
+            ['unnamed'] * (df1.shape[1] + 1))
+
+
+
+
+
+
 
 
 
