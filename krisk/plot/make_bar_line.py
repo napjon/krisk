@@ -95,7 +95,7 @@ def bar_custom_style(c, series, **kwargs):
         elif c is None:
             trendline['data'] = series[0]['data']
         else:
-            raise AssertionError('Trendline must either stacked category,'
+            raise ValueError('Trendline must either stacked category,'
                                  ' or not category')
         series.append(trendline)
 
@@ -128,7 +128,7 @@ def histogram_custom_style(chart, data, c, series, **kwargs):
         elif c is None:
             density['data'] = [0] + round_list(data) + [0]
         else:
-            raise AssertionError('Density must either stacked category, '
+            raise ValueError('Density must either stacked category, '
                                  'or not category')
 
         series.append(density)   
@@ -208,7 +208,6 @@ def set_barline(chart, df, x, **kwargs):
                 .agg({ybar: kwargs['bar_aggfunc'],
                       yline: kwargs['line_aggfunc']}))
 
-        assert kwargs['sort_on'] in ['index', 'ybar', 'yline']
         if kwargs['sort_on'] == 'index':
             data.sort_index(ascending=kwargs['ascending'], inplace=True)
         else:
@@ -294,7 +293,6 @@ def set_waterfall(chart, s, **kwargs):
     else:
         add_bar(s.abs().round(3), s.name)
 
-    assert kwargs['annotate'] in [None, 'inside', 'outside']
     if kwargs['annotate']:
         if kwargs['annotate'] == 'inside':
             for bar_series in chart.option['series']:

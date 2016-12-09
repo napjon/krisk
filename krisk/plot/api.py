@@ -235,6 +235,9 @@ def bar_line(df, x, ybar, yline, bar_aggfunc='mean', line_aggfunc='mean',
     -------
     Chart Object
     """
+    if sort_on not in ['index', 'ybar', 'yline']:
+        raise ValueError("Invalid Parameters")
+
     return make_chart(df, x=x, ybar=ybar, yline=yline,
                       bar_aggfunc=bar_aggfunc, line_aggfunc=line_aggfunc,
                       is_distinct=is_distinct,

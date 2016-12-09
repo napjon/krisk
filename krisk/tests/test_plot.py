@@ -83,7 +83,7 @@ def test_trendline(gapminder):
 
     try:
         kk.bar(gapminder,'year',how='mean',y='pop',trendline=True,c='continent')
-    except AssertionError:
+    except ValueError:
         pass
 
 
@@ -190,7 +190,7 @@ def test_density(gapminder):
 
     try:
         kk.hist(gapminder,'year',density=True,c='continent')
-    except AssertionError:
+    except ValueError:
         pass
 
 
