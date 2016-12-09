@@ -9,6 +9,19 @@ from krisk.util import future_warning
 d_annotate = {'normal': {'show': True, 'position': 'top'}}
 
 
+def set_full_style_condition(chart, data, c, **kwargs):
+
+    if kwargs['full']:
+        if kwargs['stacked']:
+            if c:
+                data = data.div(data.sum(1), axis=0)
+            chart.option['yAxis']['max'] = 1
+        else:
+            raise ValueError("For full to worked, stacked must be set to True")
+
+    return data
+
+
 def set_bar_line_chart(chart, df, x, c, **kwargs):
     """Construct Bar, Line, and Histogram"""
 
@@ -18,12 +31,10 @@ def set_bar_line_chart(chart, df, x, c, **kwargs):
     if chart_type in ['bar', 'line']:
         data = get_bar_or_line_data(df, x, c, **kwargs)
         chart.option['xAxis']['data'] = data.index.values.tolist()
-
     elif chart_type == 'hist':
         chart_type = 'bar'
         data, bins = get_hist_data(df, x, c, **kwargs)
         chart.option['xAxis']['data'] = bins
-
     elif chart_type == 'bar_line':
         data = set_barline(df, x, chart, **kwargs)
         chart.option['xAxis']['data'] = data.index.values.tolist()
@@ -32,6 +43,9 @@ def set_bar_line_chart(chart, df, x, c, **kwargs):
         chart_type = chart_type.replace('_tidy', '')
         data = df
         chart.option['xAxis']['data'] = data.index.astype(str).tolist()
+
+    if chart_type in ['bar', 'line'] and kwargs['type'] != 'hist':
+        data = set_full_style_condition(chart, data, c, **kwargs)
 
     if c:
         # append data for every category
@@ -43,22 +57,18 @@ def set_bar_line_chart(chart, df, x, c, **kwargs):
     series = chart.option['series']
 
     ########Provide stacked,annotate, area for bar line hist#################
-    if kwargs['type'] in ['hist', 'bar', 'line']:
-        if c and kwargs['stacked']:
-            for s in series:
-                s['stack'] = c
+    if c and kwargs['stacked']:
+        for s in series:
+            s['stack'] = c
 
-                if chart_type == 'line' and kwargs['area']:
-                    s['areaStyle'] = {'normal': {}}
+            if chart_type == 'line' and kwargs['area']:
+                s['areaStyle'] = {'normal': {}}
 
-                if kwargs['annotate'] == 'all':
-                    s['label'] = deepcopy(d_annotate)
+            if kwargs['annotate'] == 'all':
+                s['label'] = deepcopy(d_annotate)
 
-                    if chart_type == 'bar':
-                        s['label']['normal']['position'] = 'inside'
-
-            if kwargs['type'] in ['line','bar'] and kwargs['full']:
-                chart.option['yAxis']['max'] = 1
+                if chart_type == 'bar':
+                    s['label']['normal']['position'] = 'inside'
 
     if kwargs['annotate'] == 'top':
         series[-1]['label'] = d_annotate
@@ -67,9 +77,9 @@ def set_bar_line_chart(chart, df, x, c, **kwargs):
     # Add Custom Styling
     if kwargs['type'] == 'hist':
         histogram_custom_style(chart, data, c, series, **kwargs)
-    elif kwargs['type'] in ['bar', 'bar_tidy']:
+    elif chart_type == 'bar':
         bar_custom_style(c, series, **kwargs)
-    elif kwargs['type'] in ['line', 'line_tidy']:
+    elif chart_type == 'line':
         line_custom_style(series, **kwargs)
 
 
@@ -161,10 +171,6 @@ def get_bar_or_line_data(df, x, c, y, **kwargs):
                               ascending=kwargs['ascending']))
         else:
             data.sort_values(inplace=True, ascending=kwargs['ascending'])
-
-    # Stacked when category
-    if c and kwargs['stacked'] and kwargs['full']:
-        data = data.div(data.sum(1),axis=0)
 
     return data
 
