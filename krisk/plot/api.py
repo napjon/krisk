@@ -130,6 +130,7 @@ def line_tidy(df,
     """
     This plot assume DataFrame can be directly consumed (tidy data). Used for
     customized manipulation data that normal plot can't provides.
+        * data is only 2-dimension. There is no hierarchical columns or index.
         * data is cleaned and aggregated.
         * No duplicate values for each index-column pair (tidy)
         * index is used for category x-axis.
@@ -169,8 +170,9 @@ def bar_tidy(df,
     """
     This plot assume DataFrame can be directly consumed (tidy data). Used for
     customized manipulation data that normal plot can't provides.
+        * data is only 2-dimension. There is no hierarchical columns or index.
         * data is cleaned and aggregated.
-        * No duplicate values for each index-column pair (tidy)
+        * no duplicate values for each index-column pair (tidy)
         * index is used for category x-axis.
         * each column corresponds to one series.
         * values in one column belong to column data series.
@@ -303,7 +305,6 @@ def scatter(df, x, y, s=None, c=None, saturate=None, size_px=(10, 70)):
     size_px: tuple, default (10,70)
         boundary size, lower and upper limit in pixel for min-max scatter points
 
-        
     Returns
     -------
     Chart Object
@@ -326,6 +327,7 @@ def waterfall(s, color_coded=False, annotate=None,
         annotate the bar with actual value.
     up_name,down_name: string
         increase/decrease bar name. Only work if color_coded is True
+
     Returns
     -------
     Chart Object
