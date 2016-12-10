@@ -60,7 +60,6 @@ rcParams = dict(theme='',
     )
 
 
-
 class Chart(object):
     """Chart Object"""
 
