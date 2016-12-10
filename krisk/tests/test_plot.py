@@ -356,6 +356,26 @@ def test_tidy_plots(gapminder):
     assert ([e['stack']for e in p3_opt['series']] ==
             ['unnamed'] * (df1.shape[1] + 1))
 
+    p4_opt = kk.line_tidy(df1,
+                          area=True, full=True,
+                          smooth=True, stacked=True).option
+
+    assert ([e['smooth'] for e in p4_opt['series']] ==
+            len(p4_opt['legend']['data']) * [True])
+
+    africa_val = df1.div(df1.sum(1), axis=0).iloc[:,0].round(3).values.tolist()
+    assert africa_val == p4_opt['series'][0]['data']
+
+
+
+
+
+
+
+
+
+
+
 
 
 
