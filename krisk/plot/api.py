@@ -53,10 +53,11 @@ def bar(df,
     -------
     Chart Object
     """
+
     return make_chart(df,type='bar',x=x,y=y,c=c,how=how,stacked=stacked,
                       full=full, trendline=trendline,
                       sort_on=sort_on, sort_c_on=sort_c_on, ascending=ascending,
-                      annotate='top' if annotate == True else annotate)
+                      annotate='top' if annotate is True else annotate)
 
 
 def line(df,
@@ -119,6 +120,85 @@ def line(df,
                       annotate='top' if annotate is True else annotate)
 
 
+def line_tidy(df,
+              full=False,
+              stacked=False,
+              area=False,
+              annotate=False,
+              smooth=False):
+
+    """
+    This plot assume DataFrame can be directly consumed (tidy data). Used for
+    customized manipulation data that normal plot can't provides.
+        * data is only 2-dimension. There is no hierarchical columns or index.
+        * data is cleaned and aggregated.
+        * No duplicate values for each index-column pair (tidy)
+        * index is used for category x-axis.
+        * each column corresponds to one series.
+        * values in one column belong to column data series.
+    df: pd.DataFrame
+        data to be used for the chart
+    stacked: boolean, default False.
+        Whether to stacked category on top of the other categories.
+    area: boolean, default False.
+        Whether to fill the area with line colors.
+    full: boolean, default False.
+        If true, set to full area stacked chart. Only work if stacked is True.
+    annotate: string, {'all', True, None} default None
+        if True, annotate value on top of the plot element. If stacked is
+        also True, annotate the last category. if 'all' and stacked,
+        annotate all category
+    smooth: boolean, default False.
+        If true, smooth the line.
+
+    Returns
+    -------
+    Chart Object
+    """
+    return make_chart(df, x=df.index.name, c="unnamed",
+                      stacked=stacked, area=area, full=full,
+                      type='line_tidy', smooth=smooth,
+                      annotate='top' if annotate is True else annotate)
+
+
+def bar_tidy(df,
+             full=False,
+             stacked=False,
+             trendline=False,
+             annotate=None):
+
+    """
+    This plot assume DataFrame can be directly consumed (tidy data). Used for
+    customized manipulation data that normal plot can't provides.
+        * data is only 2-dimension. There is no hierarchical columns or index.
+        * data is cleaned and aggregated.
+        * no duplicate values for each index-column pair (tidy)
+        * index is used for category x-axis.
+        * each column corresponds to one series.
+        * values in one column belong to column data series.
+    df: pd.DataFrame
+        data to be used for the chart
+    stacked: boolean, default False.
+        Whether to stacked category on top of the other categories.
+    full: boolean, default False.
+        If true, set to full area stacked chart. Only work if stacked is True.
+    trendline: boolean, default False.
+        If true, add line that connected the bars. Only work if not category,
+        category but stacked, or not full.
+    annotate: string, {'all', True, None} default None
+        if True, annotate value on top of the plot element. If stacked is
+        also True, annotate the last category. if 'all' and stacked,
+        annotate all category
+    Returns
+    -------
+    Chart Object
+    """
+    return make_chart(df, x=df.index.name, c="unnamed",
+                      stacked=stacked, full=full,
+                      type='bar_tidy', trendline=trendline,
+                      annotate='top' if annotate is True else annotate)
+
+
 def bar_line(df, x, ybar, yline, bar_aggfunc='mean', line_aggfunc='mean',
              sort_on='index', ascending=True, is_distinct=False,
              hide_split_line=True, style_tooltip=True):
@@ -157,6 +237,9 @@ def bar_line(df, x, ybar, yline, bar_aggfunc='mean', line_aggfunc='mean',
     -------
     Chart Object
     """
+    if sort_on not in ['index', 'ybar', 'yline']:
+        raise ValueError("Invalid Parameters")
+
     return make_chart(df, x=x, ybar=ybar, yline=yline,
                       bar_aggfunc=bar_aggfunc, line_aggfunc=line_aggfunc,
                       is_distinct=is_distinct,
@@ -222,7 +305,6 @@ def scatter(df, x, y, s=None, c=None, saturate=None, size_px=(10, 70)):
     size_px: tuple, default (10,70)
         boundary size, lower and upper limit in pixel for min-max scatter points
 
-        
     Returns
     -------
     Chart Object
@@ -245,6 +327,7 @@ def waterfall(s, color_coded=False, annotate=None,
         annotate the bar with actual value.
     up_name,down_name: string
         increase/decrease bar name. Only work if color_coded is True
+
     Returns
     -------
     Chart Object

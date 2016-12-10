@@ -1,5 +1,6 @@
 from copy import deepcopy
 from krisk.chart.api import Chart
+import pandas as pd
 
 
 def round_list(arr):
@@ -7,7 +8,7 @@ def round_list(arr):
         return arr.values.round(3).tolist()  # Numeric Array
     except TypeError:
         try:
-            return arr.tolist()  #String Array
+            return arr.unique().tolist()  #String Array
         except AttributeError:
             return (arr.apply(lambda x: x.values.round(3)  #Dataframe
                               if x.dtype.name.startswith('float') else x)
@@ -40,16 +41,30 @@ def make_chart(df, **kwargs):
 
     chart = Chart(**kwargs)
 
-    if kwargs['type'] not in ['waterfall']:
+        # try:
+        #     df.columns
+        #     kwargs['c'] = 'unnamed'
+        # except AttributeError:
+        #     kwargs['c'] = None
+        #
+        # kwargs['x'] = df.index.name
+
+    try:
         chart.kwargs['data_columns'] = df.columns
         chart.set_xlabel(kwargs['x'])
+    except AttributeError:
+        if kwargs['type'] in ['line_tidy', 'bar_tidy']:
+            kwargs['c'] = None
 
     if kwargs.get('y', None):
         chart.set_ylabel(kwargs['y'])
 
-    if kwargs['type'] == 'line':
+    if kwargs['type'] in ['line', 'line_tidy']:
         chart.set_tooltip_style(trigger='axis', axis_pointer='shadow')
-    if kwargs['type'] in ['bar', 'line', 'hist']:
+
+    if kwargs['type'] in ['bar', 'line',
+                          'bar_tidy', 'line_tidy',
+                          'hist']:
         set_bar_line_chart(chart, df, **kwargs)
     elif kwargs['type'] == 'bar_line':
         set_barline(chart, df, **kwargs)
