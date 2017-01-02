@@ -6,7 +6,7 @@ import krisk.plot.api as plot
 import krisk.chart.api as chart
 from krisk.chart.api import rcParams, Chart
 
-__version__ = '0.2.2'
+__version__ = '0.3.0'
 
 
 def _jupyter_nbextension_paths():
