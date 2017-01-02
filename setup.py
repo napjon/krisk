@@ -1,6 +1,6 @@
 from setuptools import setup, find_packages
 from krisk import __version__
-print(find_packages())
+
 setup(
     name='krisk',
     version=__version__,
