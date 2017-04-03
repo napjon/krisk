@@ -7,7 +7,7 @@
 
 Krisk bring Echarts to Python Data Science Ecosystem, and helpful tools for high level statistical interactive visualization.
 
-![jpg] (https://cdn.rawgit.com/napjon/krisk/f933dbc1/readme.jpg)
+<img src="https://cdn.rawgit.com/napjon/krisk/f933dbc1/readme.jpg">
 
 # Dependencies
 
