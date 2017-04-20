@@ -59,6 +59,22 @@ Krisk is targeted for building interactive dashboard application on top of two k
 
 Krisk is also act as tool to support reproducible chart by utilizing pandas DataFrame as data input.
 
+# How to Contribute
+
+To contribute and unit tests your changes, please do the following, 
+
+1. Fork this repository
+2. Clone this repo and do unit test,
+
+```
+pip install coverage pytest
+git clone https://github.com/your-username/krisk.git
+cd krisk
+coverage run --source krisk -m py.test
+```
+
+
+
 # License
 
 New BSD
