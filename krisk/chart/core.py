@@ -186,7 +186,7 @@ class Chart(object):
 
     def set_tooltip_format(
             self, columns,
-            formatter="'{key}' + '：' + {value} + '{unit}' +'<br>'"):
+            formatter="'{key}' + ': ' + {value} + '{unit}' +'<br>'"):
         """
         Set tooltip format. Currently only Scatter plot supported because it's the only chart that keep the
         data as is.
