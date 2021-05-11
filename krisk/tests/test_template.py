@@ -1,6 +1,6 @@
 import pytest
 import json
-ECHARTS_VERSION = '3.2.1'
+ECHARTS_VERSION = '5.1.0'
 
 
 def test_html():

@@ -23,7 +23,7 @@ def init_notebook():
     last executed in a cell to produce Javascript in the output cell
     """
     STATIC_URL = "https://cdn.rawgit.com/napjon/krisk/master/krisk/static"
-    ECHARTS_VERSION = "3.2.1"
+    ECHARTS_VERSION = "5.1.0"
     ECHARTS_URL = ("https://cdnjs.cloudflare.com/ajax/libs/echarts/{ECHARTS_VERSION}/echarts.min"
                    .format(ECHARTS_VERSION=ECHARTS_VERSION))
 
