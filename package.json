@@ -1,0 +1,14 @@
+{
+  "name": "krisk-assets",
+  "private": true,
+  "scripts": {
+    "build": "cp node_modules/echarts/dist/echarts.min.js krisk/static/echarts.min.js",
+    "test": "bun test js-tests"
+  },
+  "dependencies": {
+    "echarts": "6.1.0"
+  },
+  "devDependencies": {
+    "happy-dom": "^20.11.0"
+  }
+}

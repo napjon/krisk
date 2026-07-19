@@ -1,0 +1,13 @@
+interface:
+  display_name: "Save Research Notebook"
+  short_description: "Turn completed analysis into living research"
+  default_prompt: "Use $save-research-notebook to save this analysis as reproducible living research."
+dependencies:
+  tools:
+    - type: "mcp"
+      value: "krisk"
+      description: "Read data, save charts and research, evaluate claims, and export notebooks or HTML"
+      transport: "streamable_http"
+      url: "http://127.0.0.1:8060/mcp/"
+policy:
+  allow_implicit_invocation: true

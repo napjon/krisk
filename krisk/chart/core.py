@@ -1,66 +1,74 @@
 # Krisk chart object
 
-import uuid
 import json
+import uuid
 from copy import deepcopy
+from pathlib import Path
+
 from IPython.display import Javascript
+
 from krisk.util import get_content, join_current_dir
 
-__all__ = ['rcParams', 'Chart']
+__all__ = ["Chart", "rcParams"]
 
 
-JS_LIBS = ['echarts', 'dark', 'vintage', 'roma', 'shine', 'infographic', 'macarons']
-JS_TEMPLATE_PATH = 'static/krisk.js'
-EVENT_TEMPLATE_PATH = 'static/on_event.js'
-HTML_TEMPLATE_PATH = 'static/template.html'
-DEFAULT_CFG_PATH = 'static/defaults.json'
+JS_LIBS = ["echarts", "dark", "vintage", "roma", "shine", "infographic", "macarons"]
+JS_TEMPLATE_PATH = "static/krisk.js"
+EVENT_TEMPLATE_PATH = "static/on_event.js"
+HTML_TEMPLATE_PATH = "static/template.html"
+DEFAULT_CFG_PATH = "static/defaults.json"
 
 APPEND_ELEMENT = """
-$('#{id}').attr('id','{id}'+'_old');
-element.append('<div id="{id}" style="width: {width}px;height:{height}px;"></div>');"""
+(() => {{
+  const previous = document.getElementById('{id}');
+  if (previous) previous.id = '{id}_old';
+  const host = element?.get?.(0) || element?.[0] || element;
+  if (!host) return;
+  const target = document.createElement('div');
+  target.id = '{id}';
+  target.style.width = '{width}';
+  target.style.height = '{height}';
+  host.appendChild(target);
+}})();"""
 
 OPTION_TEMPLATE = {
-    'title': {
-        'text': ''
-    },
-    'tooltip': {'axisPointer': {'type': ''}},
-    'legend': {
-        'data': []
-    },
-    'xAxis': {
-        'data': []
-    },
-    'yAxis': {},
-    'series': []
+    "title": {"text": ""},
+    "tooltip": {"axisPointer": {"type": ""}},
+    "legend": {"data": []},
+    "xAxis": {"data": []},
+    "yAxis": {},
+    "series": [],
 }
 
-rcParams = dict(theme='',
-    size=dict(width=600,height=400),
-    color=dict(background='',palette=''),
-    tooltip_style=dict(trigger='item',
-                      axis_pointer='line',
-                      trigger_on='mousemove',
-                      font_style='normal',
-                      font_family='sans-serif',
-                      font_size=14),
-    legend=dict(align='auto',
-               orient='horizontal',
-               x_pos='auto',
-               y_pos='auto'),
-    toolbox=dict(save_format=None,
-                restore=False,
-                data_view=None,
-                data_zoom=False,
-                magic_type=None,
-                brush=None,
-                align='auto',
-                orient='horizontal',
-                x_pos='auto',
-                y_pos='auto')
-    )
+rcParams = dict(
+    theme="",
+    size=dict(width=600, height=400),
+    color=dict(background="", palette=""),
+    tooltip_style=dict(
+        trigger="item",
+        axis_pointer="line",
+        trigger_on="mousemove",
+        font_style="normal",
+        font_family="sans-serif",
+        font_size=14,
+    ),
+    legend=dict(align="auto", orient="horizontal", x_pos="auto", y_pos="auto"),
+    toolbox=dict(
+        save_format=None,
+        restore=False,
+        data_view=None,
+        data_zoom=False,
+        magic_type=None,
+        brush=None,
+        align="auto",
+        orient="horizontal",
+        x_pos="auto",
+        y_pos="auto",
+    ),
+)
 
 
-class Chart(object):
+class Chart:
     """Chart Object"""
 
     def __init__(self, **kwargs):
@@ -75,14 +83,37 @@ class Chart(object):
         self._kwargs_chart_ = kwargs
         self._axes_swapped = True
         self._events = {}
+        self.spec = None
+        self.snapshot_data = None
 
         rc = deepcopy(rcParams)
-        self._size = rc['size']
-        self._theme = rc['theme']
-        self.set_color(**rc['color'])
-        self.set_legend(**rc['legend'])
-        self.set_toolbox(**rc['toolbox'])
-        self.set_tooltip_style(**rc['tooltip_style'])
+        self._size = rc["size"]
+        self._theme = rc["theme"]
+        self.set_color(**rc["color"])
+        self.set_legend(**rc["legend"])
+        self.set_toolbox(**rc["toolbox"])
+        self.set_tooltip_style(**rc["tooltip_style"])
+
+    @classmethod
+    def from_dataframe(cls, data, spec):
+        """Create a typed chart from a pandas-compatible dataset."""
+        from krisk.compiler import compile_chart
+        from krisk.specs import ChartSpec
+
+        parsed = spec if isinstance(spec, ChartSpec) else ChartSpec.model_validate(spec)
+        option, materialized = compile_chart(data, parsed)
+        chart = cls(type=parsed.kind)
+        chart.option = option
+        chart.spec = parsed
+        chart.snapshot_data = materialized
+        chart._size = {"width": parsed.width, "height": parsed.height}
+        chart._theme = parsed.theme
+        return chart
+
+    @classmethod
+    def from_ibis(cls, table, spec):
+        """Create a typed chart from an Ibis expression without server setup."""
+        return cls.from_dataframe(table, spec)
 
     @property
     def kwargs(self):
@@ -93,7 +124,7 @@ class Chart(object):
     def set_theme(self, theme):
         """
         Set the theme of the chart.
-        
+
         Parameters
         ----------
 
@@ -101,26 +132,25 @@ class Chart(object):
             {'dark','vintage','roma','shine','infographic','macarons'}, default None
         """
 
-        themes = JS_LIBS[1:] + ['']
+        themes = [*JS_LIBS[1:], ""]
 
         if theme not in themes:
-            raise AssertionError("Invalid theme name: {theme}".format(
-                theme=theme))
+            raise AssertionError(f"Invalid theme name: {theme}")
 
         self._theme = theme
         return self._get_duplicated()
 
-    def set_color(self, background='', palette=''):
+    def set_color(self, background="", palette=""):
         """
         Set background and pallete color
-        
+
         Parameters
         ----------
         background: string
             hex color
         palettes: list of strings
             list hex colors
-            
+
         Returns
         -------
         Chart Object
@@ -133,15 +163,15 @@ class Chart(object):
 
         #         Is this intended? Or should just these parameters made as separate methods?
 
-        self.option.pop('color', None)
-        self.option.pop('graph', None)  #Need further analyze graph color
-        self.option.pop('backgroundColor', None)
+        self.option.pop("color", None)
+        self.option.pop("graph", None)  # Need further analyze graph color
+        self.option.pop("backgroundColor", None)
 
         if background:
-            self.option['backgroundColor'] = background
+            self.option["backgroundColor"] = background
         if palette:
-            self.option['color'] = palette
-            self.option['graph'] = {'color': palette}
+            self.option["color"] = palette
+            self.option["graph"] = {"color": palette}
 
         return self._get_duplicated()
 
@@ -149,15 +179,17 @@ class Chart(object):
 
     # Tooltip
 
-    def set_tooltip_style(self,
-                          trigger='item',
-                          axis_pointer='line',
-                          trigger_on='mousemove',
-                          font_style='normal',
-                          font_family='sans-serif',
-                          font_size=14):
+    def set_tooltip_style(
+        self,
+        trigger="item",
+        axis_pointer="line",
+        trigger_on="mousemove",
+        font_style="normal",
+        font_family="sans-serif",
+        font_size=14,
+    ):
         """Set Tooltip options.
-        
+
         Parameters
         ----------
         trigger: {'item',axis}, default 'item'
@@ -174,37 +206,34 @@ class Chart(object):
             Tooltip font size
         """
 
-        self.option['tooltip']['trigger'] = trigger
-        self.option['tooltip']['axisPointer']['type'] = axis_pointer
-        self.option['tooltip']['triggerOn'] = trigger_on
+        self.option["tooltip"]["trigger"] = trigger
+        self.option["tooltip"]["axisPointer"]["type"] = axis_pointer
+        self.option["tooltip"]["triggerOn"] = trigger_on
 
-        self.option['tooltip']['fontStyle'] = font_style
-        self.option['tooltip']['fontFamily'] = font_family
-        self.option['tooltip']['fontSize'] = font_size
+        self.option["tooltip"]["fontStyle"] = font_style
+        self.option["tooltip"]["fontFamily"] = font_family
+        self.option["tooltip"]["fontSize"] = font_size
 
         return self._get_duplicated()
 
-    def set_tooltip_format(
-            self, columns,
-            formatter="'{key}' + ': ' + {value} + '{unit}' +'<br>'"):
+    def set_tooltip_format(self, columns, formatter="{key}: {value}{unit}<br>"):
         """
         Set tooltip format. Currently only Scatter plot supported because it's the only chart that keep the
         data as is.
-        
+
         Parameters
         ----------
         columns: list of string or list of tuples
             if list of strings, retrieve the columns value for the tooltip
             if list of tuples, will be represented as (key,unit) for the format
-        override: Boolean, default to False
-            provide custom Javascript function
         formatter: string,
-            Format key,value,unit that will be rendered in the tooltip
-        
+            Declarative ECharts template for key, value, and unit. Executable
+            JavaScript is not accepted.
+
         Returns
         -------
         Chart Object
-        
+
         Examples
         --------
         TODO
@@ -212,31 +241,29 @@ class Chart(object):
 
         # TODO: Make tooltip_format available to all charts.
 
-        if self._kwargs_chart_['type'] != 'scatter':
-            raise TypeError('Chart Type not supported')
+        if self._kwargs_chart_["type"] != "scatter":
+            raise TypeError("Chart Type not supported")
         else:
+            lowered_formatter = formatter.casefold()
+            if (
+                "function" in lowered_formatter
+                or "=>" in formatter
+                or "javascript:" in lowered_formatter
+            ):
+                raise ValueError("Executable JavaScript tooltip formatters are not supported")
             f_columns = []
             for col in columns:
                 if isinstance(col, str):
-                    key, unit = col, ' '
+                    key, unit = col, ""
                 elif isinstance(col, tuple):
                     key, unit = col
                 else:
-                    raise TypeError('Columns type not supported')
+                    raise TypeError("Columns type not supported")
 
-                idx = self._kwargs_chart_['columns'].index(key)
-                f_columns.append(
-                    formatter.format(
-                        key=key,
-                        value='value[{idx}]'.format(idx=idx),
-                        unit=unit))
+                idx = self._kwargs_chart_["columns"].index(key)
+                f_columns.append(formatter.format(key=key, value=f"{{@[{idx}]}}", unit=unit))
 
-            formatter_strings = """function (obj) {{
-                                    var value = obj.value;
-                                    return {f_columns};
-                                }}""".format(f_columns='+'.join(f_columns))
-
-            self.option['tooltip']['formatter'] = formatter_strings
+            self.option["tooltip"]["formatter"] = "".join(f_columns)
 
             return self._get_duplicated()
 
@@ -254,23 +281,23 @@ class Chart(object):
     def _set_object_pos(self, obj, x, y):
         """Set x,y coordinate of an object in chart layout"""
 
-        if x.startswith('-'):
-            self.option[obj]['right'] = x[1:]
+        if x.startswith("-"):
+            self.option[obj]["right"] = x[1:]
         else:
-            self.option[obj]['left'] = x
+            self.option[obj]["left"] = x
 
-        if y.startswith('-'):
-            self.option[obj]['top'] = y[1:]
+        if y.startswith("-"):
+            self.option[obj]["top"] = y[1:]
         else:
-            self.option[obj]['bottom'] = y
+            self.option[obj]["bottom"] = y
 
-    def set_title(self, title, x_pos='auto', y_pos='auto'):
+    def set_title(self, title, x_pos="auto", y_pos="auto"):
         """
         Set title for the plot.
-        
+
         The coordinate is started at bottom left corner. If x_pos and y_pos started
         at negative values, then it's converted to the upper right corner (left->right, bottom->top)
-        
+
         Parameters
         ----------
         title: str
@@ -279,56 +306,54 @@ class Chart(object):
         y_pos: str, {'auto', top', 'center', 'bottom', 'i%'}, default to 'auto'
         """
 
-        self.option['title']['text'] = title
-        self._set_object_pos('title', x_pos, y_pos)
+        self.option["title"]["text"] = title
+        self._set_object_pos("title", x_pos, y_pos)
 
         return self._get_duplicated()
 
-    def set_legend(self,
-                   align='auto',
-                   orient='horizontal',
-                   x_pos='auto',
-                   y_pos='auto'):
+    def set_legend(self, align="auto", orient="horizontal", x_pos="auto", y_pos="auto"):
         """
         Set legend style.
-        
+
         The coordinate is started at bottom left corner. If x_pos and y_pos started
         at negative values, then it's converted to the upper right corner (left->right, bottom->top)
-        
+
         Parameters
         ----------
         align: str, {'auto','left','right'}, default to 'auto'
         orient: str, {'horizontal','vertical'} default to 'horizontal'
         x_pos: str, {'auto', left', 'center', 'right', 'i%'}, default to 'auto'
         y_pos: str, {'auto', top', 'center', 'bottom', 'i%'}, default to 'auto'
-        
+
         Returns
         -------
         Chart Object
         """
 
-        self.option['legend']['align'] = align
-        self.option['legend']['orient'] = orient
-        self._set_object_pos('legend', x_pos, y_pos)
+        self.option["legend"]["align"] = align
+        self.option["legend"]["orient"] = orient
+        self._set_object_pos("legend", x_pos, y_pos)
 
         return self._get_duplicated()
 
-    def set_toolbox(self,
-                    save_format=None,
-                    restore=False,
-                    data_view=None,
-                    data_zoom=False,
-                    magic_type=None,
-                    brush=None,
-                    align='auto',
-                    orient='horizontal',
-                    x_pos='auto',
-                    y_pos='auto'):
-        """ Set Toolbox for the Chart
-        
+    def set_toolbox(
+        self,
+        save_format=None,
+        restore=False,
+        data_view=None,
+        data_zoom=False,
+        magic_type=None,
+        brush=None,
+        align="auto",
+        orient="horizontal",
+        x_pos="auto",
+        y_pos="auto",
+    ):
+        """Set Toolbox for the Chart
+
         The coordinate is started at bottom left corner. If x_pos and y_pos started
         at negative values, then it's converted to the upper right corner (left->right, bottom->top)
-        
+
         Parameters
         ----------
         save_format: {None, 'png','jpeg'} default to None
@@ -346,55 +371,57 @@ class Chart(object):
         orient: str, {'horizontal','vertical'} default to 'horizontal'
         x_pos: str, {'auto', left', 'center', 'right', 'i%'}, default to 'auto'
         y_pos: str, {'auto', top', 'center', 'bottom', 'i%'}, default to 'auto'
-        
+
         Returns
         -------
         Chart Object
-        
+
         """
         # TODO : Still exactly unclear what Brush does in option example.
         # TODO : Add Brush title english translation
-        toolbox = {'feature': {}}
+        toolbox = {"feature": {}}
 
         d_title = {
-            'dataView': 'Table View',
-            'magicType': 'Chart Options',
-            'restore': 'Reset',
-            'saveAsImage': 'Download as Image',
-            'dataZoom': 'Zoom',
-            'brush': 'Brush'
+            "dataView": "Table View",
+            "magicType": "Chart Options",
+            "restore": "Reset",
+            "saveAsImage": "Download as Image",
+            "dataZoom": "Zoom",
+            "brush": "Brush",
         }
 
         def set_tool(tool, setter, val):
             if val is not None:
-                d_tool = {'title': d_title[tool],
-                          'show': True, }
+                d_tool = {
+                    "title": d_title[tool],
+                    "show": True,
+                }
                 d_tool[setter] = val
-                toolbox['feature'][tool] = d_tool
+                toolbox["feature"][tool] = d_tool
 
-        set_tool('saveAsImage', 'type', save_format)
-        set_tool('dataView', 'readOnly', data_view)
-        set_tool('magicType', 'type', magic_type)
-        set_tool('brush', 'type', brush)
-        set_tool('restore', 'show', restore)
-        set_tool('dataZoom', 'show', data_zoom)
+        set_tool("saveAsImage", "type", save_format)
+        set_tool("dataView", "readOnly", data_view)
+        set_tool("magicType", "type", magic_type)
+        set_tool("brush", "type", brush)
+        set_tool("restore", "show", restore)
+        set_tool("dataZoom", "show", data_zoom)
 
         if data_view is not None:
-            data_view_lang = ['Table View', 'Back', 'Modify']
-            toolbox['feature']['dataView']['lang'] = data_view_lang
+            data_view_lang = ["Table View", "Back", "Modify"]
+            toolbox["feature"]["dataView"]["lang"] = data_view_lang
 
-        toolbox['align'] = align
-        toolbox['orient'] = orient
+        toolbox["align"] = align
+        toolbox["orient"] = orient
 
-        self.option['toolbox'] = toolbox
-        self._set_object_pos('toolbox', x_pos, y_pos)
+        self.option["toolbox"] = toolbox
+        self._set_object_pos("toolbox", x_pos, y_pos)
 
         return self._get_duplicated()
 
     def set_size(self, width=600, height=400):
         """
         Set height and width of the chart in pixel
-        
+
         Parameters
         ----------
         width: int
@@ -405,8 +432,8 @@ class Chart(object):
         -------
         Chart Object
         """
-        self._size['width'] = width
-        self._size['height'] = height
+        self._size["width"] = width
+        self._size["height"] = height
 
         return self
 
@@ -414,18 +441,17 @@ class Chart(object):
         """Flip the axes to make it horizontal"""
 
         self._axes_swapped = not self._axes_swapped
-        self.option['xAxis'], self.option['yAxis'] = self.option[
-            'yAxis'], self.option['xAxis']
+        self.option["xAxis"], self.option["yAxis"] = self.option["yAxis"], self.option["xAxis"]
         return self
 
     def _set_label_axes(self, xy, **kwargs):
         """Set label axes name and other customization"""
-        assert xy in ['x','y']
+        assert xy in ["x", "y"]
 
-        self.option[xy + 'Axis'].update(**kwargs)
+        self.option[xy + "Axis"].update(**kwargs)
         return self
 
-    def set_xlabel(self, name, axis_position='middle', axis_gap=30, rotation=0, font_size=16):
+    def set_xlabel(self, name, axis_position="middle", axis_gap=30, rotation=0, font_size=16):
         """Set x-axis label and other type of customization.
 
         Parameters
@@ -444,23 +470,25 @@ class Chart(object):
         ------
         Chart object
         """
-        label_kwargs = dict(name=name,
-                            nameLocation=axis_position,
-                            nameGap=axis_gap,
-                            nameTextStyle={'fontSize':font_size},
-                            nameRotate=rotation)
-        return self._set_label_axes('x', **label_kwargs)
+        label_kwargs = dict(
+            name=name,
+            nameLocation=axis_position,
+            nameGap=axis_gap,
+            nameTextStyle={"fontSize": font_size},
+            nameRotate=rotation,
+        )
+        return self._set_label_axes("x", **label_kwargs)
 
-    def set_ylabel(self, name, axis_position='middle', axis_gap=30, rotation=90, font_size=16):
+    def set_ylabel(self, name, axis_position="middle", axis_gap=30, rotation=90, font_size=16):
         """Set y-axis label and other type of customization.
-        
+
         Parameters
         ----------
         name: the label of axes
         axis_position: {start, middle, end}, default middle
             vertical alignment of label. start will position the label at bottom position
         axis_gap: int default 30
-            horizontal alignment position of label. zero start from y-axis and going further 
+            horizontal alignment position of label. zero start from y-axis and going further
             away
         rotation: int default 90
             the rotation of the label
@@ -471,36 +499,37 @@ class Chart(object):
         ------
         Chart object
         """
-        if self._kwargs_chart_.get('type', None) == 'bar_line':
+        if self._kwargs_chart_.get("type", None) == "bar_line":
             raise NotImplementedError
-        label_kwargs = dict(name=name,
-                            nameLocation=axis_position,
-                            nameGap=axis_gap,
-                            nameTextStyle={'fontSize':font_size},
-                            nameRotate=rotation)
-        return self._set_label_axes('y', **label_kwargs)
+        label_kwargs = dict(
+            name=name,
+            nameLocation=axis_position,
+            nameGap=axis_gap,
+            nameTextStyle={"fontSize": font_size},
+            nameRotate=rotation,
+        )
+        return self._set_label_axes("y", **label_kwargs)
 
     # ------------------------------------------------------------------------------------------------
     # Events
     def on_event(self, event, handler):
         """
         Calling Python handler with callback object at its arguments
-        
+
         Parameters
         ----------
         event: {'click','dblclick','mousedown','mouseup','mouseover','mouseout','globalout'}, default None
             In which event the function should be triggered
         handler: function
             The trigger function
-            
+
         Returns
         -------
         Chart object
         """
-        events = ['click', 'dblclick', 'mousedown', 'mouseup', 'mouseover',
-                  'mouseout', 'globalout']
+        events = ["click", "dblclick", "mousedown", "mouseup", "mouseover", "mouseout", "globalout"]
         if event not in events:
-            raise AssertionError('Invalid event name: %s' % event)
+            raise AssertionError(f"Invalid event name: {event}")
 
         self._events[event] = handler.__name__
 
@@ -514,17 +543,16 @@ class Chart(object):
         """
         Similar to resync_data, but the difference is creating new Chart object instead of replot
         on same cell
-        
+
         Parameters
         ----------
         df: pd.DataFrame
         """
         # TODO: make data_columns only just required, except scatter.
-        if (self._kwargs_chart_['data_columns'] != df.columns).all():
-            raise AssertionError(
-                'New data columns is not identical with existing one')
+        if (self._kwargs_chart_["data_columns"] != df.columns).all():
+            raise AssertionError("New data columns is not identical with existing one")
         elif df.values.shape[0] == 0:
-            raise AssertionError('Empty DataFrame')
+            raise AssertionError("Empty DataFrame")
 
         copy_chart = deepcopy(self)
 
@@ -538,7 +566,7 @@ class Chart(object):
     def resync_data(self, df):
         """
         Update data in current cell but still using the same chart option.
-        
+
         Parameters
         ----------
         df: pd.DataFrame
@@ -554,49 +582,91 @@ class Chart(object):
         """Resync Chart option"""
 
         js_template = get_content(JS_TEMPLATE_PATH)
-        event_template = get_content(EVENT_TEMPLATE_PATH)
+        if self._events:
+            from warnings import warn
 
-        events = [event_template.format(
-            event=e, function=self._events[e]) for e in self._events]
+            warn(
+                "Python-executing chart event callbacks are disabled for security",
+                DeprecationWarning,
+                stacklevel=2,
+            )
+        events = []
 
         OPTION_KWS = dict(
-            requires=JS_LIBS.__repr__(),
             chartId=self._chartId,
             theme=self._theme,
-            option=json.dumps(
-                option, indent=4),
-            events='\n'.join(events))
+            option=json.dumps(option, indent=4),
+            events="\n".join(events),
+        )
 
         return js_template.format(**OPTION_KWS)
 
     def _repr_javascript_(self):
         """Embedding the result of the plot to Jupyter"""
-        return (APPEND_ELEMENT.format(id=self._chartId,
-                                      width=self._size['width'],
-                                      height=self._size['height']))+\
-                (self._get_resync_option_strings(self.option))
+        width = self._size["width"]
+        height = self._size["height"]
+        css_width = f"{width}px" if isinstance(width, (int, float)) else str(width)
+        css_height = f"{height}px" if isinstance(height, (int, float)) else str(height)
+        return (APPEND_ELEMENT.format(id=self._chartId, width=css_width, height=css_height)) + (
+            self._get_resync_option_strings(self.option)
+        )
+
+    def _repr_mimebundle_(self, include=None, exclude=None):
+        """Render in modern Jupyter without requiring the legacy nbextension."""
+        from krisk.rendering import chart_fragment
+
+        source = (
+            Path(join_current_dir("static/echarts.min.js"))
+            .read_text(encoding="utf-8")
+            .replace("</script>", "<\\/script>")
+        )
+        height = int(self._size.get("height", 420))
+        description = getattr(self.spec, "description", None) if self.spec else None
+        content = f"<script>{source}</script>" + chart_fragment(
+            self.option,
+            self._chartId,
+            height=height,
+            description=description,
+            table_data=self.snapshot_data,
+        )
+        return {"text/html": content, "application/vnd.krisk.chart+json": self.option}
 
     def _get_duplicated(self):
         chart = deepcopy(self)
         chart._chartId = str(uuid.uuid4())
         return chart
+
     # ----------------------------------------------------------------------
 
     # Saving chart option
 
     def to_json(self, path):
         "Save Chart option to json file"
-        json.dump(self.option, open(path, 'w'), indent=4)
+        from krisk.specs import jsonable
 
-    def to_html(self, path):
-        "Save full html file"
-        # TODO: Optional add open new tab as soon as it save the html file
-        from jinja2 import Template
+        with open(path, "w", encoding="utf-8") as file:
+            json.dump(jsonable(self.option), file, indent=4, ensure_ascii=False)
 
-        script = self._repr_javascript_()
-        script = script.replace('element', '$("body")')
+    def to_html(self, path, live_url=None):
+        """Save a self-contained snapshot, optionally with a live-data tab."""
+        from krisk.rendering import standalone_html
 
-        html_template = Template(get_content(HTML_TEMPLATE_PATH))
-        html_content = html_template.render(SCRIPT=script)
-        with open(path, 'w') as f:
-            f.write(html_content)
+        title = "Krisk chart"
+        raw_title = self.option.get("title", {})
+        if isinstance(raw_title, dict):
+            title = raw_title.get("text") or title
+        elif isinstance(raw_title, list) and raw_title:
+            title = raw_title[0].get("text") or title
+        height = int(self._size.get("height", 420))
+        description = getattr(self.spec, "description", None) if self.spec else None
+        content = standalone_html(
+            self.option,
+            self._chartId,
+            title=title,
+            height=height,
+            description=description,
+            live_url=live_url,
+            table_data=self.snapshot_data,
+        )
+        Path(path).write_text(content, encoding="utf-8")
+        return Path(path)

@@ -1,0 +1,7 @@
+[sources.analytics]
+kind = "postgres"
+url_env = "KRISK_ANALYTICS_URL"
+
+[sources.local]
+kind = "files"
+root = "./data"
