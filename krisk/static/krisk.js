@@ -1,18 +1,7 @@
-require(['echarts', 'dark', 'vintage', 'roma', 'shine', 'infographic', 'macarons'],
-function(echarts){{
-    
-    function parseFunction(str){{
-        return eval('(' + str + ')');
-    }}
-    
-    var myChart = echarts.init(document.getElementById("{chartId}"),"{theme}");
-    
-    var option = {option};
-    option['tooltip']['formatter'] = parseFunction(option['tooltip']['formatter']);
-    myChart.setOption(option);
-    
-    {events}
-    
-}});
-
-
+(() => {{
+    const target = document.getElementById("{chartId}");
+    if (!target || typeof echarts === "undefined") return;
+    const myChart = echarts.getInstanceByDom(target) || echarts.init(target, "{theme}");
+    const option = {option};
+    myChart.setOption(option, true);
+}})();

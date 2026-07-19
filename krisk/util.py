@@ -11,34 +11,25 @@ def join_current_dir(file):
 def get_content(filepath):
     """Retrieve content from file"""
     abs_path = join_current_dir(filepath)
-    with open(abs_path, 'r') as f:
+    with open(abs_path) as f:
         return f.read()
 
 
 def init_notebook():
-    """
-    Inject Javascript to notebook, useful when you provide html notebook
-    generated (e.g nbviewwer). You don't have to use this when using
-    notebook, as it already provided by nbextension. This function must be
-    last executed in a cell to produce Javascript in the output cell
-    """
-    STATIC_URL = "https://cdn.rawgit.com/napjon/krisk/master/krisk/static"
-    ECHARTS_VERSION = "5.1.0"
-    ECHARTS_URL = ("https://cdnjs.cloudflare.com/ajax/libs/echarts/{ECHARTS_VERSION}/echarts.min"
-                   .format(ECHARTS_VERSION=ECHARTS_VERSION))
+    """Return a compatibility display object for historical notebooks.
 
+    Krisk 0.9+ embeds its renderer in each chart output, so notebooks work
+    offline and no global RequireJS or CDN setup is necessary.
+    """
     from IPython.display import Javascript
-    return Javascript("""
-    require.config({{
-                 baseUrl : "{STATIC_URL}",
-                 paths: {{
-                      echarts: "{ECHARTS_URL}"
-                  }}
-    }});
-    """.format(STATIC_URL=STATIC_URL, ECHARTS_URL=ECHARTS_URL))
+
+    return Javascript("/* Krisk 0.9+ charts are self-contained. */")
 
 
 def future_warning():
 
-    return warn("New feature, possibly breaking changes in future releases",
-                FutureWarning)
+    return warn(
+        "New feature, possibly breaking changes in future releases",
+        FutureWarning,
+        stacklevel=2,
+    )

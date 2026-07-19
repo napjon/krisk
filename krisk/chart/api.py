@@ -1,1 +1,3 @@
-from krisk.chart.core import rcParams, Chart
+from krisk.chart.core import Chart, rcParams
+
+__all__ = ["Chart", "rcParams"]
