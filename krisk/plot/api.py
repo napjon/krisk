@@ -1,18 +1,27 @@
 from krisk.plot.make_chart import make_chart
 
 
-def bar(df,
-        x,
-        y=None,
-        c=None,
-        how='count',
-        stacked=False,
-        annotate=None,
-        full=False,
-        trendline=False,
-        sort_on='index',
-        sort_c_on=None,
-        ascending=True):
+def _typed(df, **values):
+    from krisk.chart.api import Chart
+    from krisk.specs import ChartSpec
+
+    return Chart.from_dataframe(df, ChartSpec(**values))
+
+
+def bar(
+    df,
+    x,
+    y=None,
+    c=None,
+    how="count",
+    stacked=False,
+    annotate=None,
+    full=False,
+    trendline=False,
+    sort_on="index",
+    sort_c_on=None,
+    ascending=True,
+):
     """
     Parameters
     ----------
@@ -48,31 +57,44 @@ def bar(df,
         specified when use sort_on other than default value.
     ascending: boolean, default True
         sort ascending vs. descending
-    
+
     Returns
     -------
     Chart Object
     """
 
-    return make_chart(df,type='bar',x=x,y=y,c=c,how=how,stacked=stacked,
-                      full=full, trendline=trendline,
-                      sort_on=sort_on, sort_c_on=sort_c_on, ascending=ascending,
-                      annotate='top' if annotate is True else annotate)
+    return make_chart(
+        df,
+        type="bar",
+        x=x,
+        y=y,
+        c=c,
+        how=how,
+        stacked=stacked,
+        full=full,
+        trendline=trendline,
+        sort_on=sort_on,
+        sort_c_on=sort_c_on,
+        ascending=ascending,
+        annotate="top" if annotate is True else annotate,
+    )
 
 
-def line(df,
-         x,
-         y=None,
-         c=None,
-         how=None,
-         stacked=False,
-         area=False,
-         annotate=None,
-         full=False,
-         smooth=False,
-         sort_on='index',
-         sort_c_on=None,
-         ascending=True):
+def line(
+    df,
+    x,
+    y=None,
+    c=None,
+    how=None,
+    stacked=False,
+    area=False,
+    annotate=None,
+    full=False,
+    smooth=False,
+    sort_on="index",
+    sort_c_on=None,
+    ascending=True,
+):
     """
     Parameters
     ----------
@@ -109,24 +131,30 @@ def line(df,
         specified when use sort_on other than default value.
     ascending: boolean, default True
         sort ascending vs. descending
-        
+
     Returns
     -------
     Chart Object
     """
-    return make_chart(df,type='line',x=x,y=y,c=c,how=how,stacked=stacked,
-                      area=area,full=full, smooth=smooth,
-                      sort_on=sort_on, sort_c_on=sort_c_on, ascending=ascending,
-                      annotate='top' if annotate is True else annotate)
+    return make_chart(
+        df,
+        type="line",
+        x=x,
+        y=y,
+        c=c,
+        how=how,
+        stacked=stacked,
+        area=area,
+        full=full,
+        smooth=smooth,
+        sort_on=sort_on,
+        sort_c_on=sort_c_on,
+        ascending=ascending,
+        annotate="top" if annotate is True else annotate,
+    )
 
 
-def line_tidy(df,
-              full=False,
-              stacked=False,
-              area=False,
-              annotate=False,
-              smooth=False):
-
+def line_tidy(df, full=False, stacked=False, area=False, annotate=False, smooth=False):
     """
     This plot assume DataFrame can be directly consumed (tidy data). Used for
     customized manipulation data that normal plot can't provides.
@@ -155,18 +183,20 @@ def line_tidy(df,
     -------
     Chart Object
     """
-    return make_chart(df, x=df.index.name, c="unnamed",
-                      stacked=stacked, area=area, full=full,
-                      type='line_tidy', smooth=smooth,
-                      annotate='top' if annotate is True else annotate)
+    return make_chart(
+        df,
+        x=df.index.name,
+        c="unnamed",
+        stacked=stacked,
+        area=area,
+        full=full,
+        type="line_tidy",
+        smooth=smooth,
+        annotate="top" if annotate is True else annotate,
+    )
 
 
-def bar_tidy(df,
-             full=False,
-             stacked=False,
-             trendline=False,
-             annotate=None):
-
+def bar_tidy(df, full=False, stacked=False, trendline=False, annotate=None):
     """
     This plot assume DataFrame can be directly consumed (tidy data). Used for
     customized manipulation data that normal plot can't provides.
@@ -193,15 +223,31 @@ def bar_tidy(df,
     -------
     Chart Object
     """
-    return make_chart(df, x=df.index.name, c="unnamed",
-                      stacked=stacked, full=full,
-                      type='bar_tidy', trendline=trendline,
-                      annotate='top' if annotate is True else annotate)
+    return make_chart(
+        df,
+        x=df.index.name,
+        c="unnamed",
+        stacked=stacked,
+        full=full,
+        type="bar_tidy",
+        trendline=trendline,
+        annotate="top" if annotate is True else annotate,
+    )
 
 
-def bar_line(df, x, ybar, yline, bar_aggfunc='mean', line_aggfunc='mean',
-             sort_on='index', ascending=True, is_distinct=False,
-             hide_split_line=True, style_tooltip=True):
+def bar_line(
+    df,
+    x,
+    ybar,
+    yline,
+    bar_aggfunc="mean",
+    line_aggfunc="mean",
+    sort_on="index",
+    ascending=True,
+    is_distinct=False,
+    hide_split_line=True,
+    style_tooltip=True,
+):
     """
     Parameters
     ----------
@@ -237,26 +283,27 @@ def bar_line(df, x, ybar, yline, bar_aggfunc='mean', line_aggfunc='mean',
     -------
     Chart Object
     """
-    if sort_on not in ['index', 'ybar', 'yline']:
+    if sort_on not in ["index", "ybar", "yline"]:
         raise ValueError("Invalid Parameters")
 
-    return make_chart(df, x=x, ybar=ybar, yline=yline,
-                      bar_aggfunc=bar_aggfunc, line_aggfunc=line_aggfunc,
-                      is_distinct=is_distinct,
-                      sort_on=sort_on, ascending=ascending,
-                      hide_split_line=hide_split_line,
-                      style_tooltip=style_tooltip,
-                      c=None, type='bar_line')
+    return make_chart(
+        df,
+        x=x,
+        ybar=ybar,
+        yline=yline,
+        bar_aggfunc=bar_aggfunc,
+        line_aggfunc=line_aggfunc,
+        is_distinct=is_distinct,
+        sort_on=sort_on,
+        ascending=ascending,
+        hide_split_line=hide_split_line,
+        style_tooltip=style_tooltip,
+        c=None,
+        type="bar_line",
+    )
 
 
-def hist(df,
-         x,
-         c=None,
-         bins=10,
-         normed=False,
-         stacked=False,
-         annotate=None,
-         density=False):
+def hist(df, x, c=None, bins=10, normed=False, stacked=False, annotate=None, density=False):
     """
     Parameters
     ----------
@@ -278,15 +325,23 @@ def hist(df,
         category
     density: boolean, default False.
         Whether to add density to the plot
-    
+
     Returns
     -------
     Chart Object
     """
-    return make_chart(df,type='hist',x=x,c=c,bins=bins,normed=normed,
-                      stacked=stacked, density=density,
-                      annotate='top' if annotate is True else annotate)
-   
+    return make_chart(
+        df,
+        type="hist",
+        x=x,
+        c=c,
+        bins=bins,
+        normed=normed,
+        stacked=stacked,
+        density=density,
+        annotate="top" if annotate is True else annotate,
+    )
+
 
 def scatter(df, x, y, s=None, c=None, saturate=None, size_px=(10, 70)):
     """
@@ -309,12 +364,63 @@ def scatter(df, x, y, s=None, c=None, saturate=None, size_px=(10, 70)):
     -------
     Chart Object
     """
-    return make_chart(df,type='scatter',x=x,y=y,s=s,c=c,
-                      saturate=saturate,size_px=size_px)
+    return make_chart(df, type="scatter", x=x, y=y, s=s, c=c, saturate=saturate, size_px=size_px)
 
 
-def waterfall(s, color_coded=False, annotate=None,
-              up_name='positive', down_name='negative'):
+def pie(df, x, y=None, c=None, doughnut=False, how="count", **kwargs):
+    """Create a pie, doughnut, or two-level sunburst chart."""
+    kind = "sunburst" if c else ("doughnut" if doughnut else "pie")
+    return _typed(
+        df,
+        kind=kind,
+        x=x,
+        y=y,
+        color=c,
+        aggregate=how if y else "count",
+        **kwargs,
+    )
+
+
+def number(
+    df,
+    x,
+    y=None,
+    c=None,
+    overtime=False,
+    how="mean",
+    sampling="D",
+    dt_fmt="YYYY-MM-DD",
+    **kwargs,
+):
+    """Create a KPI or KPI-over-time chart (chartics compatibility)."""
+    del c
+    if overtime:
+        if not y:
+            raise ValueError("Over-time number charts require y")
+        date_format = dt_fmt.replace("YYYY", "%Y").replace("MM", "%m").replace("DD", "%d")
+        return _typed(
+            df,
+            kind="kpi_trend",
+            x=x,
+            y=y,
+            aggregate=how,
+            sampling=sampling,
+            date_format=date_format,
+            number_font_size=kwargs.pop("num_font_size", 48),
+            comparison_font_size=kwargs.pop("period_font_size", 18),
+            **kwargs,
+        )
+    return _typed(
+        df,
+        kind="kpi",
+        y=x,
+        aggregate=how,
+        number_font_size=kwargs.pop("num_font_size", 48),
+        **kwargs,
+    )
+
+
+def waterfall(s, color_coded=False, annotate=None, up_name="positive", down_name="negative"):
     """
     Firxt category axis automatically not float.
 
@@ -332,10 +438,14 @@ def waterfall(s, color_coded=False, annotate=None,
     -------
     Chart Object
     """
-    if annotate not in [None, 'inside', 'outside']:
+    if annotate not in [None, "inside", "outside"]:
         raise ValueError("invalid parameters")
 
-    return make_chart(s, type='waterfall', up_name=up_name, down_name=down_name,
-                      color_coded=color_coded, annotate=annotate)
-
-
+    return make_chart(
+        s,
+        type="waterfall",
+        up_name=up_name,
+        down_name=down_name,
+        color_coded=color_coded,
+        annotate=annotate,
+    )
